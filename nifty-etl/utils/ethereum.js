@@ -1,0 +1,45 @@
+const Web3 = require('web3');
+
+function Ethereum(provider_url) {
+    this.w3 = new Web3(new Web3.providers.HttpProvider(provider_url));
+}
+
+Ethereum.prototype.normalizeHash = function (hash) {
+    if (hash != null && hash.startsWith("0x")) {
+        var res = hash.slice(2).toLowerCase();
+        if (res.length == 0) {
+            return (null);
+        }
+        return (res);
+    }
+    if (hash != null && hash.length > 0) {
+        return (hash);
+    }
+    return (null);
+}
+
+Ethereum.prototype.getLatestBlock = async function () {
+    var latestBlock = await this.w3.eth.getBlockNumber();
+    return (latestBlock);
+}
+
+Ethereum.prototype.getBlockTimestamp = async function (blocknumber) {
+    var latestBlock = await this.w3.eth.getBlock(blocknumber);
+    return (latestBlock.timestamp);
+}
+
+Ethereum.prototype.getTransaction = async function(hash, full) {
+    let transaction = await this.w3.eth.getTransaction(hash)
+    if (full) {
+        let receipt = await this.w3.eth.getTransactionReceipt(hash)
+        transaction = Object.assign(transaction, receipt)
+    }
+    return (transaction)
+ }
+
+Ethereum.prototype.getWeb3 = function () {
+    return (this.w3);
+}
+
+
+module.exports = Ethereum;
