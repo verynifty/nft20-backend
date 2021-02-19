@@ -27,6 +27,7 @@ Storage.prototype.insert = async function (type, obj) {
   c.query(query, (err, res) => {
     if (err) {
       console.log(err)
+      //need to return false here and use await
     }
     // console.log(err, res)
     c.release()

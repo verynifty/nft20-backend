@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const ethereum = new (require("./utils/ethereum"))(
+const ethereum = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 
