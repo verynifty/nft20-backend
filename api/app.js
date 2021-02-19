@@ -25,8 +25,7 @@ app.get('/activity', async function (req, res) {
     let currentPage = req.params.page != null ? parseInt(req.params.page) : 0;
     let query = storage.knex
     .select("*")
-    .from("nft20_action")
-    .orderBy("blocknumber", "desc")
+    .from("nft20_history")
     let result = await
     query.paginate({
       perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,

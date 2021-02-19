@@ -69,7 +69,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     if (type == "SUB") {
         event.returnValues.value = "-" + event.returnValues.value;
         event.user = event.returnValues.to
-    } else {
+    } else if (type == "ADD") {
         event.user = event.returnValues.from
     }
     let pa = {
@@ -174,3 +174,6 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
 };
 
 module.exports = NFT20;
+
+
+
