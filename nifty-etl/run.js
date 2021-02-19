@@ -15,14 +15,15 @@ storage = new (require("./utils/storage"))({
   ssl: true,
   ssl: { rejectUnauthorized: false },
 });
-const vnft = new (require("./utils/vnft"))(ethereum, storage);
+let NFT20 = require("./utils/nft20")
+const nft20 = new NFT20(ethereum, storage);
 
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
   while (true) {
-    await vnft.verifyAddons();
+    await nft20.getData();
     await sleep(1000);
     break;
   }
