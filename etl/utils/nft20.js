@@ -51,13 +51,19 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         if (withUpdate) {
             /* todo insert or update pair */
         }
-        pairs.push({
-            address: pairDetail._nft20pair,
-            nft: pairDetail._originalNft,
-            type: pairDetail._type,
+        let o = {
+            address: this.ethereum.normalizeHash(pairDetail._nft20pair),
+            nft: this.ethereum.normalizeHash(pairDetail._originalNft),
+            nft_type: pairDetail._type,
             name: pairDetail._name,
-            symbol: pairDetail._symbol
-        })
+            symbol: pairDetail._symbol,
+            lp_eth_balance: balance
+        }
+        await this.storage.knex('nft20_pair')
+            .insert(o)
+            .onConflict('address')
+            .merge()
+        pairs.push(o)
     }
     return pairs;
 };
@@ -73,18 +79,18 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
         event.user = event.returnValues.from
     }
     let pa = {
-      id: event.returnValues.tokenId,
-      blocknumber: event.blockNumber,
-      transactionhash: this.ethereum.normalizeHash(event.transactionHash),
-      from: this.ethereum.normalizeHash(tx.from),
-      to: this.ethereum.normalizeHash(tx.to),
-      logindex: event.logIndex,
-      timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
-      nft: this.ethereum.normalizeHash(pair.nft),
-      pool: this.ethereum.normalizeHash(pair.address),
-      id: event.returnValues.id,
-      amount: event.returnValues.value,
-      user: this.ethereum.normalizeHash(event.user)
+        id: event.returnValues.tokenId,
+        blocknumber: event.blockNumber,
+        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+        from: this.ethereum.normalizeHash(tx.from),
+        to: this.ethereum.normalizeHash(tx.to),
+        logindex: event.logIndex,
+        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+        nft: this.ethereum.normalizeHash(pair.nft),
+        pool: this.ethereum.normalizeHash(pair.address),
+        id: event.returnValues.id,
+        amount: event.returnValues.value,
+        user: this.ethereum.normalizeHash(event.user)
     };
     await this.storage.insert("nft20_action", pa);
 }
@@ -93,16 +99,16 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
     let pairs = await this.getPairs(true)
     for (const pair of pairs) {
         console.log(pair)
-        if (parseInt(pair.type) == 1155) {
+        if (parseInt(pair.nft_type) == 1155) {
             const nft = new this.ethereum.w3.eth.Contract(
                 this.ERC1155ABI,
-                pair.nft
+                "0x" + pair.nft
             );
-            
+
             let ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { to: pair.address }
+                filter: { to: "0x" + pair.address }
             });
             for (const t of ts) {
                 await this.storePoolAction("ADD", pair, t);
@@ -111,49 +117,49 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
             ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { from: pair.address }
+                filter: { from: "0x" + pair.address }
             });
             for (const t of ts) {
                 await this.storePoolAction("SUB", pair, t);
             }
-            
+
             ts = await nft.getPastEvents("TransferBatch", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { to: pair.address }
+                filter: { to: "0x" + pair.address }
             });
 
             for (const t of ts) {
-               for (let index = 0; index < t.returnValues.ids.length; index++) {
+                for (let index = 0; index < t.returnValues.ids.length; index++) {
                     t.returnValues.id = t.returnValues.ids[index];
                     t.returnValues.value = t.returnValues.values[index];
                     await this.storePoolAction("ADD", pair, t);
-               }
+                }
             }
             ts = await nft.getPastEvents("TransferBatch", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { from: pair.address }
+                filter: { from: "0x" + pair.address }
             });
             for (const t of ts) {
                 for (let index = 0; index < t.returnValues.ids.length; index++) {
-                     t.returnValues.id = t.returnValues.ids[index];
-                     t.returnValues.value = t.returnValues.values[index];
-                     await this.storePoolAction("SUB", pair, t);
+                    t.returnValues.id = t.returnValues.ids[index];
+                    t.returnValues.value = t.returnValues.values[index];
+                    await this.storePoolAction("SUB", pair, t);
                 }
-             }
-             
+            }
 
-        } else if (parseInt(pair.type) == 721) {
+
+        } else if (parseInt(pair.nft_type) == 721) {
             const nft = new this.ethereum.w3.eth.Contract(
                 this.ERC721ABI,
-                pair.nft
+                "0x" + pair.nft
             );
 
             let ts = await nft.getPastEvents("Transfer", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { to: pair.address }
+                filter: { to: "0x" + pair.address }
             });
             for (const t of ts) {
                 t.returnValues.value = "1"
@@ -163,7 +169,7 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
             ts = await nft.getPastEvents("Transfer", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { from: pair.address }
+                filter: { from: "0x" + pair.address }
             });
             for (const t of ts) {
                 t.returnValues.value = "1"
