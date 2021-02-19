@@ -98,7 +98,7 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
                 this.ERC1155ABI,
                 pair.nft
             );
-            /*
+            
             let ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
@@ -142,13 +142,33 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
                      await this.storePoolAction("SUB", pair, t);
                 }
              }
-             */
+             
 
         } else if (parseInt(pair.type) == 721) {
             const nft = new this.ethereum.w3.eth.Contract(
                 this.ERC721ABI,
                 pair.nft
             );
+
+            let ts = await nft.getPastEvents("Transfer", {
+                fromBlock: blocknumber,
+                toBlock: "latest",
+                filter: { to: pair.address }
+            });
+            for (const t of ts) {
+                t.returnValues.value = "1"
+                await this.storePoolAction("ADD", pair, t);
+            }
+
+            ts = await nft.getPastEvents("Transfer", {
+                fromBlock: blocknumber,
+                toBlock: "latest",
+                filter: { from: pair.address }
+            });
+            for (const t of ts) {
+                t.returnValues.value = "1"
+                await this.storePoolAction("ADD", pair, t);
+            }
         }
     }
 };
