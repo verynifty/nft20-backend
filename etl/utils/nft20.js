@@ -95,7 +95,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     let pa = {
         id: event.returnValues.tokenId,
         blocknumber: event.blockNumber,
-        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+        transactionhash: "0x" + this.ethereum.normalizeHash(event.transactionHash),
         from: this.ethereum.normalizeHash(tx.from),
         to: this.ethereum.normalizeHash(tx.to),
         logindex: event.logIndex,
