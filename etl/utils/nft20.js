@@ -1,6 +1,7 @@
 const axios = require("axios");
 const BigNumber = require("bignumber.js");
 
+
 function NFT20(ethereum, storage) {
     this.ethereum = ethereum;
     this.DEPLOYED_BLOCK = 11023280;

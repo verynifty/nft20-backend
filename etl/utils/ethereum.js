@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const CoinGecko = require('coingecko-api');
 
 function Ethereum(provider_url) {
     this.w3 = new Web3(new Web3.providers.HttpProvider(provider_url));
@@ -6,7 +7,7 @@ function Ethereum(provider_url) {
 
 Ethereum.prototype.normalizeHash = function (hash) {
     if (hash != null && hash.startsWith("0x")) {
-        var res = hash.slice(2).toLowerCase();
+        var res = hash.toLowerCase();
         if (res.length == 0) {
             return (null);
         }
@@ -35,6 +36,18 @@ Ethereum.prototype.getTransaction = async function(hash, full) {
         transaction = Object.assign(transaction, receipt)
     }
     return (transaction)
+ }
+
+ Ethereum.prototype.getPrice = async function() {
+    const CoinGeckoClient = new CoinGecko();
+
+    const coingeckoRes = await CoinGeckoClient.simple.price({
+      ids: ["ethereum"],
+      vs_currencies: ["usd"],
+    });
+    let price = coingeckoRes.data.ethereum.usd;
+    console.log('Price', price)
+    return (price);
  }
 
 Ethereum.prototype.getWeb3 = function () {
