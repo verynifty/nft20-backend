@@ -27,6 +27,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let assets = await axios.get(
         "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets.json"
     );
+    let price_of_eth = await this.ethereum.getPrice();
+
     for (let index = 0; index < pairCount; index++) {
         let pairDetail = await this.factory.methods
             .getPairByNftAddress(index)
@@ -40,14 +42,22 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             pairOnGithub = null;
         }
         let balance = 0;
+        let ethPrice = 0;
         if (pairOnGithub && pairOnGithub.lpToken != null) {
-            console.log(pairOnGithub)
             const wethContract = new this.ethereum.w3.eth.Contract(
                 this.ERC20ABI,
                 "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
             );
+            const TwentyContract = new this.ethereum.w3.eth.Contract(
+                this.ERC20ABI,
+                pairDetail._nft20pair
+            );
+            console.log(price_of_eth)
             balance = await wethContract.methods.balanceOf(pairOnGithub.lpToken).call();
             balance = new BigNumber(balance).shiftedBy(-18).toNumber()
+            Twentybalance = await TwentyContract.methods.balanceOf(pairOnGithub.lpToken).call();
+            Twentybalance = new BigNumber(Twentybalance).shiftedBy(-18).toNumber()
+            ethPrice = balance * 100 / Twentybalance;
         }
         if (withUpdate) {
             /* todo insert or update pair */
@@ -58,7 +68,10 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             nft_type: pairDetail._type,
             name: pairDetail._name,
             symbol: pairDetail._symbol,
-            lp_eth_balance: balance
+            lp_eth_balance: balance,
+            lp_usd_balance: balance * price_of_eth,
+            nft_eth_price: ethPrice,
+            nft_usd_price: ethPrice * price_of_eth,
         }
         await this.storage.knex('nft20_pair')
             .insert(o)
@@ -103,13 +116,13 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
         if (parseInt(pair.nft_type) == 1155) {
             const nft = new this.ethereum.w3.eth.Contract(
                 this.ERC1155ABI,
-                "0x" + pair.nft
+                pair.nft
             );
 
             let ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { to: "0x" + pair.address }
+                filter: { to: pair.address }
             });
             for (const t of ts) {
                 await this.storePoolAction("ADD", pair, t);
@@ -118,7 +131,7 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
             ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { from: "0x" + pair.address }
+                filter: { from:  pair.address }
             });
             for (const t of ts) {
                 await this.storePoolAction("SUB", pair, t);
@@ -127,7 +140,7 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
             ts = await nft.getPastEvents("TransferBatch", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { to: "0x" + pair.address }
+                filter: { to:  pair.address }
             });
 
             for (const t of ts) {
@@ -140,7 +153,7 @@ NFT20.prototype.getData = async function (blocknumber = 0) {
             ts = await nft.getPastEvents("TransferBatch", {
                 fromBlock: blocknumber,
                 toBlock: "latest",
-                filter: { from: "0x" + pair.address }
+                filter: { from: pair.address }
             });
             for (const t of ts) {
                 for (let index = 0; index < t.returnValues.ids.length; index++) {
