@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const ethereum = new (require("../etl/utils/ethereum"))(
+const ethereum = new (require("./utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 
@@ -23,7 +23,7 @@ const sleep = (waitTimeInMs) =>
 
 (async () => {
   while (true) {
-    await nft20.getData();
+    await nft20.getLastData();
     await sleep(1000);
     break;
   }
