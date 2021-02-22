@@ -26,6 +26,7 @@ const sleep = (waitTimeInMs) =>
       let nfts = await storage.executeAsync("SELECT nft, id FROM nft20_action GROUP BY nft, id")
       for (const nft of nfts) {
         await nft20.getNFT(nft.nft, nft.id);
+        await sleep(1000)
       }
   }
 })();

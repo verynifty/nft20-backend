@@ -130,10 +130,10 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         nft_id: asset_id
     })
     if (!existing) {
-        console.log( "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/")
         let opensea_asset = await axios.get(
             "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
         );
+        //  console.log(opensea_asset)
         let NFT = {
             nft_contract: contract,
             nft_id: asset_id,
@@ -141,6 +141,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
             nft_description: opensea_asset.data.description,
             nft_image: opensea_asset.data.image_url,
             nft_original_image: opensea_asset.data.image_original_url,
+            nft_trait: JSON.stringify(opensea_asset.data.traits)
         }
         await this.storage.insert("nft20_nft", NFT);
     }
