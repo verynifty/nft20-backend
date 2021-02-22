@@ -47,11 +47,11 @@ Storage.prototype.getMax = async function (type, field) {
   //  console.log(query)
   var res = await c.query(query)
   c.release();
-  if (res != null && res.rows[0] != null) {
+  if (res != null && res.rows[0] != null && res.rows[0].max != null) {
     return (parseInt(res.rows[0].max));
   }
   else {
-    return (null);
+    return (0);
   }
 }
 
