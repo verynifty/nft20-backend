@@ -88,6 +88,19 @@ Storage.prototype.get = async function (type, field, value) {
   return null;
 }
 
+Storage.prototype.getMulti = async function (type, conditions) {
+  var c = await this.client()
+  var query = this.knex.where(conditions).from(type).toString()
+  //console.log(query)
+  var res = await c.query(query)
+  c.release();
+  if (res.rows != null && res.rows[0] != null) {
+    return res.rows[0]
+  }
+  return null;
+}
+
+
 Storage.prototype.executeAsync = async function (query) {
   var c = await this.client();
   var res = await c.query(query)

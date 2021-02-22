@@ -106,6 +106,11 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
         user: this.ethereum.normalizeHash(event.user)
     };
     await this.storage.insert("nft20_action", pa);
+    try {
+        await this.getNFT(this.ethereum.normalizeHash(pair.nft), event.returnValues.id)
+    } catch (error) {
+        console.log("ERROR while adding NFT to db")
+    }
 }
 
 NFT20.prototype.getLastData = async function () {
@@ -117,6 +122,28 @@ NFT20.prototype.getLastData = async function () {
     await this.getData(maxBlock)
     console.log("End data for block:", maxBlock)
 
+}
+
+NFT20.prototype.getNFT = async function (contract, asset_id) {
+    let existing = await this.storage.getMulti("nft20_nft", {
+        nft_contract: contract,
+        nft_id: asset_id
+    })
+    if (!existing) {
+        console.log( "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/")
+        let opensea_asset = await axios.get(
+            "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
+        );
+        let NFT = {
+            nft_contract: contract,
+            nft_id: asset_id,
+            nft_title: opensea_asset.data.name,
+            nft_description: opensea_asset.data.description,
+            nft_image: opensea_asset.data.image_url,
+            nft_original_image: opensea_asset.data.image_original_url,
+        }
+        await this.storage.insert("nft20_nft", NFT);
+    }
 }
 
 NFT20.prototype.getData = async function (blocknumber = 0) {
