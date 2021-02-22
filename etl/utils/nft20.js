@@ -94,7 +94,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     let pa = {
         id: event.returnValues.tokenId,
         blocknumber: event.blockNumber,
-        transactionhash: "0x" + this.ethereum.normalizeHash(event.transactionHash),
+        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
         from: this.ethereum.normalizeHash(tx.from),
         to: this.ethereum.normalizeHash(tx.to),
         logindex: event.logIndex,
@@ -163,6 +163,7 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
                 toBlock: lastBlockNumber,
                 filter: { to: pair.address }
             });
+            console.log(ts)
             for (const t of ts) {
                 await this.storePoolAction("ADD", pair, t);
             }
