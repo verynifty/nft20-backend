@@ -101,7 +101,7 @@ Storage.prototype.executeAsync = async function (query) {
     c.release();
     return (res.rows);
   } catch (error) {
-    
+    c.release();
   }
 }
 
