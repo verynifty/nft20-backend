@@ -21,17 +21,10 @@ Storage.prototype.client = async function () {
 
 Storage.prototype.insert = async function (type, obj) {
   //  console.log('insert', type, obj);
-  var c = await this.client()
   var query = this.knex(type).insert(obj).toString()
   // console.log(query)
-  c.query(query, (err, res) => {
-    if (err) {
-      console.log(err)
-      //need to return false here and use await
-    }
-    // console.log(err, res)
-    c.release()
-  })
+  await this.executeAsync(query)
+ 
 }
 
 Storage.prototype.update = async function (type, field, value, obj) {
@@ -102,10 +95,14 @@ Storage.prototype.getMulti = async function (type, conditions) {
 
 
 Storage.prototype.executeAsync = async function (query) {
-  var c = await this.client();
-  var res = await c.query(query)
-  c.release;
-  return (res.rows);
+  try {
+    var c = await this.client();
+    var res = await c.query(query)
+    c.release;
+    return (res.rows);
+  } catch (error) {
+    
+  }
 }
 
 module.exports = Storage;

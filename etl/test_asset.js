@@ -24,7 +24,9 @@ const sleep = (waitTimeInMs) =>
 (async () => {
   while (true) {
       let nfts = await storage.executeAsync("SELECT nft, id FROM nft20_action GROUP BY nft, id")
+      console.log(nfts)
       for (const nft of nfts) {
+          console.log('Adding ', nft.nft, nft.id)
         await nft20.getNFT(nft.nft, nft.id);
         await sleep(1000)
       }
