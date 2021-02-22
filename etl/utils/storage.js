@@ -98,7 +98,7 @@ Storage.prototype.executeAsync = async function (query) {
   try {
     var c = await this.client();
     var res = await c.query(query)
-    c.release;
+    c.release();
     return (res.rows);
   } catch (error) {
     
