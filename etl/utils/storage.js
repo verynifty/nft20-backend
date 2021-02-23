@@ -55,6 +55,20 @@ Storage.prototype.getMax = async function (type, field) {
   }
 }
 
+Storage.prototype.getMaxWhere = async function (type, field, where) {
+  var c = await this.client()
+  var query = this.knex.max(field).where(where).from(type).toString()
+  //  console.log(query)
+  var res = await c.query(query)
+  c.release();
+  if (res != null && res.rows[0] != null && res.rows[0].max != null) {
+    return (parseInt(res.rows[0].max));
+  }
+  else {
+    return (0);
+  }
+}
+
 Storage.prototype.getMin = async function (type, field) {
   var c = await this.client()
   var query = this.knex.min(field).from(type).toString()

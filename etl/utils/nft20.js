@@ -152,12 +152,43 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
     let pairs = await this.getPairs(true)
     for (const pair of pairs) {
         console.log("Get events for pair", pair.name, blocknumber)
+        const TwentyContract = new this.ethereum.w3.eth.Contract(
+            this.ERC20ABI,
+            pair.address
+        );
+        let maxERC20Transfer = await this.storage.getMaxWhere("nft20_erc20_transfers", "blocknumber",{
+            pool: pair.address
+        })
+
+        let ts = await TwentyContract.getPastEvents("Transfer", {
+            fromBlock: maxERC20Transfer,
+            toBlock: lastBlockNumber,
+        });
+        for (const event of ts) {
+            let tx = await this.ethereum.getTransaction(event.transactionHash);
+            let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+            await this.storage.insert("nft20_erc20_transfers", {
+                id: event.returnValues.tokenId,
+                blocknumber: event.blockNumber,
+                transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+                from: this.ethereum.normalizeHash(tx.from),
+                to: this.ethereum.normalizeHash(tx.to),
+                logindex: event.logIndex,
+                timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+                nft: this.ethereum.normalizeHash(pair.nft),
+                pool: this.ethereum.normalizeHash(pair.address),
+                transfer_from: this.ethereum.normalizeHash(event.returnValues.from),
+                transfer_to: this.ethereum.normalizeHash(event.returnValues.to),
+                transfer_amount: event.returnValues.value
+            });
+        }
+
         if (parseInt(pair.nft_type) == 1155) {
             const nft = new this.ethereum.w3.eth.Contract(
                 this.ERC1155ABI,
                 pair.nft
             );
-
+           
             let ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: lastBlockNumber,
@@ -171,7 +202,7 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
             ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: lastBlockNumber,
-                filter: { from:  pair.address }
+                filter: { from: pair.address }
             });
             for (const t of ts) {
                 await this.storePoolAction("SUB", pair, t);
@@ -180,7 +211,7 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
             ts = await nft.getPastEvents("TransferBatch", {
                 fromBlock: blocknumber,
                 toBlock: lastBlockNumber,
-                filter: { to:  pair.address }
+                filter: { to: pair.address }
             });
 
             for (const t of ts) {
@@ -230,6 +261,9 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
                 await this.storePoolAction("SUB", pair, t);
             }
         }
+
+
+
     }
 };
 
