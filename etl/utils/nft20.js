@@ -168,7 +168,6 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
             let tx = await this.ethereum.getTransaction(event.transactionHash);
             let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
             await this.storage.insert("nft20_erc20_transfers", {
-                id: event.returnValues.tokenId,
                 blocknumber: event.blockNumber,
                 transactionhash: this.ethereum.normalizeHash(event.transactionHash),
                 from: this.ethereum.normalizeHash(tx.from),

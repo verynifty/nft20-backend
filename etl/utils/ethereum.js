@@ -46,7 +46,6 @@ Ethereum.prototype.getTransaction = async function(hash, full) {
       vs_currencies: ["usd"],
     });
     let price = coingeckoRes.data.ethereum.usd;
-    console.log('Price', price)
     return (price);
  }
 
