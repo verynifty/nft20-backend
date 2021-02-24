@@ -16,20 +16,34 @@ var Ddos = require('ddos')
 
 var app = express();
 
-var ddos = new Ddos({burst:200, limit:35})
+var ddos = new Ddos({ burst: 200, limit: 35 })
 app.use(ddos.express);
 
 app.use(cors());
 
 app.get('/activity', async function (req, res) {
-    let currentPage = req.params.page != null ? parseInt(req.params.page) : 0;
-    let query = storage.knex
+  let currentPage = req.params.page != null ? parseInt(req.params.page) : 0;
+  let query = storage.knex
     .select("*")
     .from("nft20_history")
-    let result = await
+  let result = await
     query.paginate({
       perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
-      currentPage: currentPage != null ,
+      currentPage: currentPage != null,
+      isLengthAware: true,
+    });
+  res.status(200).json(result);
+})
+
+app.get('/pools', async function (req, res) {
+  let currentPage = req.params.page != null ? parseInt(req.params.page) : 0;
+  let query = storage.knex
+    .select("*")
+    .from("nft20_pool_view")
+  let result = await
+    query.paginate({
+      perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
+      currentPage: currentPage != null,
       isLengthAware: true,
     });
   res.status(200).json(result);
