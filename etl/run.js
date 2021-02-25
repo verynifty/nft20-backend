@@ -24,6 +24,6 @@ const sleep = (waitTimeInMs) =>
 (async () => {
   while (true) {
     await nft20.getLastData();
-    await sleep(1000);
+    await sleep(60000);
   }
 })();
