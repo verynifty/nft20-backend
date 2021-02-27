@@ -29,7 +29,7 @@ app.get('/activity', async function (req, res) {
   let result = await
     query.paginate({
       perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
-      currentPage: currentPage != null,
+      currentPage: currentPage ? currentPage : 0,
       isLengthAware: true,
     });
   res.status(200).json(result);
@@ -43,7 +43,7 @@ app.get('/pools', async function (req, res) {
   let result = await
     query.paginate({
       perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
-      currentPage: currentPage != null,
+      currentPage: currentPage ? currentPage : 0,
       isLengthAware: true,
     });
   res.status(200).json(result);
@@ -64,7 +64,7 @@ app.get('/nfts', async function (req, res) {
   let result = await
     query.paginate({
       perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
-      currentPage: currentPage != null,
+      currentPage: currentPage ? currentPage : 0,
       isLengthAware: true,
     });
   res.status(200).json(result);
