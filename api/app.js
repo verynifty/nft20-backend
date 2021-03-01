@@ -12,13 +12,7 @@ storage = new (require("../etl/utils/storage"))({
 });
 
 var cors = require("cors");
-var Ddos = require('ddos')
-
 var app = express();
-
-var ddos = new Ddos({ burst: 200, limit: 35 })
-app.use(ddos.express);
-
 app.use(cors());
 
 app.get('/activity', async function (req, res) {
@@ -32,6 +26,7 @@ app.get('/activity', async function (req, res) {
       currentPage: currentPage ? currentPage : 0,
       isLengthAware: true,
     });
+  res.setHeader('Cache-Control', 's-max-age=60, stale-while-revalidate')
   res.status(200).json(result);
 })
 
@@ -46,6 +41,7 @@ app.get('/pools', async function (req, res) {
       currentPage: currentPage ? currentPage : 0,
       isLengthAware: true,
     });
+  res.setHeader('Cache-Control', 's-max-age=60, stale-while-revalidate')
   res.status(200).json(result);
 })
 
@@ -54,12 +50,12 @@ app.get('/nfts', async function (req, res) {
   let query = null
   if (req.query.pool != null) {
     query = storage.knex
-    .select("*")
-    .from("nft20_nfts_view").where("pool", req.query.pool.toLowerCase())
+      .select("*")
+      .from("nft20_nfts_view").where("pool", req.query.pool.toLowerCase())
   } else {
     query = storage.knex
-    .select("*")
-    .from("nft20_nfts_view")
+      .select("*")
+      .from("nft20_nfts_view")
   }
   let result = await
     query.paginate({
@@ -67,7 +63,10 @@ app.get('/nfts', async function (req, res) {
       currentPage: currentPage ? currentPage : 0,
       isLengthAware: true,
     });
+  res.setHeader('Cache-Control', 's-max-age=60, stale-while-revalidate')
   res.status(200).json(result);
 })
 
-app.listen(7878)
+//app.listen(7878)
+
+module.exports = app
