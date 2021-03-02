@@ -59,9 +59,6 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             Twentybalance = new BigNumber(Twentybalance).shiftedBy(-18).toNumber()
             ethPrice = balance * 100 / Twentybalance;
         }
-        if (withUpdate) {
-            /* todo insert or update pair */
-        }
         let o = {
             address: this.ethereum.normalizeHash(pairDetail._nft20pair),
             nft: this.ethereum.normalizeHash(pairDetail._originalNft),
@@ -134,7 +131,6 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         let opensea_asset = await axios.get(
             "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
         );
-        //  console.log(opensea_asset)
         let NFT = {
             nft_contract: contract,
             nft_id: asset_id,
@@ -156,7 +152,7 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
             this.ERC20ABI,
             pair.address
         );
-        let maxERC20Transfer = await this.storage.getMaxWhere("nft20_erc20_transfers", "blocknumber",{
+        let maxERC20Transfer = await this.storage.getMaxWhere("nft20_erc20_transfers", "blocknumber", {
             pool: pair.address
         })
 
@@ -187,7 +183,7 @@ NFT20.prototype.getData = async function (blocknumber = 0, lastBlockNumber = "la
                 this.ERC1155ABI,
                 pair.nft
             );
-           
+
             let ts = await nft.getPastEvents("TransferSingle", {
                 fromBlock: blocknumber,
                 toBlock: lastBlockNumber,
