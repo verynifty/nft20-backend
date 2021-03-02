@@ -23,7 +23,11 @@ const sleep = (waitTimeInMs) =>
 
 (async () => {
   while (true) {
-    await nft20.getLastData();
+    try {
+      await nft20.getLastData();
+    } catch (error) {
+      console.log("An error occured", error)
+    }
     await sleep(60000);
   }
 })();
