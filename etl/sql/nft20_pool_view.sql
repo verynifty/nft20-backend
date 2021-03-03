@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW public.nft20_pool_view
-AS SELECT p.address,
+as
+SELECT p.address,
     p.nft,
     p.nft_type,
     p.name,
@@ -12,8 +13,9 @@ AS SELECT p.address,
     sum(h.amount) * 100::numeric AS token_supply,
     sum(h.total_transfers) AS total_nft_transfers,
     count(DISTINCT h."user") AS pool_users
-   FROM nft20_pair p,
+   FROM nft20_pair p
+   left JOIN
     nft20_history h
-  WHERE h.address::text = p.address::text
+  ON h.address::text = p.address::text
   GROUP BY p.address
   ORDER BY p.name;
