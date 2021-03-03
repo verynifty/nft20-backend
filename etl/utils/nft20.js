@@ -123,10 +123,16 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     }
 }
 
-NFT20.prototype.getLastData = async function () {
+NFT20.prototype.getLastData = async function (forceFromZero = false) {
     let latestBlock = await this.ethereum.getLatestBlock()
     let maxBlock = await this.storage.getMax("nft20_action", "blocknumber");
     if (maxBlock == null) {
+        maxBlock = 0;
+    } else {
+        maxBlock = maxBlock - 50
+        latestBlock = latestBlock - 2 // Protect from reorg
+    }
+    if (forceFromZero) {
         maxBlock = 0;
     }
     console.log("Starting getting data for block:", maxBlock, latestBlock)
