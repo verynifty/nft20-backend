@@ -41,8 +41,19 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         } else {
             pairOnGithub = null;
         }
+
         let balance = 0;
         let ethPrice = 0;
+        let hidden = false;
+        let logo_url = "https://space-cdn-dokomaps.fra1.digitaloceanspaces.com/nft20/placeholder.png";
+        if (pairOnGithub) {
+            if (pairOnGithub.hide != null && pairOnGithub.hide == true) {
+                hidden = true;
+            }
+            if (pairOnGithub.logo != null && pairOnGithub.logo != null) {
+                logo_url = pairOnGithub.logo;
+            }
+        }
         if (pairOnGithub && pairOnGithub.lpToken != null) {
             const wethContract = new this.ethereum.w3.eth.Contract(
                 this.ERC20ABI,
@@ -69,6 +80,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             lp_usd_balance: balance * price_of_eth,
             nft_eth_price: ethPrice,
             nft_usd_price: ethPrice * price_of_eth,
+            hidden: hidden,
+            logo_url: logo_url
         }
         await this.storage.knex('nft20_pair')
             .insert(o)
