@@ -1,5 +1,8 @@
 var express = require("express");
 require("dotenv").config();
+const { normalizeHash } = require("../etl/utils/ethereum.js");
+const { recoverPersonalSignature } = require("eth-sig-util");
+const { bufferToHex } = require("ethereumjs-util");
 
 storage = new (require("../etl/utils/storage"))({
   user: process.env.NFT20_DB_USER,
@@ -61,6 +64,36 @@ app.get("/nfts", async function (req, res) {
   });
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result);
+});
+
+app.post("/name", async function (req, res) {
+  const { name, signature, publicAddress } = req.body;
+  try {
+    const msg = name || "0x";
+
+    const msgBufferHex = bufferToHex(Buffer.from(msg, "utf8"));
+    const address = recoverPersonalSignature({
+      data: msgBufferHex,
+      sig: signature,
+    });
+
+    if (address.toLowerCase() === publicAddress.toLowerCase()) {
+      await this.storage
+        .knex("nft20_name")
+        .insert({
+          address: normalize(address),
+          name: name,
+        })
+        .onConflict("address")
+        .merge();
+
+      res.status(200).json(updateName);
+    } else {
+      res.status(200).send("Signature don't match.");
+    }
+  } catch (e) {
+    res.status(400).send("error");
+  }
 });
 
 //app.listen(7878)

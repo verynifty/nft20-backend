@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-      "start": "node ./bin/www",
-      "api": "node ./api/app.js"
+    "start": "node ./bin/www",
+    "api": "node ./api/app.js"
   },
   "dependencies": {
     "abi-decoder": "^2.3.0",
@@ -18,7 +18,8 @@
     "ddos": "^0.2.1",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
-    "ethereumjs-util": "^7.0.7",
+    "eth-sig-util": "^1.4.2",
+    "ethereumjs-util": "^7.0.9",
     "ethers": "^5.0.14",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
