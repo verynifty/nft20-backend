@@ -17,10 +17,11 @@ app.use(cors());
 
 app.get("/activity", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
-  let query = storage.knex
-    .select("*")
-    .from("nft20_history")
-    .where("user", req.query.user ? req.query.user : "ALL");
+  let query = storage.knex.select("*").from("nft20_history");
+  if (req.query.user) {
+    query.where("user", req.query.user);
+  }
+
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
