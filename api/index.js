@@ -81,7 +81,7 @@ app.post("/name", async function (req, res) {
       const updateName = await this.storage
         .knex("nft20_name")
         .insert({
-          address: normalize(address),
+          address: normalizeHash(address),
           name: name,
         })
         .onConflict("address")
