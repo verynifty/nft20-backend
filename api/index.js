@@ -78,7 +78,7 @@ app.post("/name", async function (req, res) {
     });
 
     if (address.toLowerCase() === publicAddress.toLowerCase()) {
-      const updateName = await this.storage
+      const updateName = await storage
         .knex("nft20_name")
         .insert({
           address: normalizeHash(address),
@@ -92,7 +92,7 @@ app.post("/name", async function (req, res) {
       res.status(200).send("Signature don't match.");
     }
   } catch (e) {
-    res.status(400).send("error");
+    res.status(400).send(e);
   }
 });
 
