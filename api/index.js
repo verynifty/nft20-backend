@@ -78,7 +78,7 @@ app.post("/name", async function (req, res) {
     });
 
     if (address.toLowerCase() === publicAddress.toLowerCase()) {
-      await this.storage
+      const updateName = await this.storage
         .knex("nft20_name")
         .insert({
           address: normalize(address),
