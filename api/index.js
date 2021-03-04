@@ -20,7 +20,7 @@ app.get("/activity", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("nft20_history")
-    .where("user", req.query.user ? req.query.user);
+    .where("user", req.query.user ? req.query.user : "ALL");
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
