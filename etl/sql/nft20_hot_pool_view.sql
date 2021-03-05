@@ -1,4 +1,4 @@
-CREATE OR REPLACE view public.nft_hot_pool_view AS
+CREATE OR REPLACE view public.nft20_hot_pool_view AS
 SELECT "public"."nft20_pair".*, count(distinct "Nft20 History"."user") AS "count"
 FROM "public"."nft20_pair"
 LEFT JOIN "public"."nft20_history" "Nft20 History" ON "public"."nft20_pair"."address" = "Nft20 History"."address"
