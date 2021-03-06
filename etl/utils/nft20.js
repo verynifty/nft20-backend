@@ -66,6 +66,11 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         this.ERC20ABI,
         pairDetail._nft20pair
       );
+
+      let nftValue = await thisPair.methods.nftValue().call();
+
+      nftValue = new BigNumber(nftValue).shiftedBy(-parseInt(18)).toFixed(2, 1);
+
       console.log(price_of_eth);
       balance = await wethContract.methods
         .balanceOf(pairOnGithub.lpToken)
@@ -89,6 +94,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       nft_usd_price: ethPrice * price_of_eth,
       hidden: hidden,
       logo_url: logo_url,
+      nftValue: nftValue,
     };
     await this.storage
       .knex("nft20_pair")
