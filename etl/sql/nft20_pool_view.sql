@@ -1,5 +1,5 @@
-CREATE OR REPLACE VIEW public.nft20_pool_view AS
- SELECT p.address,
+CREATE OR REPLACE VIEW public.nft20_pool_view
+AS SELECT p.address,
     p.nft,
     p.nft_type,
     p.name,
@@ -8,13 +8,13 @@ CREATE OR REPLACE VIEW public.nft20_pool_view AS
     p.lp_usd_balance,
     p.nft_usd_price,
     p.nft_eth_price,
-    sum(h.amount) AS nft_locked,
-    sum(h.amount) * 100::numeric AS token_supply,
-    sum(h.total_transfers) AS total_nft_transfers,
-    count(DISTINCT h."user") AS pool_users,
+     COALESCE(sum(h.amount), 0) AS nft_locked,
+     COALESCE(sum(h.amount) * 100::numeric, 0) AS token_supply,
+     COALESCE(sum(h.total_transfers), 0) AS total_nft_transfers,
+     COALESCE(count(DISTINCT h."user"), 0) AS pool_users,
     p.logo_url,
-    COALESCE( count(DISTINCT h."user")  FILTER (WHERE h ."timestamp"> CURRENT_DATE - INTERVAL '1 day'), 0) AS users_today,
-        COALESCE( count(DISTINCT h."user")  FILTER (WHERE h ."timestamp"> CURRENT_DATE - INTERVAL '1 day'), 0) AS users_weekly
+    COALESCE(count(DISTINCT h."user") FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint) AS users_today,
+    COALESCE(count(DISTINCT h."user") FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint) AS users_weekly
    FROM nft20_pair p
      LEFT JOIN nft20_history h ON h.address::text = p.address::text
   WHERE p.hidden = false
