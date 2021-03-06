@@ -57,19 +57,22 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         logo_url = pairOnGithub.logo;
       }
     }
+    const TwentyContract = new this.ethereum.w3.eth.Contract(
+        this.PAIRABI,
+        pairDetail._nft20pair
+      );
+    let nftValue = await TwentyContract.methods.nftValue().call();
+
+    nftValue = new BigNumber(nftValue).shiftedBy(-18).toNumber();
     if (pairOnGithub && pairOnGithub.lpToken != null) {
       const wethContract = new this.ethereum.w3.eth.Contract(
         this.ERC20ABI,
         "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
       );
-      const TwentyContract = new this.ethereum.w3.eth.Contract(
-        this.ERC20ABI,
-        pairDetail._nft20pair
-      );
+     
 
-      let nftValue = await thisPair.methods.nftValue().call();
 
-      nftValue = new BigNumber(nftValue).shiftedBy(-parseInt(18)).toFixed(2, 1);
+    
 
       console.log(price_of_eth);
       balance = await wethContract.methods
@@ -94,7 +97,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       nft_usd_price: ethPrice * price_of_eth,
       hidden: hidden,
       logo_url: logo_url,
-      nftValue: nftValue,
+      nft_value: nftValue,
     };
     await this.storage
       .knex("nft20_pair")
