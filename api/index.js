@@ -72,6 +72,37 @@ app.get("/nfts", async function (req, res) {
   res.status(200).json(result);
 });
 
+app.get("/gallery", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let query = null;
+  if (req.query.pool != null) {
+    query = storage.knex
+      .select("*")
+      .from("nft20_nfts_view")
+  } else {
+    query = storage.knex.select("*").from("nft20_nfts_view");
+  }
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+  res.setHeader("Cache-Control", "s-max-age=600, stale-while-revalidate");
+  res.status(200).json(result);
+});
+
+app.get('/status', async function (req, res) {
+  let publicAddress = req.query.publicAddress;
+  let name = publicAddress;
+  if (publicAddress != null) {
+
+  }
+  res.status(200).json({
+    name: name,
+    publicAddress: publicAddress
+  });
+})
+
 app.post("/name", async function (req, res) {
   const name = req.body.name;
   const signature = req.body.signature;
