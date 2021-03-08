@@ -1,6 +1,5 @@
 var express = require("express");
 require("dotenv").config();
-const { normalizeHash } = require("../etl/utils/ethereum.js");
 const { recoverPersonalSignature } = require("eth-sig-util");
 const { bufferToHex } = require("ethereumjs-util");
 
@@ -14,9 +13,16 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
+const ethereum = new (require("../etl/utils/ethereum"))(
+  process.env.NFT20_INFURA
+);
+
 var cors = require("cors");
 var app = express();
+
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded());
 
 app.get("/activity", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
@@ -67,7 +73,9 @@ app.get("/nfts", async function (req, res) {
 });
 
 app.post("/name", async function (req, res) {
-  const { name, signature, publicAddress } = req.body;
+  const name = req.body.name;
+  const signature = req.body.signature;
+  const publicAddress = req.body.publicAddress;
   try {
     const msg = name || "0x";
 
@@ -79,23 +87,27 @@ app.post("/name", async function (req, res) {
 
     if (address.toLowerCase() === publicAddress.toLowerCase()) {
       const updateName = await storage
-        .knex("nft20_name")
+        .knex("nft20_user")
         .insert({
-          address: normalizeHash(address),
+          address: ethereum.normalizeHash(address),
           name: name,
         })
         .onConflict("address")
         .merge();
 
-      res.status(200).json(updateName);
+      res.status(200).json({
+        name: name,
+        publicAddress: publicAddress
+      });
     } else {
       res.status(200).send("Signature don't match.");
     }
   } catch (e) {
+    console.log(e)
     res.status(400).send(e);
   }
 });
 
-//app.listen(7878)
+app.listen(7878)
 
 module.exports = app;
