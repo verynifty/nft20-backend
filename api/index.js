@@ -42,7 +42,9 @@ app.get("/activity", async function (req, res) {
 
 app.get("/pools", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+
   let query = storage.knex.select("*").from("nft20_pool_view");
+  req.query.nft ? query.where("nft", req.query.nft) : "";
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
@@ -106,7 +108,7 @@ app.get("/nfttopool/:nft", async function (req, res) {
   let query = storage.knex
     .select("address")
     .from("nft20_pool_view")
-    .where("nft", req.params.nft);
+    .where("nft", req.query.nft);
 
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
