@@ -59,7 +59,7 @@ app.get("/nfts", async function (req, res) {
     query = storage.knex
       .select("*")
       .from("nft20_nfts_view")
-      .where("pool", req.query.pool.toLowerCase());
+      .where("pool", req.query.pool.toLowerCase()).where("availabe_quantity", '>', 0);
   } else {
     query = storage.knex.select("*").from("nft20_nfts_view");
   }
