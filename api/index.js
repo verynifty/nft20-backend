@@ -76,9 +76,7 @@ app.get("/gallery", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
   if (req.query.pool != null) {
-    query = storage.knex
-      .select("*")
-      .from("nft20_nfts_view")
+    query = storage.knex.select("*").from("nft20_nfts_view");
   } else {
     query = storage.knex.select("*").from("nft20_nfts_view");
   }
@@ -91,17 +89,26 @@ app.get("/gallery", async function (req, res) {
   res.status(200).json(result);
 });
 
-app.get('/status', async function (req, res) {
+app.get("/status", async function (req, res) {
   let publicAddress = req.query.publicAddress;
   let name = publicAddress;
   if (publicAddress != null) {
-
   }
   res.status(200).json({
     name: name,
-    publicAddress: publicAddress
+    publicAddress: publicAddress,
   });
-})
+});
+
+app.get("/nfttopool/:nft", async function (req, res) {
+  let query = storage.knex
+    .select("address")
+    .from("nft20_pool_view")
+    .where("nft", req.body.nft);
+
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result);
+});
 
 app.post("/name", async function (req, res) {
   const name = req.body.name;
@@ -128,17 +135,17 @@ app.post("/name", async function (req, res) {
 
       res.status(200).json({
         name: name,
-        publicAddress: publicAddress
+        publicAddress: publicAddress,
       });
     } else {
       res.status(200).send("Signature don't match.");
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.status(400).send(e);
   }
 });
 
-app.listen(7878)
+app.listen(7878);
 
 module.exports = app;
