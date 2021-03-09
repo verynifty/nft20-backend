@@ -101,6 +101,8 @@ app.get("/status", async function (req, res) {
 });
 
 app.get("/nfttopool/", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+
   let query = storage.knex
     .select("address")
     .from("nft20_pool_view")
