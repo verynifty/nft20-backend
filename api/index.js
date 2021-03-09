@@ -106,6 +106,12 @@ app.get("/nfttopool/:nft", async function (req, res) {
     .from("nft20_pool_view")
     .where("nft", req.body.nft);
 
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result);
 });
