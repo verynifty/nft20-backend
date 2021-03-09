@@ -45,6 +45,8 @@ app.get("/pools", async function (req, res) {
 
   let query = storage.knex.select("*").from("nft20_pool_view");
   req.query.nft ? query.where("nft", req.query.nft) : "";
+  req.query.withLp ? query.where("lp_usd_balance", ">", 10000) : "";
+
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
@@ -61,7 +63,8 @@ app.get("/nfts", async function (req, res) {
     query = storage.knex
       .select("*")
       .from("nft20_nfts_view")
-      .where("pool", req.query.pool.toLowerCase()).where("availabe_quantity", '>', 0);
+      .where("pool", req.query.pool.toLowerCase())
+      .where("availabe_quantity", ">", 0);
   } else {
     query = storage.knex.select("*").from("nft20_nfts_view");
   }
