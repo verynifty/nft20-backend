@@ -111,7 +111,7 @@ app.get("/nfttopool/:nft", async function (req, res) {
   let query = storage.knex
     .select("address")
     .from("nft20_pool_view")
-    .where("nft", req.query.nft);
+    .where("nft", req.params.nft);
 
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
