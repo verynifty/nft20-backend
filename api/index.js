@@ -126,7 +126,7 @@ app.get("/nfttopool/:nft", async function (req, res) {
 app.get("/leaderboard", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
 
-  let query = storage.knex.select("*").from("nft20_score").orderBy('score', 'desc');
+  let query = storage.knex.select(['name', 'address', 'score', 'avatar']).from("nft20_score").orderBy('score', 'desc');
 
 
   let result = await query.paginate({

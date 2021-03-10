@@ -1,24 +1,19 @@
-create materialized view nft20_user_view AS
-select
-	h.user as address,
-	u."name",
-	coalesce (sum(h.total_transfers),
-	0) as nft_traded,
-	coalesce(count(distinct (h.transactionhash)), 0) as transactions,
-	coalesce(count(distinct (h.nft)), 0) as pools_traded,
-	coalesce (SUM(receive.amount / 1e18 ), 0) as total_muse_received,
-	coalesce (COUNT(distinct(v.id )), 0) as vnfts
-from
-	nft20_history h
-left join nft20_user u on
-	h."user" ::text = u.address::text
-	left join muse_transfers receive  on
-	  h."user"::text = concat('0x',receive.receiver )::text
-	  	left join vnft v  on
-	  h."user"::text = concat('0x',v."owner" )::text and not v.isdead 
-group by
-	h.user ,
-	u."name"
-	
 
- CREATE UNIQUE INDEX nft20_user_view_address ON nft20_user_view(address);
+CREATE MATERIALIZED VIEW public.nft20_user_view
+AS SELECT h."user" AS address,
+    u.name,
+    COALESCE(sum(h.total_transfers), 0::numeric) AS nft_traded,
+    COALESCE(count(DISTINCT h.transactionhash), 0::bigint) AS transactions,
+    COALESCE(count(DISTINCT h.nft), 0::bigint) AS pools_traded,
+    COALESCE(sum(receive.amount / '1000000000000000000'::numeric), 0::numeric) AS total_muse_received,
+    COALESCE(count(DISTINCT v.id), 0::bigint) AS vnfts,
+    MIN(v.image_url ) as avatar
+   FROM nft20_history h
+     LEFT JOIN nft20_user u ON h."user"::text = u.address::text
+     LEFT JOIN muse_transfers receive ON h."user"::text = concat('0x', receive.receiver)
+     LEFT JOIN vnft v ON h."user"::text = concat('0x', v.owner) AND NOT v.isdead
+  GROUP BY h."user", u.name
+
+-- View indexes:
+CREATE UNIQUE INDEX nft20_user_view_address ON public.nft20_user_view USING btree (address);
+
