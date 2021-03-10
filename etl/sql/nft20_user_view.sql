@@ -1,6 +1,6 @@
 create materialized view nft20_user_view AS
 select
-	h.user,
+	h.user as address,
 	u."name",
 	coalesce (sum(h.total_transfers),
 	0) as nft_traded,
@@ -20,3 +20,5 @@ group by
 	h.user ,
 	u."name"
 	
+
+ CREATE UNIQUE INDEX nft20_user_view_address ON nft20_user_view(address);
