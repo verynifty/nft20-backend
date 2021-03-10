@@ -123,6 +123,22 @@ app.get("/nfttopool/:nft", async function (req, res) {
   res.status(200).json(result);
 });
 
+app.get("/leaderboard", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+
+  let query = storage.knex.select("*").from("nft20_score").orderBy('score', 'desc');
+
+
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result);
+});
+
+
 app.post("/name", async function (req, res) {
   const name = req.body.name;
   const signature = req.body.signature;
