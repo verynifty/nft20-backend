@@ -294,6 +294,7 @@ NFT20.prototype.getData = async function (
       }
     }
   }
+  await this.storage.executeAsync("REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view")
 };
 
 module.exports = NFT20;
