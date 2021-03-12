@@ -106,7 +106,7 @@ app.get("/status", async function (req, res) {
 });
 
 app.get("/wcat/:id", async function (req, res) {
-  let id = parseInt(req.params.nft);
+  let id = parseInt(req.params.id);
   if (id >= 0 && id <= 624) {
     res.status(200).json(
       {
@@ -115,7 +115,6 @@ app.get("/wcat/:id", async function (req, res) {
         "image": `https://cryptocats.thetwentysix.io/contents/images/cats/${id}.png`,
         "name": `wCrypto Cat ${id}`,
         "attributes": [
-
         ]
       }
     )
