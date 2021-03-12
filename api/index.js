@@ -105,6 +105,26 @@ app.get("/status", async function (req, res) {
   });
 });
 
+app.get("/wcat/:id", async function (req, res) {
+  let id = parseInt(req.params.nft);
+  if (id >= 0 && id <= 624) {
+    res.status(200).json(
+      {
+        "description": "A wrapped CryptoCat.",
+        "external_url": `https://cryptocats.thetwentysix.io/#cbp=cats/${id}.html`,
+        "image": `https://cryptocats.thetwentysix.io/contents/images/cats/${id}.png`,
+        "name": `wCrypto Cat ${id}`,
+        "attributes": [
+
+        ]
+      }
+    )
+  }
+  else {
+    res.status(400).send("cat not found");
+  }
+});
+
 app.get("/nfttopool/:nft", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
 
