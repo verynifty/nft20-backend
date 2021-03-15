@@ -30,7 +30,9 @@ app.get("/activity", async function (req, res) {
   if (req.query.user) {
     query.where("user", req.query.user);
   }
-
+  if (req.query.nft) {
+    query.where("address", req.query.address);
+  }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
