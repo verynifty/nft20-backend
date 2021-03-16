@@ -33,6 +33,9 @@ app.get("/activity", async function (req, res) {
   if (req.query.nft) {
     query.where("address", req.query.address);
   }
+  if (req.query.pool) {
+    query.where("nft", req.query.nft);
+  }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
