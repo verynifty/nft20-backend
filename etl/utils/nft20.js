@@ -139,6 +139,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
       event.returnValues.id
     );
   } catch (error) {
+    console.log(error)
     console.log("ERROR while adding NFT to db");
   }
 };
