@@ -1,6 +1,9 @@
 const axios = require("axios");
 const BigNumber = require("bignumber.js");
 
+const sleep = (waitTimeInMs) =>
+  new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
+
 function NFT20(ethereum, storage) {
   this.ethereum = ethereum;
   this.DEPLOYED_BLOCK = 11023280;
@@ -167,6 +170,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     nft_id: asset_id,
   });
   if (!existing) {
+    await sleep(1000)
     let opensea_asset = await axios.get(
       "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
     );
