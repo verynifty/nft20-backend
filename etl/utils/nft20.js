@@ -170,7 +170,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     nft_id: asset_id,
   });
   if (!existing) {
-    await sleep(1000)
+    await sleep(1200)
     let opensea_asset = await axios.get(
       "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
     );
