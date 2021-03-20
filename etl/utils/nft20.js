@@ -38,6 +38,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let pairDetail = await this.factory.methods
       .getPairByNftAddress(index)
       .call();
+      console.log(pairDetail)
     let pairOnGithub = assets.data.filter(
       (asset) => asset.symbol == pairDetail._symbol
     );
@@ -82,11 +83,19 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         .balanceOf(pairOnGithub.lpToken)
         .call();
       balance = new BigNumber(balance).shiftedBy(-18).toNumber();
+      console.log(balance)
       Twentybalance = await TwentyContract.methods
         .balanceOf(pairOnGithub.lpToken)
         .call();
+        console.log(Twentybalance)
+
       Twentybalance = new BigNumber(Twentybalance).shiftedBy(-18).toNumber();
-      ethPrice = (balance * 100) / Twentybalance;
+      console.log(Twentybalance)
+      if (pairDetail._symbol == "AAH") {
+        ethPrice = (balance * 1052631,5) / Twentybalance;
+      } else {
+        ethPrice = (balance * 100) / Twentybalance;
+      }
     }
     let o = {
       address: this.ethereum.normalizeHash(pairDetail._nft20pair),
