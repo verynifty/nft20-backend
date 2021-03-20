@@ -92,7 +92,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       Twentybalance = new BigNumber(Twentybalance).shiftedBy(-18).toNumber();
       console.log(Twentybalance)
       if (pairDetail._symbol == "AAH") {
-        ethPrice = (balance * 1052631,5) / Twentybalance;
+        console.log(balance * 1052631.5)
+        console.log((balance * 1052631.5) / Twentybalance)
+        ethPrice = (balance * 1052631.5) / Twentybalance;
       } else {
         ethPrice = (balance * 100) / Twentybalance;
       }
