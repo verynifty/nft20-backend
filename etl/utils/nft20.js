@@ -11,6 +11,7 @@ function NFT20(ethereum, storage) {
   this.ERC20ABI = require("../../contracts/ERC20.abi");
   this.ERC1155ABI = require("../../contracts/ERC1155.abi");
   this.ERC721ABI = require("../../contracts/ERC721.abi");
+  this.ERC721ABICRYSTAL = require("../../contracts/ERC721CRYSTAL.abi"); // Thia ABI is used in the specific case of Crypto Crystalb
 
   this.AUCTIONABI = require("../../contracts/Auction.abi");
   this.PAIRABI = require("../../contracts/Pair.abi");
@@ -115,12 +116,14 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       .merge();
     pairs.push(o);
   }
+  console.log(pairs)
   return pairs;
 };
 
 NFT20.prototype.storePoolAction = async function (type, pair, event) {
   let tx = await this.ethereum.getTransaction(event.transactionHash);
   let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+  console.log(event)
   if (type == "SUB") {
     event.returnValues.value = "-" + event.returnValues.value;
     event.user = event.returnValues.to;
@@ -141,6 +144,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     amount: event.returnValues.value,
     user: this.ethereum.normalizeHash(event.user),
   };
+  console.log(pa)
   await this.storage.insert("nft20_action", pa);
   try {
     await this.getNFT(
@@ -148,6 +152,8 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
       event.returnValues.id
     );
   } catch (error) {
+    console.log(this.ethereum.normalizeHash(pair.nft),
+    event.returnValues)
     console.log(error)
     console.log("ERROR while adding NFT to db");
   }
@@ -175,6 +181,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     nft_contract: contract,
     nft_id: asset_id,
   });
+  console.log(existing)
   if (!existing) {
     await sleep(1200)
     let opensea_asset = await axios.get(
@@ -282,8 +289,10 @@ NFT20.prototype.getData = async function (
         }
       }
     } else if (parseInt(pair.nft_type) == 721) {
-      const nft = new this.ethereum.w3.eth.Contract(this.ERC721ABI, pair.nft);
-
+      let nft = new this.ethereum.w3.eth.Contract(this.ERC721ABI, pair.nft);
+      if (pair.name == "NFT20 CryptoCrystal") {
+        nft = new this.ethereum.w3.eth.Contract(this.ERC721ABICRYSTAL, pair.nft);
+      }
       let ts = await nft.getPastEvents("Transfer", {
         fromBlock: blocknumber,
         toBlock: lastBlockNumber,
