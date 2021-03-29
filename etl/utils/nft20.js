@@ -22,6 +22,10 @@ function NFT20(ethereum, storage) {
     "0x0f4676178b5c53ae0a655f1b19a96387e4b8b5f2"
   );
 
+  this.auction = new ethereum.w3.eth.Contract(
+    this.AUCTIONABI,
+    "0x18304eF06f474A027b28Eb0099F675Fc258776dF"
+  );
   this.storage = storage;
   this.abiDecoder = require("abi-decoder");
   this.abiDecoder.addABI(this.FACTORYABI);
@@ -35,6 +39,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
   );
   let price_of_eth = await this.ethereum.getPrice();
   console.log("Current ETH price", price_of_eth);
+
+
+
   for (let index = 0; index < pairCount; index++) {
     let pairDetail = await this.factory.methods
       .getPairByNftAddress(index)
@@ -199,6 +206,22 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     await this.storage.insert("nft20_nft", NFT);
   }
 };
+
+NFT20.prototype.getAuctions = async function() {
+  let maxAuction = await this.auction.methods.auctionId().call();
+  maxAuction = parseInt(maxAuction)
+  console.log(maxAuction)
+  for (let index = 1; index < maxAuction; index++) {
+    try {
+      let auctionInfos = await this.auction.methods.getAuctionByAuctionId(index).call();
+      console.log(auctionInfos)
+    } catch (error) {
+      
+    }
+
+    
+  }
+}
 
 NFT20.prototype.getData = async function (
   blocknumber = 0,
