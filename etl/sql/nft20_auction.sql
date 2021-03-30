@@ -3,7 +3,7 @@ CREATE TABLE public.nft20_auctions
     auction_id numeric NULL,
     "seller" varchar NULL,
     "pair" varchar NULL,
-    tokenId numeric NULL,
+    tokenid numeric NULL,
     "starting_price" numeric NULL,
     "ending_price" numeric NULL,
     "starting_time" timestamp NULL,
