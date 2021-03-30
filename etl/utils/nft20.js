@@ -215,8 +215,35 @@ NFT20.prototype.getAuctions = async function() {
     try {
       let auctionInfos = await this.auction.methods.getAuctionByAuctionId(index).call();
       console.log(auctionInfos)
+      let o = {
+        "auction_id": auctionInfos._id,
+        "seller": auctionInfos._seller,
+        "pair": auctionInfos._nft20Pair,
+        "tokenid": auctionInfos._tokenId,
+        "starting_price": auctionInfos._startingPrice,
+        "ending_price": auctionInfos._endingPrice,
+        "starting_time": auctionInfos._startedAt,
+        "ending_time": parseInt(auctionInfos._startedAt) + parseInt(auctionInfos._duration),
+        "duration": auctionInfos._duration,
+        "ended": false
+      }
+      console.log(o)
+      await this.storage
+      .knex("nft20_auctions")
+      .insert(o)
+      .onConflict("auction_id")
+      .merge();
     } catch (error) {
-      
+      console.log(error)
+      let o = {
+        auction_id: index,
+        ended: true
+      }
+      await this.storage
+      .knex("nft20_auctions")
+      .insert(o)
+      .onConflict("auction_id")
+      .merge();
     }
 
     
