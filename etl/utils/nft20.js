@@ -217,14 +217,14 @@ NFT20.prototype.getAuctions = async function() {
       console.log(auctionInfos)
       let o = {
         "auction_id": auctionInfos._id,
-        "seller": auctionInfos._seller,
-        "pair": auctionInfos._nft20Pair,
+        "seller": this.ethereum.normalizeHash(auctionInfos._seller),
+        "pair": this.ethereum.normalizeHash(auctionInfos._nft20Pair),
         "tokenid": auctionInfos._tokenId,
         "starting_price": auctionInfos._startingPrice,
         "ending_price": auctionInfos._endingPrice,
-        "starting_time": auctionInfos._startedAt,
-        "ending_time": parseInt(auctionInfos._startedAt) + parseInt(auctionInfos._duration),
-        "duration": auctionInfos._duration,
+        "starting_time": new Date(parseInt(auctionInfos._startedAt) * 1000).toUTCString(),
+        "ending_time": new Date(parseInt(parseInt(auctionInfos._startedAt) + parseInt(auctionInfos._duration))* 1000).toUTCString(),
+        "duration": parseInt(auctionInfos._duration) * 1000,
         "ended": false
       }
       console.log(o)
