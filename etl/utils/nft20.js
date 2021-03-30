@@ -210,8 +210,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
 NFT20.prototype.getAuctions = async function() {
   let maxAuction = await this.auction.methods.auctionId().call();
   maxAuction = parseInt(maxAuction)
-  console.log(maxAuction)
-  for (let index = 1; index < maxAuction; index++) {
+  for (let index = 1; index <= maxAuction; index++) {
     try {
       let auctionInfos = await this.auction.methods.getAuctionByAuctionId(index).call();
       console.log(auctionInfos)
@@ -227,14 +226,12 @@ NFT20.prototype.getAuctions = async function() {
         "duration": parseInt(auctionInfos._duration) * 1000,
         "ended": false
       }
-      console.log(o)
       await this.storage
       .knex("nft20_auctions")
       .insert(o)
       .onConflict("auction_id")
       .merge();
     } catch (error) {
-      console.log(error)
       let o = {
         auction_id: index,
         ended: true
