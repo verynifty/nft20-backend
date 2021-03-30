@@ -149,9 +149,9 @@ app.get("/nfttopool/:nft", async function (req, res) {
 
 app.get("/auctions", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
-  let query = storage.knex.select("*").from("nft20_auctions").orderBy('id', 'desc');
+  let query = storage.knex.select("*").from("nft20_auctions").orderBy('auction_id', 'desc');
   if (req.query.pair != null) {
-    query = storage.knex.select("*").where("pair", req.query.pair.toLowerCase()).from("nft20_auctions").orderBy('id', 'desc');
+    query = storage.knex.select("*").where("pair", req.query.pair.toLowerCase()).from("nft20_auctions").orderBy('auction_id', 'desc');
   }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 100,
