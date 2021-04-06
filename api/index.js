@@ -17,6 +17,11 @@ const ethereum = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 
+const nft20 = new (require("../etl/utils/nft20"))(
+  ethereum,
+  storage
+)
+
 var cors = require("cors");
 var app = express();
 
@@ -275,6 +280,7 @@ app.post("/list/new", async function (req, res) {
         nft_amount: nft.quantity,
         nonce: index
       })
+      await nft20.getNFT(nft.contract_address, nft.id)
     }
   }
 })
