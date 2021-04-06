@@ -7,8 +7,9 @@ CREATE TABLE list_listing (
 	nonce numeric null,
 	token_price numeric null,
 	timestamp timestamp null,
-	sold boolean default false ,
-	cancelled boolean default false,
+	sold timestamp null ,
+	cancelled timestamp null,
+    is_offer boolean DEFAULT false,
 	CONSTRAINT unique_listing UNIQUE (id)
 );
 
