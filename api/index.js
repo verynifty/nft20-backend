@@ -222,7 +222,6 @@ app.post("/list/new", async function (req, res) {
   const token_amount = req.body.token_amount;
   const nfts = req.body.nfts;
   const nonce = req.body.nonce;
-  console.log(req.body)
   let nfts_contract = []
   let nfts_id = []
   let nfts_amount = []
@@ -231,7 +230,7 @@ app.post("/list/new", async function (req, res) {
     nfts_id.push(nft.id);
     nfts_amount.push(nft.quantity);
   }
-  let listing_data = ethereum.web3.eth.abi.encodeParameters(
+  let listing_data = ethereum.w3.eth.abi.encodeParameters(
     [
       "uint256",
       "address",
@@ -248,19 +247,38 @@ app.post("/list/new", async function (req, res) {
       nfts_amount,
       token_amount
     ])
-  console.log(listing_data)
-  const msgBufferHex = bufferToHex(Buffer.from(msg, "utf8"));
+  const msgBufferHex = ethereum.w3.utils.sha3(listing_data)
   const address = recoverPersonalSignature({
     data: msgBufferHex,
     sig: signature,
   });
-  console.log(address)
-  console.log(author)
-  if (address.toLowerCase() === author.toLowerCase()) {
+  console.log(req.body)
+  console.log("SHA3", msgBufferHex)
+  console.log(address.toLowerCase(), author.toLowerCase())
+  if (address.toLowerCase() == author.toLowerCase()) {
     console.log("Signatures are matching")
+    await storage.insert("list_listing", {
+      title:title,
+      description: description,
+      author: author,
+      id: msgBufferHex,
+      signed: signature,
+      nonce: nonce,
+      token_price: token_amount
+    })
+    for (let index = 0; index < nfts.length; index++) {
+      const nft = nfts[index];
+      await storage.insert("list_listing_elem", {
+        listing_id: msgBufferHex,
+        nft_contract: nft.contract_address,
+        nft_id: nft.id,
+        nft_amount: nft.quantity,
+        nonce: index
+      })
+    }
   }
 })
 
-app.listen(7878);
+// app.listen(7878);
 
 module.exports = app;
