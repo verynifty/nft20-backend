@@ -214,6 +214,53 @@ app.post("/name", async function (req, res) {
   }
 });
 
-//app.listen(7878);
+app.post("/list/new", async function (req, res) {
+  const title = req.body.title;
+  const description = req.body.description;
+  const signature = req.body.signature;
+  const author = req.body.author;
+  const token_amount = req.body.token_amount;
+  const nfts = req.body.nfts;
+  const nonce = req.body.nonce;
+  console.log(req.body)
+  let nfts_contract = []
+  let nfts_id = []
+  let nfts_amount = []
+  for (const nft of nfts) {
+    nfts_contract = nft.contract_address;
+    nfts_id = nft.id;
+    nfts_amount = nft.amount;
+  }
+  let listing_data = ethereum.web3.eth.abi.encodeParameters(
+    [
+      "uint256",
+      "address",
+      "address[]",
+      "uint256[]",
+      " uint256[]",
+      "uint256"
+    ],
+    [
+      nonce,
+      author,
+      nfts_contract,
+      nfts_id,
+      nfts_amount,
+      token_amount
+    ])
+  console.log(listing_data)
+  const msgBufferHex = bufferToHex(Buffer.from(msg, "utf8"));
+  const address = recoverPersonalSignature({
+    data: msgBufferHex,
+    sig: signature,
+  });
+  console.log(address)
+  console.log(author)
+  if (address.toLowerCase() === author.toLowerCase()) {
+    console.log("Signatures are matching")
+  }
+})
+
+app.listen(7878);
 
 module.exports = app;
