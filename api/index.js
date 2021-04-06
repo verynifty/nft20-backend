@@ -227,9 +227,9 @@ app.post("/list/new", async function (req, res) {
   let nfts_id = []
   let nfts_amount = []
   for (const nft of nfts) {
-    nfts_contract = nft.contract_address;
-    nfts_id = nft.id;
-    nfts_amount = nft.amount;
+    nfts_contract.push(nft.contract_address);
+    nfts_id.push(nft.id);
+    nfts_amount.push(nft.quantity);
   }
   let listing_data = ethereum.web3.eth.abi.encodeParameters(
     [
