@@ -15,7 +15,7 @@ CREATE TABLE list_listing (
 CREATE TABLE list_listing_elem (
 	listing_id varchar null,
 	nft_contract varchar null,
-	nft_id varchar null,
+	nft_id numeric null,
 	nft_amount numeric null,
 	nonce numeric null,
 	CONSTRAINT unique_listing_item UNIQUE (listing_id, nonce)
