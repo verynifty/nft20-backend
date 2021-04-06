@@ -7,4 +7,4 @@ from list_listing listing LEFT OUTER JOIN
     where elem.nft_contract = nft.nft_contract and elem .nft_id = nft.nft_id 
   ) a on  listing.id = a.listing_id
 group by listing.title, listing .description , listing .author, listing ."timestamp", listing .cancelled, listing .nonce, listing .sold, listing .token_price
-order by listing."timestamp" DESC
+order by listing."timestamp" DESC 
