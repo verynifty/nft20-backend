@@ -239,7 +239,7 @@ app.get("/list/list", async function(req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
   res.status(200).json(result);
 })
 
