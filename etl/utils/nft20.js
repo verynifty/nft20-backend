@@ -46,6 +46,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let pairDetail = await this.factory.methods
       .getPairByNftAddress(index)
       .call();
+   /*   if (pairDetail._symbol != "FRAM20") {
+        continue
+      } */
     let pairOnGithub = assets.data.filter(
       (asset) => asset.symbol == pairDetail._symbol
     );
@@ -189,7 +192,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     nft_id: asset_id,
   });
   console.log(existing)
-  if (!existing) {
+  if (!existing || true) {
     await sleep(1200)
     let opensea_asset = await axios.get(
       "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
