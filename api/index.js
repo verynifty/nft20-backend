@@ -219,6 +219,30 @@ app.post("/name", async function (req, res) {
   }
 });
 
+app.get("/list/list", async function(req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let query = null;
+  if (req.query.contract_address == null) {
+    query = storage.knex
+      .select("*")
+      .from("listing_view")
+      .where("cancelled", false)
+      .where("sold", false).whereRaw('? ~ ANY(contracts)', [req.query.contract_address])
+  } else {
+    query = storage.knex
+      .select("*")
+      .from("listing_view")
+      .where("cancelled", false)
+      .where("sold", false)  }
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result);
+})
+
 app.post("/list/new", async function (req, res) {
   const title = req.body.title;
   const description = req.body.description;
