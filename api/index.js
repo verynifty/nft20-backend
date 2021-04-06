@@ -222,7 +222,7 @@ app.post("/name", async function (req, res) {
 app.get("/list/list", async function(req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
-  if (req.query.contract_address == null) {
+  if (req.query.contract_address != null) {
     query = storage.knex
       .select("*")
       .from("listing_view")
