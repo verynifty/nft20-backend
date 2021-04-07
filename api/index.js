@@ -226,14 +226,14 @@ app.get("/list/list", async function(req, res) {
     query = storage.knex
       .select("*")
       .from("listing_view")
-      .where("cancelled", NULL)
-      .where("sold", NULL).whereRaw('? ~ ANY(contracts)', [req.query.contract_address])
+      .where("cancelled", false)
+      .where("sold", false).whereRaw('? ~ ANY(contracts)', [req.query.contract_address])
   } else {
     query = storage.knex
       .select("*")
       .from("listing_view")
-      .where("cancelled", NULL)
-      .where("sold", NULL)  }
+      .where("cancelled", false)
+      .where("sold", false)  }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
