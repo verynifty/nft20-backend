@@ -206,6 +206,17 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
       nft_trait: JSON.stringify(opensea_asset.data.traits),
     };
     await this.storage.insert("nft20_nft", NFT);
+
+    let collection = {
+      contract_address: contract,
+      image_url: opensea_asset.data.collection.image_url,
+      collection_name: opensea_asset.data.collection.name,
+      collection_description: opensea_asset.data.collection.description,
+      external_url: opensea_asset.data.collection.external_url,
+      collection_type: opensea_asset.data.asset_contract.schema_name == "ERC1155"? 1155: 721
+    }
+    await this.storage.insert("nft20_collection", collection);
+
   }
 };
 
