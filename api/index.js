@@ -225,7 +225,7 @@ app.post("/collection", async function(req, res) {
   }
 });
 
-app.get("list/listing/:id", async function(req, res) {
+app.get("/list/listing/:id", async function(req, res) {
   let listing = await storage.getMulti("listing_view", {
     id: req.params.id
   })
