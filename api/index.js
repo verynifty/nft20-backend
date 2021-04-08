@@ -219,6 +219,12 @@ app.post("/name", async function (req, res) {
   }
 });
 
+app.post("/collection", async function(req, res) {
+  for (const collection of req.body.collections) {
+    await this.storage.insert("nft20_collection", collection);
+  }
+}
+
 app.get("/list/list", async function(req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
