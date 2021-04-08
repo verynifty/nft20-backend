@@ -225,6 +225,14 @@ app.post("/collection", async function(req, res) {
   }
 });
 
+app.get("list/listing/:id", async function(req, res) {
+  let listing = await storage.getMulti("listing_view", {
+    id: req.params.id
+  })
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(listing);
+})
+
 app.get("/list/list", async function(req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
