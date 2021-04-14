@@ -2,7 +2,6 @@ const axios = require('axios');
 
 (async () => {
 
-    let addresses = {};
 
     let ERC1155Tokens = [
         "0xe4605d46fd0b3f8329d936a8b258d69276cba264", // Meme
@@ -11,6 +10,8 @@ const axios = require('axios');
 
     /* get All holders for all ERC1155 tokens */
     for (const add of ERC1155Tokens) {
+        let addresses = {};
+
         let skip = 0;
         let shouldContinue = true;
 
@@ -34,7 +35,7 @@ const axios = require('axios');
             }
             skip += 1000;
             console.log(holder.data.data.nft1155Owners.length)
-            if (holder.data.data.nft1155Owners.length != 1000) {
+            if (holder.data.data.nft1155Owners.length != 1000 || skip == 6000) {
                 shouldContinue = false
             }
         }
