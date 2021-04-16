@@ -101,44 +101,77 @@ ORDER BY time DESC
 */
 
 
-/* Final MUSE holders query */
+/* Final MUSE holders query with LPS */
 /*
+
+
+
+
+
 WITH balances AS(
-    WITH transfers AS (
-        SELECT
-        evt_block_time,
-        tr."from" AS address,
-        -tr.value AS amount,
-        contract_address,
-             tr.evt_block_time AS time
-         FROM erc20."ERC20_evt_Transfer" tr
-        WHERE contract_address = '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'
-         
-         
-    UNION ALL
-    
-        SELECT
-        evt_block_time,
-        tr."to" AS address,
-        tr.value AS amount,
-          contract_address,
-               tr.evt_block_time AS time
-         FROM erc20."ERC20_evt_Transfer" tr 
-         WHERE contract_address = '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'
-         
+WITH transfers AS (
+    SELECT
+    evt_block_time,
+    tr."from" AS address,
+    -tr.value AS amount,
+        0 as amountlp,
+    contract_address,
+         tr.evt_block_time AS time
+     FROM erc20."ERC20_evt_Transfer" tr
+    WHERE contract_address = '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'
+     
+     
+UNION ALL
+
+    SELECT
+    evt_block_time,
+    tr."to" AS address,
+    tr.value AS amount,
+        0 as amountlp,
+
+      contract_address,
+           tr.evt_block_time AS time
+     FROM erc20."ERC20_evt_Transfer" tr 
+     WHERE contract_address = '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'
+     
+     UNION ALL
+     
+    SELECT
+    evt_block_time,
+    tr."from" AS address,
+    0 AS amount,
+    tr.value AS amountlp,
+    contract_address,
+         tr.evt_block_time AS time
+     FROM erc20."ERC20_evt_Transfer" tr
+    WHERE contract_address = '\x20d2c17d1928ef4290bf17f922a10eaa2770bf43'
+    AND tr."to" = '\x193b775af4bf9e11656ca48724a710359446bf52'
+     
+UNION ALL
+
+    SELECT
+    evt_block_time,
+    tr."to" AS address,
+    0 as amount,
+    -tr.value AS amountlp,
+      contract_address,
+           tr.evt_block_time AS time
+     FROM erc20."ERC20_evt_Transfer" tr 
+     WHERE contract_address = '\x20d2c17d1928ef4290bf17f922a10eaa2770bf43'
+         AND tr."from" = '\x193b775af4bf9e11656ca48724a710359446bf52'
+)
+    SELECT 
+    address,
+    sum(amount/10^18) as balance,
+    sum(amountlp/ 10^18) as balancelp
+    FROM transfers tr
+    WHERE time < '2021-04-11'::timestamp --11/4/20121
+    GROUP BY address
+    ORDER BY 2 DESC
     )
+    SELECT * from balances WHERE balance > 0 OR balancelp > 0
     
-        SELECT 
-        address,
-        sum(amount/10^18) as balance
-        FROM transfers tr
-        WHERE time < '2021-04-11'::timestamp --11/4/20121
-        GROUP BY address
-        ORDER BY 2 DESC
-        )
-        SELECT * from balances WHERE balance > 0
-        
-        ;
-    
+    ;
+
 
         */
