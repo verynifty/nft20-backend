@@ -57,3 +57,46 @@ SELECT "to" FROM erc721."ERC721_evt_Transfer" WHERE contract_address IN ('\xe460
 GROUP BY "to"
 
 */
+
+/* 
+
+
+WITH token_contract_address(addr) AS (
+    VALUES (  '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'  )), -- Muse
+
+tokenTransfers AS (
+    SELECT
+    evt_tx_hash AS tx_hash,
+    tr."from" AS address,
+    -(tr.value/1e18) AS amount,
+    date_trunc('day', tr.evt_block_time) AS time,
+    contract_address 
+     FROM erc20."ERC20_evt_Transfer" tr
+     WHERE contract_address = (SELECT addr::bytea FROM token_contract_address)
+UNION ALL
+    SELECT
+    evt_tx_hash AS tx_hash,
+    tr."to" AS address,
+    (tr.value/1e18) AS amount,
+    date_trunc('day', tr.evt_block_time) AS time,
+      contract_address
+     FROM erc20."ERC20_evt_Transfer" tr 
+     where contract_address = (SELECT addr::bytea FROM token_contract_address)
+),
+tokenBalances AS (
+SELECT time, address, SUM(diff) OVER (PARTITION BY address ORDER BY time) AS balance
+FROM (
+    SELECT time, address, SUM(amount) AS diff
+    FROM tokenTransfers
+    WHERE (address <> '\x0000000000000000000000000000000000000000')
+    GROUP BY 1, 2
+    ORDER BY time ) AS diffs
+)
+SELECT *
+FROM tokenBalances
+WHERE (time = "11/04/21 00:00")
+--ORDER BY balance DESC
+ORDER BY time DESC
+LIMIT 10000
+
+*/
