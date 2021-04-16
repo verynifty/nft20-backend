@@ -1,4 +1,4 @@
-[
+module.exports = [
     {
 
         "address": "0x20d2c17d1928ef4290bf17f922a10eaa2770bf43",
