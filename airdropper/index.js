@@ -97,6 +97,48 @@ FROM tokenBalances
 WHERE (time = "11/04/21 00:00")
 --ORDER BY balance DESC
 ORDER BY time DESC
-LIMIT 10000
 
 */
+
+
+/* Final MUSE holders query */
+/*
+WITH balances AS(
+    WITH transfers AS (
+        SELECT
+        evt_block_time,
+        tr."from" AS address,
+        -tr.value AS amount,
+        contract_address,
+             tr.evt_block_time AS time
+         FROM erc20."ERC20_evt_Transfer" tr
+        WHERE contract_address = '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'
+         
+         
+    UNION ALL
+    
+        SELECT
+        evt_block_time,
+        tr."to" AS address,
+        tr.value AS amount,
+          contract_address,
+               tr.evt_block_time AS time
+         FROM erc20."ERC20_evt_Transfer" tr 
+         WHERE contract_address = '\xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81'
+         
+    )
+    
+        SELECT 
+        address,
+        sum(amount/10^18) as balance
+        FROM transfers tr
+        WHERE time < '2021-04-11'::timestamp --11/4/20121
+        GROUP BY address
+        ORDER BY 2 DESC
+        )
+        SELECT * from balances WHERE balance > 0
+        
+        ;
+    
+
+        */
