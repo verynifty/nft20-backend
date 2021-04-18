@@ -11,7 +11,8 @@ console.log(Object.keys(muse_holders).length);
 let earn_2_play = require('./tmp/e2p');
 console.log(Object.keys(earn_2_play).length);
 
-
+let all = require('./tmp/all_nfts');
+console.log(Object.keys(all).length);
 
 (async () => {
 
@@ -51,6 +52,17 @@ console.log(Object.keys(earn_2_play).length);
     console.log(Object.keys(adds).length)
 
     for (const a of earn_2_play) {
+        let address = a.address.toLowerCase();
+
+        if (adds[address] == null) {
+            adds[address] = 10;
+        } else {
+            adds[address] = Math.max(adds[address], 10)
+        }
+    }
+    console.log(Object.keys(adds).length)
+
+    for (const a of all) {
         let address = a.address.toLowerCase();
 
         if (adds[address] == null) {
