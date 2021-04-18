@@ -15,21 +15,22 @@ storage = new (require("../etl/utils/storage"))({
     port: 25061,
     ssl: true,
     ssl: { rejectUnauthorized: false },
-  });
+});
 
 const { keccak256, keccakFromString, keccakFromHexString, bufferToHex, BN } = require('ethereumjs-util');
 const { MerkleTree } = require('./libMerkle.js');
 
 const ethereum = new (require("../etl/utils/ethereum"))(
     process.env.NFT20_INFURA
-  );
+);
 
 (async () => {
 
     let basic = 10;
-    let advanced =15;
+    let advanced = 15;
 
     let adds = {}
+    adds["0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"] = 100;
     for (const a of vnft_holder) {
         let address = a.address.toLowerCase();
         if (adds[address] == null) {
@@ -90,13 +91,14 @@ const ethereum = new (require("../etl/utils/ethereum"))(
         }
     }
     console.log(Object.keys(adds).length)
-    
+
     let initial_leaves = []
 
     let index = 0;
     for (const key in adds) {
         if (Object.hasOwnProperty.call(adds, key)) {
             const element = adds[key];
+            console.log(key)
             let leaf = ethereum.w3.eth.abi.encodeParameters(
                 [
                     "uint256",
@@ -108,46 +110,46 @@ const ethereum = new (require("../etl/utils/ethereum"))(
                     key,
                     element
                 ])
-            let o = {
-                index: index - 1,
-                address: key,
-                amount: element,
-                leaf: leaf
-            }
-            await storage.insert('game_airdrop', o);
             initial_leaves.push(leaf);
         }
     }
 
+    console.log("create tree")
     const merkleTree = new MerkleTree(initial_leaves);
+    console.log("created tree")
 
     const root = merkleTree.getHexRoot();
-
+    console.log(root)
     index = 0;
     for (const key in adds) {
         if (Object.hasOwnProperty.call(adds, key)) {
             const element = adds[key];
+            console.log(initial_leaves[index])
+
             const proof = merkleTree.getHexProof(initial_leaves[index]);
-            let leaf = ethereum.w3.eth.abi.encodeParameters(
+            let leaf_data = ethereum.w3.eth.abi.encodeParameters(
                 [
                     "uint256",
                     "address",
                     "uint256"
                 ],
                 [
-                    index++,
+                    index,
                     key,
                     element
                 ])
+            let leaf = bufferToHex(keccakFromHexString(initial_leaves[index]));
+
             let o = {
                 index: index,
                 address: key,
                 amount: element,
                 leaf: leaf,
-                proof: proof
+                leaf_data: leaf_data,
+                proof: JSON.stringify(proof)
             }
             console.log(o)
-            //await storage.insert('game_airdrop', o);
+            await storage.insert('game_airdrop', o);
             index++;
         }
     }
