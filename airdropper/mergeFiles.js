@@ -1,3 +1,4 @@
+require("dotenv").config();
 
 let vnft_holder = require('./tmp/vnft_holders');
 let mvi_holder = require('./tmp/mvi_holders');
@@ -107,7 +108,47 @@ const ethereum = new (require("../etl/utils/ethereum"))(
                     key,
                     element
                 ])
+            let o = {
+                index: index - 1,
+                address: key,
+                amount: element,
+                leaf: leaf
+            }
+            await storage.insert('game_airdrop', o);
             initial_leaves.push(leaf);
+        }
+    }
+
+    const merkleTree = new MerkleTree(initial_leaves);
+
+    const root = merkleTree.getHexRoot();
+
+    index = 0;
+    for (const key in adds) {
+        if (Object.hasOwnProperty.call(adds, key)) {
+            const element = adds[key];
+            const proof = merkleTree.getHexProof(initial_leaves[index]);
+            let leaf = ethereum.w3.eth.abi.encodeParameters(
+                [
+                    "uint256",
+                    "address",
+                    "uint256"
+                ],
+                [
+                    index++,
+                    key,
+                    element
+                ])
+            let o = {
+                index: index,
+                address: key,
+                amount: element,
+                leaf: leaf,
+                proof: proof
+            }
+            console.log(o)
+            //await storage.insert('game_airdrop', o);
+            index++;
         }
     }
 
