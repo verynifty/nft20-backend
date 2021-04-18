@@ -220,11 +220,11 @@ app.post("/name", async function (req, res) {
 });
 
 app.get("/irdrap/:address", async function(req, res) {
-  let listing = await storage.getMulti("game_airdrop", {
-    address: req.params.address
+  let airdrop = await storage.getMulti("game_airdrop", {
+    address: req.params.address.toLowerCase()
   })
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
-  res.status(200).json(listing);
+  res.status(200).json(airdrop);
 })
 
 app.post("/collection", async function(req, res) {
