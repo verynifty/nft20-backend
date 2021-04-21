@@ -446,6 +446,11 @@ module.exports = [
           "internalType": "uint256",
           "name": "_nftId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_timeOfDeath",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",

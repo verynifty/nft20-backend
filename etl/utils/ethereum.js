@@ -21,7 +21,7 @@ Ethereum.prototype.normalizeHash = function (hash) {
 
 Ethereum.prototype.getLatestBlock = async function () {
     var latestBlock = await this.w3.eth.getBlockNumber();
-    return (latestBlock);
+    return (latestBlock - 2);
 }
 
 Ethereum.prototype.getBlockTimestamp = async function (blocknumber) {
