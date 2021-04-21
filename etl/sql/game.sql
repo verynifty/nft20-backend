@@ -52,3 +52,16 @@ CREATE TABLE game_buy (
 	"to" varchar NULL,
 	CONSTRAINT unique_game_buy UNIQUE (transactionhash, logindex)
 );
+
+CREATE TABLE game_claim (
+	victim numeric NULL,
+	"killer" varchar NULL,
+	blocknumber numeric NULL,
+	transactionhash varchar NULL,
+	"from" varchar NULL,
+	logindex numeric NULL,
+	"timestamp" timestamp NULL,
+	amount numeric NULL,
+	"who" varchar NULL,
+	CONSTRAINT unique_game_claim UNIQUE (transactionhash, logindex)
+);
