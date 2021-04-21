@@ -90,7 +90,6 @@ const ethereum = new (require("../etl/utils/ethereum"))(
             adds[address] = Math.max(adds[address], basic)
         }
     }
-    console.log(Object.keys(adds).length)
 
     let initial_leaves = []
 
@@ -113,6 +112,7 @@ const ethereum = new (require("../etl/utils/ethereum"))(
             initial_leaves.push(leaf);
         }
     }
+    console.log(Object.keys(adds).length)
 
     console.log("create tree")
     const merkleTree = new MerkleTree(initial_leaves);
@@ -124,7 +124,7 @@ const ethereum = new (require("../etl/utils/ethereum"))(
     for (const key in adds) {
         if (Object.hasOwnProperty.call(adds, key)) {
             const element = adds[key];
-            console.log(initial_leaves[index])
+            // console.log(initial_leaves[index])
 
             const proof = merkleTree.getHexProof(initial_leaves[index]);
             let leaf_data = ethereum.w3.eth.abi.encodeParameters(
@@ -148,11 +148,12 @@ const ethereum = new (require("../etl/utils/ethereum"))(
                 leaf_data: leaf_data,
                 proof: JSON.stringify(proof)
             }
-            console.log(o)
+            // console.log(o)
             await storage.insert('game_airdrop', o);
             index++;
         }
     }
+    console.log("FINISHED")
 
 
 
