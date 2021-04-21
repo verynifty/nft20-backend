@@ -15,7 +15,7 @@ function Game(ethereum, storage) {
     );
 }
 
-GAME.prototype.get = async function (playerId, setDead = false) {
+Game.prototype.get = async function (playerId, setDead = false) {
     let infos = await this.game.methods.getInfo(playerId).call();
     let player = {
         player_id: infos._playerId,
@@ -36,9 +36,10 @@ GAME.prototype.get = async function (playerId, setDead = false) {
         .merge();
 }
 
-GAME.prototype.run = async function (forceFromZero = false) {
+Game.prototype.run = async function (forceFromZero = false) {
     let maxBlock = await this.ethereum.getLatestBlock();
-    let minBlock = await this.storage.getMax("game_action", "blocknumber");
+    //let minBlock = await this.storage.getMax("game_action", "blocknumber");
+    let minBlock = 0;
     if (forceFromZero) {
         minBlock = 0;
     }
@@ -50,7 +51,7 @@ GAME.prototype.run = async function (forceFromZero = false) {
     for (const event of events) {
         let tx = await this.ethereum.getTransaction(event.transactionHash);
         let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-        await this.storage.insert("game_claims", {
+        await this.storage.insert("game_claim", {
             blocknumber: event.blockNumber,
             transactionhash: this.ethereum.normalizeHash(event.transactionHash),
             from: this.ethereum.normalizeHash(tx.from),

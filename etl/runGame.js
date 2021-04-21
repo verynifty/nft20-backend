@@ -25,7 +25,7 @@ const sleep = (waitTimeInMs) =>
 (async () => {
   while (true) {
     try {
-      await nft20.run();
+      await game.run();
     } catch (error) {
       console.log("An error occured", error)
     }
