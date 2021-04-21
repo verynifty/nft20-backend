@@ -15,7 +15,7 @@ function Game(ethereum, storage) {
     );
 }
 
-GAME.prototype.getNFTInfo = async function (playerId) {
+GAME.prototype.get = async function (playerId) {
     let infos = await this.game.methods.getInfo(playerId).call();
     let player = {
         player_id: infos._playerId,
@@ -23,24 +23,50 @@ GAME.prototype.getNFTInfo = async function (playerId) {
         score: infos._score,
         expected_reward: infos._expectedReward,
         time_until_death: infos._timeUntilDeath,
-        time_born: infos._timeBorn,
-        owner: infos._owner,
-        nft_contract: infos._nftOrigin,
+        time_born:  new Date(parseInt(timestamp * 1000)).toUTCString()infos._timeBorn,
+        owner: this.ethereum.normalizeHash(infos._owner),
+        nft_contract: this.ethereum.normalizeHash(infos._nftOrigin),
         nft_id: infos._nftId,
-        tod: infos._timeOfDeath,
+        tod:  new Date(parseInt(infos._timeOfDeath * 1000)).toUTCString(),
     }
     await this.storage
-    .knex("game_players")
-    .insert(player)
-    .onConflict("player_id")
-    .merge();
+        .knex("game_players")
+        .insert(player)
+        .onConflict("player_id")
+        .merge();
 }
 
 GAME.prototype.run = async function (forceFromZero = false) {
-    let latestBlock = await this.ethereum.getLatestBlock();
-    let maxBlock = await this.storage.getMax("nft20_action", "blocknumber");
+    let maxBlock = await this.ethereum.getLatestBlock();
+    let minBlock = await this.storage.getMax("game_action", "blocknumber");
     if (forceFromZero) {
-        maxBlock = 0;
+        minBlock = 0;
+    }
+    let events = null;
+    events = await this.game.getPastEvents("ClaimedRewards", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+    });
+    for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("game_claims", {
+            blocknumber: event.blockNumber,
+            transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+            from: this.ethereum.normalizeHash(tx.from),
+            to: this.ethereum.normalizeHash(tx.to),
+            logindex: event.logIndex,
+            timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+            who: this.ethereum.normalizeHash(event.returnValues.who),
+            amount: event.returnValues.amount
+        });
+    }
+    events = await this.game.getPastEvents("NewPlayer", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+    });
+    for (const event of events) {
+       await this.get(event.returnValues.id);
     }
 }
 
