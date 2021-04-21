@@ -23,11 +23,11 @@ GAME.prototype.get = async function (playerId) {
         score: infos._score,
         expected_reward: infos._expectedReward,
         time_until_death: infos._timeUntilDeath,
-        time_born:  new Date(parseInt(timestamp * 1000)).toUTCString()infos._timeBorn,
+        time_born: new Date(parseInt(timestamp * 1000)).toUTCString()infos._timeBorn,
         owner: this.ethereum.normalizeHash(infos._owner),
         nft_contract: this.ethereum.normalizeHash(infos._nftOrigin),
         nft_id: infos._nftId,
-        tod:  new Date(parseInt(infos._timeOfDeath * 1000)).toUTCString(),
+        tod: new Date(parseInt(infos._timeOfDeath * 1000)).toUTCString()
     }
     await this.storage
         .knex("game_players")
@@ -66,7 +66,65 @@ GAME.prototype.run = async function (forceFromZero = false) {
         toBlock: maxBlock,
     });
     for (const event of events) {
-       await this.get(event.returnValues.id);
+        await this.get(event.returnValues.id);
+    }
+    events = await this.game.getPastEvents("Kill", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+    });
+    for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("game_kill", {
+            blocknumber: event.blockNumber,
+            transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+            from: this.ethereum.normalizeHash(tx.from),
+            to: this.ethereum.normalizeHash(tx.to),
+            logindex: event.logIndex,
+            timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+            killer: this.ethereum.normalizeHash(event.returnValues.killer),
+            victim: event.returnValues.opponentId
+        });
+        await this.get(event.returnValues.id);
+    }
+    events = await this.game.getPastEvents("Attak", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+    });
+    for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("game_attack", {
+            blocknumber: event.blockNumber,
+            transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+            from: this.ethereum.normalizeHash(tx.from),
+            to: this.ethereum.normalizeHash(tx.to),
+            logindex: event.logIndex,
+            timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+            attacker: this.ethereum.normalizeHash(event.returnValues.who),
+            victim: event.returnValues.opponentId,
+            attack: event.returnValues.attackId
+        });
+        await this.get(event.returnValues.id);
+    }
+    events = await this.game.getPastEvents("BuyPowerUp", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+    });
+    for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("game_buy", {
+            blocknumber: event.blockNumber,
+            transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+            from: this.ethereum.normalizeHash(tx.from),
+            to: this.ethereum.normalizeHash(tx.to),
+            logindex: event.logIndex,
+            timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+            player: event.returnValues.to,
+            amount: event.returnValues.amount
+        });
+        await this.get(event.returnValues.to);
     }
 }
 
