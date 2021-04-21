@@ -11,7 +11,7 @@ function Game(ethereum, storage) {
     this.GAMEABI = require("../../contracts/Game.abi");
     this.game = new ethereum.w3.eth.Contract(
         this.GAMEABI,
-        "0x0f4676178b5c53ae0a655f1b19a96387e4b8b5f2" // TODO change address
+        "0x3cec062F629879e7f919D07350FB5B51eCba1366" // TODO change address
     );
 }
 
