@@ -15,7 +15,7 @@ function Game(ethereum, storage) {
     );
 }
 
-GAME.prototype.get = async function (playerId) {
+GAME.prototype.get = async function (playerId, setDead = false) {
     let infos = await this.game.methods.getInfo(playerId).call();
     let player = {
         player_id: infos._playerId,
@@ -23,7 +23,7 @@ GAME.prototype.get = async function (playerId) {
         score: infos._score,
         expected_reward: infos._expectedReward,
         time_until_death: infos._timeUntilDeath,
-        time_born: new Date(parseInt(timestamp * 1000)).toUTCString()infos._timeBorn,
+        time_born: setDead == false ? new Date(parseInt(infos._timeBorn * 1000)).toUTCString() : null,
         owner: this.ethereum.normalizeHash(infos._owner),
         nft_contract: this.ethereum.normalizeHash(infos._nftOrigin),
         nft_id: infos._nftId,
@@ -85,7 +85,7 @@ GAME.prototype.run = async function (forceFromZero = false) {
             killer: this.ethereum.normalizeHash(event.returnValues.killer),
             victim: event.returnValues.opponentId
         });
-        await this.get(event.returnValues.id);
+        await this.get(event.returnValues.id, true);
     }
     events = await this.game.getPastEvents("Attak", {
         fromBlock: minBlock,
