@@ -30,7 +30,7 @@ const ethereum = new (require("../etl/utils/ethereum"))(
     let advanced = 15;
 
     let adds = {}
-    adds["0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"] = 100;
+
     for (const a of vnft_holder) {
         let address = a.address.toLowerCase();
         if (adds[address] == null) {
