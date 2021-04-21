@@ -17,12 +17,23 @@ function Game(ethereum, storage) {
 
 GAME.prototype.getNFTInfo = async function (playerId) {
     let infos = await this.game.methods.getInfo(playerId).call();
-    let nft = {
+    let player = {
         player_id: infos._playerId,
         is_alive: infos._isAlive,
         score: infos._score,
-        expectedReward: infos._expectedReward
+        expected_reward: infos._expectedReward,
+        time_until_death: infos._timeUntilDeath,
+        time_born: infos._timeBorn,
+        owner: infos._owner,
+        nft_contract: infos._nftOrigin,
+        nft_id: infos._nftId,
+        tod: infos._timeOfDeath,
     }
+    await this.storage
+    .knex("game_players")
+    .insert(player)
+    .onConflict("player_id")
+    .merge();
 }
 
 GAME.prototype.run = async function (forceFromZero = false) {
