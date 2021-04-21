@@ -13,7 +13,6 @@ CREATE TABLE  game_players
 	CONSTRAINT unique_game_players UNIQUE (player_id)
 );
 
-
 CREATE TABLE game_kill (
 	victim numeric NULL,
 	"killer" varchar NULL,
