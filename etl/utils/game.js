@@ -11,7 +11,7 @@ function Game(ethereum, storage) {
     this.GAMEABI = require("../../contracts/Game.abi");
     this.game = new ethereum.w3.eth.Contract(
         this.GAMEABI,
-        "0x3cec062F629879e7f919D07350FB5B51eCba1366" // TODO change address
+        "0x72b46c86aA67f2aBa435414f410bb48300C064Bf" // TODO change address
     );
 }
 
@@ -41,6 +41,7 @@ Game.prototype.get = async function (playerId, setDead = false) {
 Game.prototype.run = async function (forceFromZero = false) {
     let maxBlock = await this.ethereum.getLatestBlock();
     //let minBlock = await this.storage.getMax("game_action", "blocknumber");
+    console.log("RUNNING")
     let minBlock = 0;
     if (forceFromZero) {
         minBlock = 0;
