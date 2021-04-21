@@ -17,6 +17,8 @@ function Game(ethereum, storage) {
 
 Game.prototype.get = async function (playerId, setDead = false) {
     let infos = await this.game.methods.getInfo(playerId).call();
+    console.log(playerId)
+    console.log(infos)
     let player = {
         player_id: infos._playerId,
         is_alive: infos._isAlive,
