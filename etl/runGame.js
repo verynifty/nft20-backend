@@ -1,8 +1,7 @@
 require('dotenv').config()
 
 const ethereum = new (require("./utils/ethereum"))(
-  //process.env.NFT20_INFURA
-    "https://rinkeby.infura.io/v3/412acf21edf5444a8c9f6bd737cf8ca3"
+  process.env.NFT20_INFURA
 );
 
 console.log(process.env.NFT20_DB_USER)

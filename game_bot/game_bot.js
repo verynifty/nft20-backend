@@ -1,6 +1,6 @@
 const { Telegraf } = require("telegraf");
 
-const bot = new Telegraf("r");
+const bot = new Telegraf(process.env.GAME_TG);
 const axios = require("axios");
 const ethereum = new (require("./utils/ethereum"))(
   "r"
@@ -9,21 +9,24 @@ const ethereum = new (require("./utils/ethereum"))(
 const Discord = require("discord.js");
 const webhookClient = new Discord.WebhookClient(
   "833516274951651349",
-  "r")
+  "gckpFUnMS9ebY02_asQd9hY_Q1FpGaTej1eiGsQ-AA8O1Ktr6XwLzVXoVn2d_I26oBue"
+);
 
 // to format in case we need
 // const embed = new Discord.MessageEmbed()
 //   .setTitle("")
 //   .setColor("#0099ff");
 
+// 0xA1C16E4E538A8ff0c8e7b87A7A75f60AA48C12b7
+
 storage = new (require("./utils/storage"))({
-  user: "doadmin",
-  host: "verynifty-do-user-2688161-0.b.db.ondigitalocean.com",
-  database: "verynifty",
-  password: "hn7b5ac0d96g6hoc",
-  port: 25061,
-  ssl: true,
-  ssl: { rejectUnauthorized: false },
+    user: process.env.NFT20_DB_USER,
+    host: process.env.NFT20_DB_HOST,
+    database: "verynifty",
+    password: process.env.NFT20_DB_PASSWORD,
+    port: 25061,
+    ssl: true,
+    ssl: { rejectUnauthorized: false }
 });
 const vnft = new (require("./utils/vnft"))(ethereum, storage);
 
