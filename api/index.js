@@ -359,7 +359,7 @@ app.get("/game/deathvalley", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .whereNotNull("time_born").whereRaw("tod <= NOW() + - interval '4 hour'").orderBy("time_born", "DESC")
+    .whereNotNull("time_born").whereRaw("tod <= NOW() + interval '4 hour'").orderBy("time_born", "DESC")
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,

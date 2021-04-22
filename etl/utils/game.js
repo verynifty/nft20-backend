@@ -43,6 +43,7 @@ Game.prototype.get = async function (playerId, setDead = false) {
         .insert(player)
         .onConflict("player_id")
         .merge();
+    await this.getNFT(this.ethereum.normalizeHash(infos._nftOrigin), infos._nftId)
 }
 
 Game.prototype.run = async function (forceFromZero = false) {
@@ -148,7 +149,7 @@ Game.prototype.getNFT = async function (contract, asset_id) {
     if (!existing) {
         await sleep(1200)
         let opensea_asset = await axios.get(
-            "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
+            "https://rinkeby-api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
         );
         let NFT = {
             nft_contract: contract,
