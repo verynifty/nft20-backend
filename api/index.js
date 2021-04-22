@@ -331,6 +331,32 @@ app.post("/list/new", async function (req, res) {
   }
 })
 
+
+
+/**
+ * GAME API
+ */
+
+
+ app.get("/game/leaderboard", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+
+  let query = storage.knex
+    .select("*")
+    .from("game_players_view")
+    .whereNotNull("time_born").orderBy("time_born", "DESC")
+
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result);
+});
+
+
 // app.listen(7878);
 
 module.exports = app;
