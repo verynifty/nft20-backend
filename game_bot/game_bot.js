@@ -8,8 +8,8 @@ const ethereum = new (require("./utils/ethereum"))(
 
 const Discord = require("discord.js");
 const webhookClient = new Discord.WebhookClient(
-    "833516274951651349",
-    "gckpFUnMS9ebY02_asQd9hY_Q1FpGaTej1eiGsQ-AA8O1Ktr6XwLzVXoVn2d_I26oBue"
+    process,env.DISCORD_GAME,
+    process,env.DISCORD_GAME_2
 );
 
 // to format in case we need
