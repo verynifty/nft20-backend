@@ -1,16 +1,15 @@
 const { Telegraf } = require("telegraf");
 
-const bot = new Telegraf("1269822416:AAG_kIPOt5FGNmTkqnMoi_MW7KjB3rPw5gw");
+const bot = new Telegraf("r");
 const axios = require("axios");
 const ethereum = new (require("./utils/ethereum"))(
-  "https://mainnet.infura.io/v3/412acf21edf5444a8c9f6bd737cf8ca3"
+  "r"
 );
 
 const Discord = require("discord.js");
 const webhookClient = new Discord.WebhookClient(
   "833516274951651349",
-  "gckpFUnMS9ebY02_asQd9hY_Q1FpGaTej1eiGsQ-AA8O1Ktr6XwLzVXoVn2d_I26oBue"
-);
+  "r")
 
 // to format in case we need
 // const embed = new Discord.MessageEmbed()
