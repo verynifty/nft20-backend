@@ -177,11 +177,35 @@ module.exports = [
           "internalType": "uint256",
           "name": "_price",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_tokensToGive",
+          "type": "uint256"
         }
       ],
       "name": "addAttack",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "attackGives",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -343,30 +367,6 @@ module.exports = [
         {
           "internalType": "uint256",
           "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_opponent",
-          "type": "uint256"
-        }
-      ],
-      "name": "getAttackPlayerReward",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "_tokenAmont",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_timeRemoved",
           "type": "uint256"
         }
       ],
@@ -785,6 +785,13 @@ module.exports = [
     {
       "inputs": [],
       "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "rugPull",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
