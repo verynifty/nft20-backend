@@ -68,6 +68,7 @@ const sleep = (waitTimeInMs) =>
     let blockNumber = await ethereum.getLatestBlock();
     let maxblock = "latest"
     // blockNumber = "11381937"
+    let bn = 0;
     while (true) {
 
         game.getPastEvents("Attak", {
@@ -77,7 +78,7 @@ const sleep = (waitTimeInMs) =>
         for (const event of events) {
             let tx = await this.ethereum.getTransaction(event.transactionHash);
             let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-            await this.storage.insert("game_attack", {
+          /*  await this.storage.insert("game_attack", {
                 blocknumber: event.blockNumber,
                 transactionhash: this.ethereum.normalizeHash(event.transactionHash),
                 from: this.ethereum.normalizeHash(tx.from),
@@ -88,21 +89,23 @@ const sleep = (waitTimeInMs) =>
                 victim: event.returnValues.opponentId,
                 attack: event.returnValues.attackId
             });
-            await this.get(event.returnValues.opponentId);
-        }
-      
-        bot.telegram.sendMessage(
-          "-1001164170495", //"438453914", //"-1001164170495"
-          msg
-        );
+            */
 
+            bot.telegram.sendMessage(
+                "-1001164170495", //"438453914", //"-1001164170495"
+                msg
+              );        }
+        blockNumber = await ethereum.getLatestBlock();
+      
+       
+/*
         webhookClient.send(msg, {
           username: "NFT BATTLES Bot",
           avatarURL:
             "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
           // embeds: [embed],
         });
-        blockNumber = bonk.blockNumber + 1;
+        */
       }
       await sleep(10000);
     }
