@@ -8,8 +8,8 @@ const ethereum = new (require("./utils/ethereum"))(
 
 const Discord = require("discord.js");
 const webhookClient = new Discord.WebhookClient(
-    process,env.DISCORD_GAME,
-    process,env.DISCORD_GAME_2
+    process, env.DISCORD_GAME,
+    process, env.DISCORD_GAME_2
 );
 
 // to format in case we need
@@ -88,7 +88,7 @@ const sleep = (waitTimeInMs) =>
                       attack: event.returnValues.attackId
                   });
                   */
-                 let weapon = ""
+                let weapon = ""
                 if (parseInt(event.returnValues.attackId) == 0) {
 
                     weapon = " attacked with a sword "
@@ -114,14 +114,14 @@ const sleep = (waitTimeInMs) =>
             maxblock = await ethereum.getLatestBlock();
 
 
-            /*
-                    webhookClient.send(msg, {
-                      username: "NFT BATTLES Bot",
-                      avatarURL:
-                        "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
-                      // embeds: [embed],
-                    });
-                    */
+
+            webhookClient.send(msg, {
+                username: "NFT BATTLES Bot",
+                avatarURL:
+                    "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
+                // embeds: [embed],
+            });
+
         }
         await sleep(10000);
     }
