@@ -369,6 +369,13 @@ app.get("/game/deathvalley", async function (req, res) {
   res.status(200).json(result.data);
 });
 
+app.get("/game/player/:id", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let res = await this.storage.getMulti("game_players_view", {"player_id": req.params.id})
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(res);
+});
+
 app.get("/game/user/:owner", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex
