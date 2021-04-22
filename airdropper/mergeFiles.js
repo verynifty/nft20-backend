@@ -149,7 +149,8 @@ const ethereum = new (require("../etl/utils/ethereum"))(
                 proof: JSON.stringify(proof)
             }
             // console.log(o)
-            //await storage.insert('game_airdrop', o);
+            await storage.insert('game_airdrop', o);
+            console.log(index)
             index++;
         }
     }
