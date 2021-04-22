@@ -16,9 +16,16 @@ function Game(ethereum, storage) {
 }
 
 Game.prototype.get = async function (playerId, setDead = false) {
+    console.log('CALLING FOR', playerId)
     let infos = await this.game.methods.getInfo(playerId).call();
     console.log(playerId)
     console.log(infos)
+    let old_player = await this.storage.get("game_players", "player_id", playerId);
+    if (old_player != null) {
+        if (old_player.time_born == null) {
+            setDead = true;
+        }
+    }
     let player = {
         player_id: infos._playerId,
         is_alive: infos._isAlive,
@@ -109,7 +116,7 @@ Game.prototype.run = async function (forceFromZero = false) {
             victim: event.returnValues.opponentId,
             attack: event.returnValues.attackId
         });
-        await this.get(event.returnValues.id);
+        await this.get(event.returnValues.opponentId);
     }
     events = await this.game.getPastEvents("BuyPowerUp", {
         fromBlock: minBlock,
