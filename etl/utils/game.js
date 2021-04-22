@@ -149,7 +149,7 @@ Game.prototype.getNFT = async function (contract, asset_id) {
     if (!existing) {
         await sleep(1200)
         let opensea_asset = await axios.get(
-            "https://rinkeby-api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
+            "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
         );
         let NFT = {
             nft_contract: contract,

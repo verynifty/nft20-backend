@@ -28,8 +28,12 @@ storage = new (require("./utils/storage"))({
     ssl: true,
     ssl: { rejectUnauthorized: false }
 });
-const vnft = new (require("./utils/vnft"))(ethereum, storage);
-
+//const vnft = new (require("./utils/vnft"))(ethereum, storage);
+GAMEABI = require("../../contracts/Game.abi");
+game = new ethereum.w3.eth.Contract(
+    GAMEABI,
+    "0xA1C16E4E538A8ff0c8e7b87A7A75f60AA48C12b7" 
+);
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
@@ -49,59 +53,44 @@ const sleep = (waitTimeInMs) =>
       " $ROYAL 🌟. ENEA's pet Dies in 2 Hours";
 
     // for testing
-    webhookClient.send(msg, {
+    /*webhookClient.send(msg, {
       username: "NFT BATTLES Bot",
       avatarURL:
         "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
       // embeds: [embed],
     });
+    */
     // for testing
     // bot.telegram.sendMessage(
     //   "-1001164170495", //"438453914", //"-1001164170495"
     //   msg
     // );
     let blockNumber = await ethereum.getLatestBlock();
+    let maxblock = "latest"
     // blockNumber = "11381937"
     while (true) {
-      let events = await vnft.getLatestBonks(blockNumber);
-      for (const bonk of events) {
-        let winner = await storage.get("vnft", "id", bonk.returnValues.winner);
-        let loser = await storage.get("vnft", "id", bonk.returnValues.loser);
-        let museWon = bonk.returnValues.museWon;
-        let msg = "";
-        let winnerName = winner.name;
-        if (winnerName == null) {
-          winnerName = "";
+
+        game.getPastEvents("Attak", {
+            fromBlock: blockNumber,
+            toBlock: maxblock,
+        });
+        for (const event of events) {
+            let tx = await this.ethereum.getTransaction(event.transactionHash);
+            let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+            await this.storage.insert("game_attack", {
+                blocknumber: event.blockNumber,
+                transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+                from: this.ethereum.normalizeHash(tx.from),
+                to: this.ethereum.normalizeHash(tx.to),
+                logindex: event.logIndex,
+                timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+                attacker: this.ethereum.normalizeHash(event.returnValues.who),
+                victim: event.returnValues.opponentId,
+                attack: event.returnValues.attackId
+            });
+            await this.get(event.returnValues.opponentId);
         }
-        let loserName = loser.name;
-        if (loserName == null) {
-          loserName = "";
-        }
-        if (museWon == "0") {
-          msg =
-            "#" +
-            loser.id +
-            " " +
-            loserName +
-            " tried to attack '#'" +
-            winner.id +
-            " " +
-            winnerName +
-            " and got BONKED 😭🔨";
-        } else {
-          msg =
-            "#" +
-            loser.id +
-            " " +
-            loserName +
-            " just got BONKED by '#'" +
-            winner.id +
-            " " +
-            winnerName +
-            " for " +
-            museWon +
-            " $muse 🌟🔨";
-        }
+      
         bot.telegram.sendMessage(
           "-1001164170495", //"438453914", //"-1001164170495"
           msg
