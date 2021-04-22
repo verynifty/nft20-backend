@@ -383,7 +383,7 @@ app.get("/game/user/:owner", async function (req, res) {
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
-
+ 
 app.get("/game/dead", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex
