@@ -219,7 +219,7 @@ app.post("/name", async function (req, res) {
   }
 });
 
-app.get("/irdrap/:address", async function(req, res) {
+app.get("/irdrap/:address", async function (req, res) {
   let airdrop = await storage.getMulti("game_airdrop", {
     address: req.params.address.toLowerCase()
   })
@@ -227,13 +227,13 @@ app.get("/irdrap/:address", async function(req, res) {
   res.status(200).json(airdrop);
 })
 
-app.post("/collection", async function(req, res) {
+app.post("/collection", async function (req, res) {
   for (const collection of req.body.collections) {
     await this.storage.insert("nft20_collection", collection);
   }
 });
 
-app.get("/list/listing/:id", async function(req, res) {
+app.get("/list/listing/:id", async function (req, res) {
   let listing = await storage.getMulti("listing_view", {
     id: req.params.id
   })
@@ -241,7 +241,7 @@ app.get("/list/listing/:id", async function(req, res) {
   res.status(200).json(listing);
 })
 
-app.get("/list/list", async function(req, res) {
+app.get("/list/list", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
   if (req.query.contract_address != null) {
@@ -255,7 +255,8 @@ app.get("/list/list", async function(req, res) {
       .select("*")
       .from("listing_view")
       .where("cancelled", false)
-      .where("sold", false)  }
+      .where("sold", false)
+  }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
@@ -309,7 +310,7 @@ app.post("/list/new", async function (req, res) {
   if (address.toLowerCase() == author.toLowerCase()) {
     console.log("Signatures are matching")
     await storage.insert("list_listing", {
-      title:title,
+      title: title,
       description: description,
       author: author,
       id: msgBufferHex,
@@ -338,22 +339,34 @@ app.post("/list/new", async function (req, res) {
  */
 
 
- app.get("/game/leaderboard", async function (req, res) {
+app.get("/game/leaderboard", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
-
   let query = storage.knex
     .select("*")
     .from("game_players_view")
     .whereNotNull("time_born").orderBy("time_born", "DESC")
-
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
-  res.status(200).json(result);
+  res.status(200).json(result.data);
+});
+
+app.get("/game/dead", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let query = storage.knex
+    .select("*")
+    .from("game_players_view")
+    .where("time_born", null).orderBy("time_born", "DESC")
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result.data);
 });
 
 
