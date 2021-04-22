@@ -354,12 +354,12 @@ app.get("/game/leaderboard", async function (req, res) {
   res.status(200).json(result.data);
 });
 
-app.get("/game/deadvalley", async function (req, res) {
+app.get("/game/deathvalley", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .whereNotNull("time_born").where("tod", "<=", "NOW() + - interval '4 hour'").orderBy("time_born", "DESC")
+    .whereNotNull("time_born").whereRaw("tod <= NOW() + - interval '4 hour'").orderBy("time_born", "DESC")
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
