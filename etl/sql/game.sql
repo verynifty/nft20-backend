@@ -70,5 +70,5 @@ CREATE TABLE game_claim
 );
 
 create or REPLACE view game_players_view  as
-select gp.*, n.nft_image , n.nft_original_image , n.nft_title , n.nft_trait , c.collection_name , c.collection_description , c.collection_type , c.external_url as collection_url , c.image_url as collection_image
+select gp.*, n.nft_image , n.nft_original_image , n.nft_title , n.nft_trait , c.collection_name , c.collection_description , c.collection_type , c.external_url as collection_url , c.image_url as collection_image, gp.score / 100 as level
 from game_players gp LEFT join nft20_nft n on gp.nft_contract = n.nft_contract and gp.nft_id = n.nft_id left join nft20_collection c on gp.nft_contract = c.contract_address 
