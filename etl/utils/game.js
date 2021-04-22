@@ -97,7 +97,7 @@ Game.prototype.run = async function (forceFromZero = false) {
             killer: this.ethereum.normalizeHash(event.returnValues.killer),
             victim: event.returnValues.opponentId
         });
-        await this.get(event.returnValues.id, true);
+        await this.get(event.returnValues.opponentId, true);
     }
     events = await this.game.getPastEvents("Attak", {
         fromBlock: minBlock,
