@@ -344,7 +344,7 @@ app.get("/game/leaderboard", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .whereNotNull("time_born").whereRaw("tod > NOW()").orderBy("time_born", "DESC")
+    .whereNotNull("time_born").whereRaw("tod > NOW()").orderBy("time_born", "ASC")
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -359,7 +359,7 @@ app.get("/game/deathvalley", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .whereNotNull("time_born").whereRaw("tod <= NOW()").orderBy("time_born", "DESC")
+    .whereNotNull("time_born").whereRaw("tod <= NOW()").orderBy("time_born", "ASC")
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -374,7 +374,7 @@ app.get("/game/user/:owner", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .where("owner", req.params.owner.toLowerCase()).orderBy("time_born", "DESC")
+    .where("owner", req.params.owner.toLowerCase()).orderBy("time_born", "ASC")
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -389,7 +389,7 @@ app.get("/game/dead", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .where("time_born", null).orderBy("time_born", "DESC")
+    .where("time_born", null).orderBy("time_born", "ASC")
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
