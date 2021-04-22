@@ -354,6 +354,36 @@ app.get("/game/leaderboard", async function (req, res) {
   res.status(200).json(result.data);
 });
 
+app.get("/game/deadvalley", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let query = storage.knex
+    .select("*")
+    .from("game_players_view")
+    .whereNotNull("time_born").where("tod", "<=", "NOW() + - interval '4 hour'").orderBy("time_born", "DESC")
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result.data);
+});
+
+app.get("/game/user/:owner", async function (req, res) {
+  let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let query = storage.knex
+    .select("*")
+    .from("game_players_view")
+    .where("owner", req.params.owner.toLowerCase()).orderBy("time_born", "DESC")
+  let result = await query.paginate({
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
+    currentPage: currentPage ? currentPage : 0,
+    isLengthAware: true,
+  });
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(result.data);
+});
+
 app.get("/game/dead", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex
