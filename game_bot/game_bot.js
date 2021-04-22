@@ -1,15 +1,17 @@
+require('dotenv').config()
+
 const { Telegraf } = require("telegraf");
 
 const bot = new Telegraf(process.env.GAME_TG);
 const axios = require("axios");
-const ethereum = new (require("./utils/ethereum"))(
-    "r"
+const ethereum = new (require("../etl/utils/ethereum"))(
+    process.env.NFT20_INFURA
 );
 
 const Discord = require("discord.js");
 const webhookClient = new Discord.WebhookClient(
-    process, env.DISCORD_GAME,
-    process, env.DISCORD_GAME_2
+    process.env.DISCORD_GAME,
+    process.env.DISCORD_GAME_2
 );
 
 // to format in case we need
@@ -19,7 +21,7 @@ const webhookClient = new Discord.WebhookClient(
 
 // 0xA1C16E4E538A8ff0c8e7b87A7A75f60AA48C12b7
 
-storage = new (require("./utils/storage"))({
+storage = new (require("../etl/utils/storage"))({
     user: process.env.NFT20_DB_USER,
     host: process.env.NFT20_DB_HOST,
     database: "verynifty",
@@ -29,7 +31,7 @@ storage = new (require("./utils/storage"))({
     ssl: { rejectUnauthorized: false }
 });
 //const vnft = new (require("./utils/vnft"))(ethereum, storage);
-GAMEABI = require("../../contracts/Game.abi");
+GAMEABI = require("../contracts/Game.abi");
 game = new ethereum.w3.eth.Contract(
     GAMEABI,
     "0xA1C16E4E538A8ff0c8e7b87A7A75f60AA48C12b7"
@@ -39,18 +41,7 @@ const sleep = (waitTimeInMs) =>
 
 (async () => {
     try {
-        msg =
-            "#" +
-            "1" +
-            " " +
-            "Enea" +
-            " just got BONKED with a BOMB by '#'" +
-            "2" +
-            " " +
-            "Adam" +
-            " for " +
-            "10" +
-            " $ROYAL 🌟. ENEA's pet Dies in 2 Hours";
+
 
         // for testing
         /*webhookClient.send(msg, {
@@ -71,10 +62,11 @@ const sleep = (waitTimeInMs) =>
         let bn = 0;
         while (true) {
 
-            game.getPastEvents("Attak", {
+            let events = await game.getPastEvents("Attak", {
                 fromBlock: blockNumber,
                 toBlock: maxblock,
             });
+            console.log(events)
             for (const event of events) {
                 /*  await this.storage.insert("game_attack", {
                       blocknumber: event.blockNumber,
@@ -88,44 +80,49 @@ const sleep = (waitTimeInMs) =>
                       attack: event.returnValues.attackId
                   });
                   */
+                 let nft = await storage.getMulti("game_players_view", {"player_id": event.returnValues.opponentId})
                 let weapon = ""
                 if (parseInt(event.returnValues.attackId) == 0) {
 
-                    weapon = " attacked with a sword "
+                    weapon = " attacked with a sword ⚔️ "
                 } else if (parseInt(event.returnValues.attackId) == 1) {
-                    weapon = " attacked with a spear "
+                    weapon = " attacked with a spear 🔱 "
 
                 }
                 else if (parseInt(event.returnValues.attackId) == 2) {
-                    weapon = " BOMBED  "
+                    weapon = " BOMBED 💣💣 "
 
                 }
                 else if (parseInt(event.returnValues.attackId) == 3) {
-                    weapon = " RUG PULLLLLED "
+                    weapon = " RUG PULLLLLED 🧞⭐ "
 
                 }
-                let msg = "Oh! " + this.ethereum.normalizeHash(event.returnValues.who) + weapon + event.returnValues.opponentId
+                let msg = "Oh! " + ethereum.normalizeHash(event.returnValues.who).substring(0,8) + weapon + " #" + event.returnValues.opponentId+ " " + nft.nft_title
                 bot.telegram.sendMessage(
                     "-1001164170495", //"438453914", //"-1001164170495"
                     msg
                 );
+                /*
+                webhookClient.send(msg, {
+                    username: "NFT BATTLES Bot",
+                    avatarURL:
+                        "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
+                    // embeds: [embed],
+                });
+                */
             }
             blockNumber = maxblock
             maxblock = await ethereum.getLatestBlock();
 
 
 
-            webhookClient.send(msg, {
-                username: "NFT BATTLES Bot",
-                avatarURL:
-                    "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
-                // embeds: [embed],
-            });
+         
+            await sleep(10000);
 
         }
-        await sleep(10000);
+
+
+    } catch (error) {
+        console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-}
-}) ();
+})();
