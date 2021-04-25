@@ -50,7 +50,7 @@ Game.prototype.run = async function (forceFromZero = false) {
     let maxBlock = await this.ethereum.getLatestBlock();
     //let minBlock = await this.storage.getMax("game_action", "blocknumber");
     console.log("RUNNING")
-    let minBlock = 0;
+    let minBlock = await this.storage.getMax("game_attack", "blocknumber");
     if (forceFromZero) {
         minBlock = 0;
     }

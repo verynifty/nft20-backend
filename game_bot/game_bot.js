@@ -40,89 +40,82 @@ const sleep = (waitTimeInMs) =>
     new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
-    try {
+    // for testing
+    /*webhookClient.send(msg, {
+      username: "NFT BATTLES Bot",
+      avatarURL:
+        "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
+      // embeds: [embed],
+    });
+    */
+    // for testing
+    // bot.telegram.sendMessage(
+    //   "-1001164170495", //"438453914", //"-1001164170495"
+    //   msg
+    // );
+    let blockNumber = await storage.getMax("game_attack", "blocknumber");
+    let maxblock = await ethereum.getLatestBlock();
+    // blockNumber = "11381937"
+    let bn = 0;
+    while (true) {
 
-
-        // for testing
-        /*webhookClient.send(msg, {
-          username: "NFT BATTLES Bot",
-          avatarURL:
-            "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
-          // embeds: [embed],
+        let events = await game.getPastEvents("Attak", {
+            fromBlock: blockNumber,
+            toBlock: maxblock,
         });
-        */
-        // for testing
-        // bot.telegram.sendMessage(
-        //   "-1001164170495", //"438453914", //"-1001164170495"
-        //   msg
-        // );
-        let blockNumber = await ethereum.getLatestBlock() - 100;
-        let maxblock = await ethereum.getLatestBlock();
-        // blockNumber = "11381937"
-        let bn = 0;
-        while (true) {
+        console.log(events)
+        for (const event of events) {
+            /*  await this.storage.insert("game_attack", {
+                  blocknumber: event.blockNumber,
+                  transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+                  from: this.ethereum.normalizeHash(tx.from),
+                  to: this.ethereum.normalizeHash(tx.to),
+                  logindex: event.logIndex,
+                  timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+                  attacker: this.ethereum.normalizeHash(event.returnValues.who),
+                  victim: event.returnValues.opponentId,
+                  attack: event.returnValues.attackId
+              });
+              */
+            let nft = await storage.getMulti("game_players_view", { "player_id": event.returnValues.opponentId })
+            let weapon = ""
+            if (parseInt(event.returnValues.attackId) == 0) {
 
-            let events = await game.getPastEvents("Attak", {
-                fromBlock: blockNumber,
-                toBlock: maxblock,
-            });
-            console.log(events)
-            for (const event of events) {
-                /*  await this.storage.insert("game_attack", {
-                      blocknumber: event.blockNumber,
-                      transactionhash: this.ethereum.normalizeHash(event.transactionHash),
-                      from: this.ethereum.normalizeHash(tx.from),
-                      to: this.ethereum.normalizeHash(tx.to),
-                      logindex: event.logIndex,
-                      timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
-                      attacker: this.ethereum.normalizeHash(event.returnValues.who),
-                      victim: event.returnValues.opponentId,
-                      attack: event.returnValues.attackId
-                  });
-                  */
-                 let nft = await storage.getMulti("game_players_view", {"player_id": event.returnValues.opponentId})
-                let weapon = ""
-                if (parseInt(event.returnValues.attackId) == 0) {
+                weapon = " attacked with a sword ⚔️ "
+            } else if (parseInt(event.returnValues.attackId) == 1) {
+                weapon = " attacked with a spear 🔱 "
 
-                    weapon = " attacked with a sword ⚔️ "
-                } else if (parseInt(event.returnValues.attackId) == 1) {
-                    weapon = " attacked with a spear 🔱 "
-
-                }
-                else if (parseInt(event.returnValues.attackId) == 2) {
-                    weapon = " BOMBED 💣💣 "
-
-                }
-                else if (parseInt(event.returnValues.attackId) == 3) {
-                    weapon = " RUG PULLLLLED 🧞⭐ "
-
-                }
-                let msg = "Oh! " + ethereum.normalizeHash(event.returnValues.who).substring(0,8) + weapon + " #" + event.returnValues.opponentId+ " " + nft.nft_title
-                bot.telegram.sendMessage(
-                    "-1001164170495", //"438453914", //"-1001164170495"
-                    msg
-                );
-                /*
-                webhookClient.send(msg, {
-                    username: "NFT BATTLES Bot",
-                    avatarURL:
-                        "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
-                    // embeds: [embed],
-                });
-                */
             }
-            blockNumber = maxblock
-            maxblock = await ethereum.getLatestBlock();
+            else if (parseInt(event.returnValues.attackId) == 2) {
+                weapon = " BOMBED 💣💣 "
 
+            }
+            else if (parseInt(event.returnValues.attackId) == 3) {
+                weapon = " RUG PULLLLLED 🧞⭐ "
 
-
-         
-            await sleep(10000);
-
+            }
+            let msg = "Oh! " + ethereum.normalizeHash(event.returnValues.who).substring(0, 8) + weapon + " #" + event.returnValues.opponentId + " " + nft.nft_title
+            bot.telegram.sendMessage(
+                "-1001164170495", //"438453914", //"-1001164170495"
+                msg
+            );
+            /*
+            webhookClient.send(msg, {
+                username: "NFT BATTLES Bot",
+                avatarURL:
+                    "https://pbs.twimg.com/profile_images/1360017205686136833/zdJYITbz_400x400.png",
+                // embeds: [embed],
+            });
+            */
         }
+        blockNumber = maxblock
+        maxblock = await ethereum.getLatestBlock();
 
 
-    } catch (error) {
-        console.log(error);
+
+
+        await sleep(10000);
     }
+
+
 })();
