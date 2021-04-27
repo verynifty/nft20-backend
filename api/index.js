@@ -30,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.get("/activity", async function (req, res) {
+  let network = req.query.network != null ? parseInt(req.query.network) : 0;
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex.select("*").from("nft20_history");
   if (req.query.user) {
@@ -41,6 +42,7 @@ app.get("/activity", async function (req, res) {
   if (req.query.pool) {
     query.where("nft", req.query.nft);
   }
+  query.where("network", network)
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
@@ -52,10 +54,12 @@ app.get("/activity", async function (req, res) {
 
 app.get("/pools", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let network = req.query.network != null ? parseInt(req.query.network) : 0;
 
   let query = storage.knex.select("*").from("nft20_pool_view");
   req.query.nft ? query.where("nft", req.query.nft) : "";
   req.query.withLp ? query.where("lp_usd_balance", ">", 2000) : "";
+  query.where("network", network)
 
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
@@ -68,6 +72,8 @@ app.get("/pools", async function (req, res) {
 
 app.get("/nfts", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let network = req.query.network != null ? parseInt(req.query.network) : 0;
+
   let query = null;
   if (req.query.pool != null) {
     query = storage.knex
@@ -88,6 +94,7 @@ app.get("/nfts", async function (req, res) {
 });
 
 app.get("/gallery", async function (req, res) {
+  let network = req.query.network != null ? parseInt(req.query.network) : 0;
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
   if (req.query.pool != null) {
@@ -136,6 +143,7 @@ app.get("/wcat/:id", async function (req, res) {
 
 app.get("/nfttopool/:nft", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
+  let network = req.query.network != null ? parseInt(req.query.network) : 0;
 
   let query = storage.knex
     .select("address")

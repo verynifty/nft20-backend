@@ -10,6 +10,7 @@ CREATE TABLE public.nft20_pair (
 	nft_eth_price numeric NULL,
 	hidden bool NOT NULL DEFAULT false,
 	logo_url varchar NOT NULL DEFAULT 'https://space-cdn-dokomaps.fra1.digitaloceanspaces.com/nft20/placeholder.png'::character varying,
+	network numeric NOT NULL DEFAULT 0,
 	CONSTRAINT nft20_pair_pk PRIMARY KEY (address),
 	CONSTRAINT unique_pair UNIQUE (address)
 );
