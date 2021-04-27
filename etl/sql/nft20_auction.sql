@@ -10,5 +10,6 @@ CREATE TABLE public.nft20_auctions
     "ending_time" timestamp NULL,
     "duration" numeric NULL,
     "ended" boolean null,
+    network numeric NOT NULL DEFAULT 0,
     CONSTRAINT unique_auction_id UNIQUE (auction_id)
 );

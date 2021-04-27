@@ -12,5 +12,6 @@ CREATE TABLE public.nft20_action (
 	id numeric NULL,
 	amount numeric NULL,
 	"user" varchar NULL,
+	network numeric NOT NULL DEFAULT 0,
 	CONSTRAINT unique_action UNIQUE (transactionhash, logindex, pool, id)
 );
