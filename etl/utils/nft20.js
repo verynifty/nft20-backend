@@ -16,27 +16,49 @@ function NFT20(ethereum, storage) {
   this.AUCTIONABI = require("../../contracts/Auction.abi");
   this.PAIRABI = require("../../contracts/Pair.abi");
   this.FACTORYABI = require("../../contracts/Factory.abi");
+  this.NETWORK = process.env.NETWORK == null ? 0 : parseInt(process.env.NETWORK)
+  if (this.NETWORK == 0) {
+    this.factory = new ethereum.w3.eth.Contract(
+      this.FACTORYABI,
+      "0x0f4676178b5c53ae0a655f1b19a96387e4b8b5f2"
+    );
 
-  this.factory = new ethereum.w3.eth.Contract(
-    this.FACTORYABI,
-    "0x0f4676178b5c53ae0a655f1b19a96387e4b8b5f2"
-  );
+    this.auction = new ethereum.w3.eth.Contract(
+      this.AUCTIONABI,
+      "0x18304eF06f474A027b28Eb0099F675Fc258776dF"
+    );
+  } else { // This is Matic
+    this.factory = new ethereum.w3.eth.Contract(
+      this.FACTORYABI,
+      "0x0f4676178b5c53ae0a655f1b19a96387e4b8b5f2"
+    );
 
-  this.auction = new ethereum.w3.eth.Contract(
-    this.AUCTIONABI,
-    "0x18304eF06f474A027b28Eb0099F675Fc258776dF"
-  );
+    this.auction = new ethereum.w3.eth.Contract(
+      this.AUCTIONABI,
+      "0x18304eF06f474A027b28Eb0099F675Fc258776dF"
+    );
+  }
+
   this.storage = storage;
   this.abiDecoder = require("abi-decoder");
   this.abiDecoder.addABI(this.FACTORYABI);
+  console.log(this.NETWORK)
 }
 
 NFT20.prototype.getPairs = async function (withUpdate = false) {
   let pairs = [];
   let pairCount = parseInt(await this.factory.methods.counter().call());
-  let assets = await axios.get(
-    "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets.json"
-  );
+  let assets;
+  if (this.NETWORK == 0) {
+
+    assets = await axios.get(
+      "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets.json"
+    );
+  } else {
+    assets = await axios.get(
+      "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets_matic.json"
+    );
+  }
   let price_of_eth = await this.ethereum.getPrice();
   console.log("Current ETH price", price_of_eth);
 
@@ -46,9 +68,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let pairDetail = await this.factory.methods
       .getPairByNftAddress(index)
       .call();
-   /*   if (pairDetail._symbol != "FRAM20") {
-        continue
-      } */
+    /*   if (pairDetail._symbol != "FRAM20") {
+         continue
+       } */
     let pairOnGithub = assets.data.filter(
       (asset) => asset.symbol == pairDetail._symbol
     );
@@ -72,9 +94,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       }
     }
     const TwentyContract = new this.ethereum.w3.eth.Contract(
-        this.PAIRABI,
-        pairDetail._nft20pair
-      );
+      this.PAIRABI,
+      pairDetail._nft20pair
+    );
     let nftValue = await TwentyContract.methods.nftValue().call();
 
     nftValue = new BigNumber(nftValue).shiftedBy(-18).toNumber();
@@ -83,10 +105,10 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         this.ERC20ABI,
         "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
       );
-     
 
 
-    
+
+
 
       console.log(price_of_eth);
       balance = await wethContract.methods
@@ -163,7 +185,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     );
   } catch (error) {
     console.log(this.ethereum.normalizeHash(pair.nft),
-    event.returnValues)
+      event.returnValues)
     console.log(error)
     console.log("ERROR while adding NFT to db");
   }
@@ -213,14 +235,14 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
       collection_name: opensea_asset.data.collection.name,
       collection_description: opensea_asset.data.collection.description,
       external_url: opensea_asset.data.collection.external_url,
-      collection_type: opensea_asset.data.asset_contract.schema_name == "ERC1155"? 1155: 721
+      collection_type: opensea_asset.data.asset_contract.schema_name == "ERC1155" ? 1155 : 721
     }
     await this.storage.insert("nft20_collection", collection);
 
   }
 };
 
-NFT20.prototype.getAuctions = async function() {
+NFT20.prototype.getAuctions = async function () {
   let maxAuction = await this.auction.methods.auctionId().call();
   maxAuction = parseInt(maxAuction)
   for (let index = 1; index <= maxAuction; index++) {
@@ -235,28 +257,28 @@ NFT20.prototype.getAuctions = async function() {
         "starting_price": auctionInfos._startingPrice,
         "ending_price": auctionInfos._endingPrice,
         "starting_time": new Date(parseInt(auctionInfos._startedAt) * 1000).toUTCString(),
-        "ending_time": new Date(parseInt(parseInt(auctionInfos._startedAt) + parseInt(auctionInfos._duration))* 1000).toUTCString(),
+        "ending_time": new Date(parseInt(parseInt(auctionInfos._startedAt) + parseInt(auctionInfos._duration)) * 1000).toUTCString(),
         "duration": parseInt(auctionInfos._duration) * 1000,
         "ended": false
       }
       await this.storage
-      .knex("nft20_auctions")
-      .insert(o)
-      .onConflict("auction_id")
-      .merge();
+        .knex("nft20_auctions")
+        .insert(o)
+        .onConflict("auction_id")
+        .merge();
     } catch (error) {
       let o = {
         auction_id: index,
         ended: true
       }
       await this.storage
-      .knex("nft20_auctions")
-      .insert(o)
-      .onConflict("auction_id")
-      .merge();
+        .knex("nft20_auctions")
+        .insert(o)
+        .onConflict("auction_id")
+        .merge();
     }
 
-    
+
   }
 }
 
