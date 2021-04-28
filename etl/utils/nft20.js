@@ -175,6 +175,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
     id: event.returnValues.id,
     amount: event.returnValues.value,
     user: this.ethereum.normalizeHash(event.user),
+    network: this.NETWORK
   };
   console.log(pa)
   await this.storage.insert("nft20_action", pa);
@@ -193,7 +194,9 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
 
 NFT20.prototype.getLastData = async function (forceFromZero = false) {
   let latestBlock = await this.ethereum.getLatestBlock();
-  let maxBlock = await this.storage.getMax("nft20_action", "blocknumber");
+  let maxBlock = await this.storage.getMaxWhere("nft20_action", "blocknumber" {
+    network: this.NETWORK
+  });
   if (maxBlock == null) {
     maxBlock = 0;
   } else {
@@ -218,6 +221,12 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     let opensea_asset = await axios.get(
       "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
     );
+    if (this.NETWORK == 0) { //this is matic
+      opensea_asset = await axios.get(
+        "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
+      );
+    }
+
     let NFT = {
       nft_contract: contract,
       nft_id: asset_id,
@@ -397,7 +406,10 @@ NFT20.prototype.getData = async function (
     }
   }
   await this.getAuctions();
-  await this.storage.executeAsync("REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view");
+  if (this.NETWORK == 0) {
+    await this.storage.executeAsync("REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view");
+
+  }
 };
 
 module.exports = NFT20;
