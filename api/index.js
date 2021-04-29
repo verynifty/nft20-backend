@@ -22,7 +22,7 @@ matic = new (require("../etl/utils/ethereum_insance"))(
 );
 */
 
-const ERC1155ABI = require("../../contracts/ERC1155.abi");
+//const ERC1155ABI = require("../../contracts/ERC1155.abi");
 
 const nft20 = new (require("../etl/utils/nft20"))(
   ethereum_insance,
