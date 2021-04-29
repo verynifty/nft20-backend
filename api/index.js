@@ -49,6 +49,8 @@ app.get("/activity", async function (req, res) {
     isLengthAware: true,
   });
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(network);
+
   res.status(200).json(result);
 });
 

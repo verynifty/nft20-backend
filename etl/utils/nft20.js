@@ -268,7 +268,8 @@ NFT20.prototype.getAuctions = async function () {
         "starting_time": new Date(parseInt(auctionInfos._startedAt) * 1000).toUTCString(),
         "ending_time": new Date(parseInt(parseInt(auctionInfos._startedAt) + parseInt(auctionInfos._duration)) * 1000).toUTCString(),
         "duration": parseInt(auctionInfos._duration) * 1000,
-        "ended": false
+        "ended": false,
+        network: this.NETWORK
       }
       await this.storage
         .knex("nft20_auctions")
