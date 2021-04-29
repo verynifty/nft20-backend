@@ -13,11 +13,11 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 }); 
 
-const ethereum = new (require("../etl/utils/ethereum"))(
+ethereum = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 
-const matic = new (require("../etl/utils/ethereum"))(
+matic = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_MATIC
 );
 
