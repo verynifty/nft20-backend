@@ -51,7 +51,7 @@ app.get("/activity", async function (req, res) {
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(network);
 
-  res.status(200).json(result);
+  //res.status(200).json(result);
 });
 
 app.get("/pools", async function (req, res) {
