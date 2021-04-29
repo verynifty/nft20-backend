@@ -30,7 +30,7 @@ function NFT20(ethereum, storage) {
   } else { // This is Matic
     this.factory = new ethereum.w3.eth.Contract(
       this.FACTORYABI,
-      "0x0f4676178b5c53ae0a655f1b19a96387e4b8b5f2"
+      "0x32Aaba6E37dc4C800C4f439DBD1A71415C765054"
     );
 
     this.auction = new ethereum.w3.eth.Contract(
