@@ -194,7 +194,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
 
 NFT20.prototype.getLastData = async function (forceFromZero = false) {
   let latestBlock = await this.ethereum.getLatestBlock();
-  let maxBlock = await this.storage.getMaxWhere("nft20_action", "blocknumber" {
+  let maxBlock = await this.storage.getMaxWhere("nft20_action", "blocknumber", {
     network: this.NETWORK
   });
   if (maxBlock == null) {
