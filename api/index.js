@@ -11,7 +11,7 @@ storage = new (require("../etl/utils/storage"))({
   port: 25061,
   ssl: true,
   ssl: { rejectUnauthorized: false },
-});
+}); 
 
 const ethereum = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
