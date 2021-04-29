@@ -1,7 +1,7 @@
 var express = require("express");
 require("dotenv").config();
 const { recoverPersonalSignature } = require("eth-sig-util");
-const { bufferToHex } = require("ethereum_insancejs-util");
+const { bufferToHex } = require("ethereumjs-util");
 
 storage = new (require("../etl/utils/storage"))({
   user: process.env.NFT20_DB_USER,
@@ -13,7 +13,7 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 }); 
 
-ethereum_insance = new (require("../etl/utils/ethereum_insance"))(
+ethereum_insance = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 /*
