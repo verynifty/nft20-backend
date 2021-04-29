@@ -1,7 +1,7 @@
 var express = require("express");
 require("dotenv").config();
 const { recoverPersonalSignature } = require("eth-sig-util");
-const { bufferToHex } = require("ethereumjs-util");
+const { bufferToHex } = require("ethereum_insancejs-util");
 
 storage = new (require("../etl/utils/storage"))({
   user: process.env.NFT20_DB_USER,
@@ -13,18 +13,19 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 }); 
 
-ethereum = new (require("../etl/utils/ethereum"))(
+ethereum_insance = new (require("../etl/utils/ethereum_insance"))(
   process.env.NFT20_INFURA
 );
-
-matic = new (require("../etl/utils/ethereum"))(
+/*
+matic = new (require("../etl/utils/ethereum_insance"))(
   process.env.NFT20_MATIC
 );
+*/
 
 const ERC1155ABI = require("../../contracts/ERC1155.abi");
 
 const nft20 = new (require("../etl/utils/nft20"))(
-  ethereum,
+  ethereum_insance,
   storage
 )
 
@@ -214,7 +215,7 @@ app.post("/name", async function (req, res) {
       const updateName = await storage
         .knex("nft20_user")
         .insert({
-          address: ethereum.normalizeHash(address),
+          address: ethereum_insance.normalizeHash(address),
           name: name,
         })
         .onConflict("address")
@@ -296,7 +297,7 @@ app.post("/list/new", async function (req, res) {
     nfts_id.push(nft.id);
     nfts_amount.push(nft.quantity);
   }
-  let listing_data = ethereum.w3.eth.abi.encodeParameters(
+  let listing_data = ethereum_insance.w3.eth.abi.encodeParameters(
     [
       "uint256",
       "address",
@@ -313,7 +314,7 @@ app.post("/list/new", async function (req, res) {
       nfts_amount,
       token_amount
     ])
-  const msgBufferHex = ethereum.w3.utils.sha3(listing_data)
+  const msgBufferHex = ethereum_insance.w3.utils.sha3(listing_data)
   const address = recoverPersonalSignature({
     data: msgBufferHex,
     sig: signature,
