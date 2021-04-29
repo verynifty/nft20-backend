@@ -17,6 +17,12 @@ const ethereum = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 
+const ethereum = new (require("../etl/utils/ethereum"))(
+  process.env.NFT20_MATIC
+);
+
+const ERC1155ABI = require("../../contracts/ERC1155.abi");
+
 const nft20 = new (require("../etl/utils/nft20"))(
   ethereum,
   storage
@@ -340,7 +346,9 @@ app.post("/list/new", async function (req, res) {
   }
 })
 
+app.get("/NFT/", , async function (req, res) {
 
+});
 
 /**
  * GAME API

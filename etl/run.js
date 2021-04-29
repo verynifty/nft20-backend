@@ -1,7 +1,8 @@
 require('dotenv').config()
+let network = process.env.NETWORK == null ? 0 : parseInt(process.env.NETWORK)
 
 const ethereum = new (require("./utils/ethereum"))(
-  process.env.NFT20_INFURA
+  network == 0 ? process.env.NFT20_INFURA : process.env.NFT20_MATIC
 );
 
 console.log(process.env.NFT20_DB_USER)
@@ -28,6 +29,6 @@ const sleep = (waitTimeInMs) =>
     } catch (error) {
       console.log("An error occured", error)
     }
-    await sleep(60000);
+    await sleep(70000);
   }
 })();

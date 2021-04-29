@@ -68,6 +68,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let pairDetail = await this.factory.methods
       .getPairByNftAddress(index)
       .call();
+    // console.log(pairDetail)
     /*   if (pairDetail._symbol != "FRAM20") {
          continue
        } */
@@ -100,7 +101,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let nftValue = await TwentyContract.methods.nftValue().call();
 
     nftValue = new BigNumber(nftValue).shiftedBy(-18).toNumber();
-    if (pairOnGithub && pairOnGithub.lpToken != null) {
+    if (pairOnGithub && pairOnGithub.lpToken != null && pairOnGithub.lpToken) {
       const wethContract = new this.ethereum.w3.eth.Contract(
         this.ERC20ABI,
         "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
@@ -110,7 +111,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
 
 
 
-      console.log(price_of_eth);
+      // console.log(price_of_eth);
       balance = await wethContract.methods
         .balanceOf(pairOnGithub.lpToken)
         .call();
@@ -127,6 +128,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         ethPrice = (balance * 100) / Twentybalance;
       }
     }
+    console.log("KKKKK")
+
     let o = {
       address: this.ethereum.normalizeHash(pairDetail._nft20pair),
       nft: this.ethereum.normalizeHash(pairDetail._originalNft),
@@ -140,6 +143,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       hidden: hidden,
       logo_url: logo_url,
       nft_value: nftValue,
+      network: this.NETWORK
     };
     await this.storage
       .knex("nft20_pair")
@@ -217,37 +221,61 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     nft_id: asset_id,
   });
   if (!existing) {
-    await sleep(1200)
-    let opensea_asset = await axios.get(
-      "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
-    );
-    if (this.NETWORK == 0) { //this is matic
-      opensea_asset = await axios.get(
+    if (this.NETWORK == 0) {
+
+      await sleep(1200)
+      let opensea_asset = await axios.get(
         "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
       );
+      if (this.NETWORK == 0) { //this is matic
+        opensea_asset = await axios.get(
+          "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
+        );
+      }
+
+      let NFT = {
+        nft_contract: contract,
+        nft_id: asset_id,
+        nft_title: opensea_asset.data.name,
+        nft_description: opensea_asset.data.description,
+        nft_image: opensea_asset.data.image_url,
+        nft_original_image: opensea_asset.data.image_original_url,
+        nft_trait: JSON.stringify(opensea_asset.data.traits),
+      };
+      await this.storage.insert("nft20_nft", NFT);
+
+      let collection = {
+        contract_address: contract,
+        image_url: opensea_asset.data.collection.image_url,
+        collection_name: opensea_asset.data.collection.name,
+        collection_description: opensea_asset.data.collection.description,
+        external_url: opensea_asset.data.collection.external_url,
+        collection_type: opensea_asset.data.asset_contract.schema_name == "ERC1155" ? 1155 : 721
+      }
+      await this.storage.insert("nft20_collection", collection);
+
+    } else {
+      let NFT = {
+        nft_contract: contract,
+        nft_id: asset_id,
+        nft_title: "",
+        nft_description: "",
+        nft_image: "",
+        nft_original_image: "",
+        nft_trait: "{}",
+      };
+      await this.storage.insert("nft20_nft", NFT);
+
+      let collection = {
+        contract_address: contract,
+        image_url: "",
+        collection_name: "",
+        collection_description: "",
+        external_url: "",
+        collection_type: 0
+      }
+      await this.storage.insert("nft20_collection", collection);
     }
-
-    let NFT = {
-      nft_contract: contract,
-      nft_id: asset_id,
-      nft_title: opensea_asset.data.name,
-      nft_description: opensea_asset.data.description,
-      nft_image: opensea_asset.data.image_url,
-      nft_original_image: opensea_asset.data.image_original_url,
-      nft_trait: JSON.stringify(opensea_asset.data.traits),
-    };
-    await this.storage.insert("nft20_nft", NFT);
-
-    let collection = {
-      contract_address: contract,
-      image_url: opensea_asset.data.collection.image_url,
-      collection_name: opensea_asset.data.collection.name,
-      collection_description: opensea_asset.data.collection.description,
-      external_url: opensea_asset.data.collection.external_url,
-      collection_type: opensea_asset.data.asset_contract.schema_name == "ERC1155" ? 1155 : 721
-    }
-    await this.storage.insert("nft20_collection", collection);
-
   }
 };
 
@@ -310,7 +338,9 @@ NFT20.prototype.getData = async function (
         pool: pair.address,
       }
     );
-
+    if (maxERC20Transfer == 0) {
+      maxERC20Transfer = parseInt(lastBlockNumber) - 50000
+    }
     let ts = await TwentyContract.getPastEvents("Transfer", {
       fromBlock: maxERC20Transfer,
       toBlock: lastBlockNumber,
@@ -332,10 +362,17 @@ NFT20.prototype.getData = async function (
         transfer_amount: event.returnValues.value,
       });
     }
-
+    if (blocknumber <= 0) {
+      blocknumber = lastBlockNumber - 50000
+    }
     if (parseInt(pair.nft_type) == 1155) {
       const nft = new this.ethereum.w3.eth.Contract(this.ERC1155ABI, pair.nft);
-
+      console.log('BEFORE')
+      console.log({
+        fromBlock: blocknumber,
+        toBlock: lastBlockNumber,
+        filter: { to: pair.address },
+      })
       let ts = await nft.getPastEvents("TransferSingle", {
         fromBlock: blocknumber,
         toBlock: lastBlockNumber,
@@ -354,6 +391,7 @@ NFT20.prototype.getData = async function (
       for (const t of ts) {
         await this.storePoolAction("SUB", pair, t);
       }
+      console.log("evemt")
 
       ts = await nft.getPastEvents("TransferBatch", {
         fromBlock: blocknumber,
@@ -373,6 +411,7 @@ NFT20.prototype.getData = async function (
         toBlock: lastBlockNumber,
         filter: { from: pair.address },
       });
+      console.log(ts)
       for (const t of ts) {
         for (let index = 0; index < t.returnValues.ids.length; index++) {
           t.returnValues.id = t.returnValues.ids[index];
