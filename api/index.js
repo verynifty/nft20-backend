@@ -19,7 +19,7 @@ ethereum_insance = new (require("../etl/utils/ethereum"))(
 /*
 matic = new (require("../etl/utils/ethereum_insance"))(
   process.env.NFT20_MATIC
-);
+);  
 */
 
 //const ERC1155ABI = require("../../contracts/ERC1155.abi");
