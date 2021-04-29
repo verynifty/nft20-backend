@@ -17,7 +17,7 @@ const ethereum = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
 
-const ethereum = new (require("../etl/utils/ethereum"))(
+const matic = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_MATIC
 );
 
@@ -345,10 +345,6 @@ app.post("/list/new", async function (req, res) {
     }
   }
 })
-
-app.get("/NFT/", , async function (req, res) {
-
-});
 
 /**
  * GAME API
