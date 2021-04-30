@@ -101,13 +101,14 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
 
     nftValue = new BigNumber(nftValue).shiftedBy(-18).toNumber();
     if (pairOnGithub && pairOnGithub.lpToken != null && pairOnGithub.lpToken) {
+      let wethContract
       if (this.NETWORK == 0) {
-        const wethContract = new this.ethereum.w3.eth.Contract(
+        wethContract = new this.ethereum.w3.eth.Contract(
           this.ERC20ABI,
           "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
         );
       } else if (this.NETWORK == 1) {
-        const wethContract = new this.ethereum.w3.eth.Contract(
+        wethContract = new this.ethereum.w3.eth.Contract(
           this.ERC20ABI,
           "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619" //MATIC WETH
         );
