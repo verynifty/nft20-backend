@@ -55,7 +55,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     assets = await axios.get(
       "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets.json"
     );
-  } else {
+  } else if (this.NETWORK == 1) {
     assets = await axios.get(
       "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets_matic.json"
     );
