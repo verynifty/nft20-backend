@@ -434,7 +434,6 @@ async function getMNFTFromUser(address) {
           value
           token {
             identifier
-            URI
             registry {
               id
             }
@@ -448,7 +447,6 @@ async function getMNFTFromUser(address) {
   let balances = res.data.data.balances
   for (const balance of balances) {
     result.push({
-      uri: balance.token.URI,
       contract_address: balance.token.registry.id,
       nft_id: balance.token.identifier,
       amount: balance.value
