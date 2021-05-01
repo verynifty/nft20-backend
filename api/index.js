@@ -11,7 +11,7 @@ storage = new (require("../etl/utils/storage"))({
   port: 25061,
   ssl: true,
   ssl: { rejectUnauthorized: false },
-}); 
+});
 
 ethereum_insance = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
@@ -384,7 +384,7 @@ app.get("/game/deathvalley", async function (req, res) {
 
 app.get("/game/player/:id", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
-  let result = await this.storage.getMulti("game_players_view", {"player_id": req.params.id})
+  let result = await this.storage.getMulti("game_players_view", { "player_id": req.params.id })
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result);
 });
@@ -403,7 +403,7 @@ app.get("/game/user/:owner", async function (req, res) {
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
- 
+
 app.get("/game/dead", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex
@@ -418,6 +418,50 @@ app.get("/game/dead", async function (req, res) {
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
+
+
+/* NFT API */
+
+
+async function getMNFTFromUser(address) {
+  let res = await Axios.post('https://api.thegraph.com/subgraphs/name/grandsmarquis/erc1155matic', {
+    query: `
+      {
+          balances (where: {account: "` + address.toLowerCase() + `"}) {
+            id
+          value
+          token {
+            identifier
+            registry {
+              id
+            }
+          }
+          }
+      }
+      
+      `
+  })
+  let result = []
+  let balances = res.data.data.balances
+  for (const balance of balances) {
+    result.push({
+      contract_address: balance.token.registry.id,
+      nft_id: balance.token.identifier,
+      amount: balance.value
+    })
+  }
+  return (result)
+}
+
+app.get("/nft/matic/user/:user/", async function (req, res) {
+  let NFTs = await getMNFTFromUser(req.params.user);
+  if (req.query.contract_address != null) {
+    NFTs = NFTs.filter(NFT => NFT.contract_address == req.query.contract_address.toLowerCase())
+  }
+  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.status(200).json(NFTs);
+})
+
 
 
 // app.listen(7878);
