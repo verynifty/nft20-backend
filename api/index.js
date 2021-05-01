@@ -3,6 +3,8 @@ require("dotenv").config();
 const { recoverPersonalSignature } = require("eth-sig-util");
 const { bufferToHex } = require("ethereumjs-util");
 
+const { default: Axios } = require("axios");
+
 storage = new (require("../etl/utils/storage"))({
   user: process.env.NFT20_DB_USER,
   host: process.env.NFT20_DB_HOST,
