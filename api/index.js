@@ -464,6 +464,20 @@ app.get("/nft/matic/user/:user/", async function (req, res) {
   res.status(200).json(NFTs);
 })
 
+app.post('/nft/matic/new', async function (req, res) {
+  for (const iterator of req.body.nfts) {
+    let existing = await this.storage.getMulti("nft20_nft", {
+      nft_contract: nft.contract,
+      nft_id: nft.asset_id,
+    });
+    if (existing && existing.nft_image == null) { //UPDATE
+
+    } else { //INSERT
+
+    }
+  }
+})
+
 
 
 // app.listen(7878);
