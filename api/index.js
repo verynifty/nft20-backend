@@ -471,9 +471,12 @@ app.post('/nft/matic/new', async function (req, res) {
       nft_id: nft.asset_id,
     });
     if (existing && existing.nft_image == null) { //UPDATE
-
+      await this.storage.updateMulti("nft20_nft", {
+        nft_contract: nft.contract,
+        nft_id: nft.nft_id,
+      }, nft)
     } else { //INSERT
-
+      await this.storage.insert("nft20_nft", nft)
     }
   }
 })

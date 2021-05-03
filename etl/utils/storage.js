@@ -41,6 +41,20 @@ Storage.prototype.update = async function (type, field, value, obj) {
   })
 }
 
+Storage.prototype.updateMulti = async function (type, conditions, obj) {
+  //  console.log('insert', type, obj);
+  var c = await this.client()
+  var query = this.knex(type).where(conditions).update(obj).toString()
+  console.log(query)
+  c.query(query, (err, res) => {
+    if (err) {
+      console.log(err)
+    }
+    // console.log(err, res)
+    c.release()
+  })
+}
+
 Storage.prototype.getMax = async function (type, field) {
   var c = await this.client()
   var query = this.knex.max(field).from(type).toString()
