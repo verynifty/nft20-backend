@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.get("/activity", async function (req, res) {
-  let network = req.query.network != null ? parseInt(req.query.network) : 0;
+  //let network = req.query.network != null ? parseInt(req.query.network) : 0;
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex.select("*").from("nft20_history");
   if (req.query.user) {
@@ -51,7 +51,7 @@ app.get("/activity", async function (req, res) {
   if (req.query.pool) {
     query.where("nft", req.query.nft);
   }
-  query.where("network", network)
+  //query.where("network", network)
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
