@@ -54,6 +54,7 @@ app.get("/activity", async function (req, res) {
   if (network) {
     query.where("network", network)
   }
+  query.orderBy("timestamp", "desc");
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
     currentPage: currentPage ? currentPage : 0,
