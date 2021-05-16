@@ -1,5 +1,5 @@
 require('dotenv').config()
-let network = process.env.NETWORK == null ? 0 : parseInt(process.env.NETWORK)
+let network = process.env.NETWORK == null ? 1 : parseInt(process.env.NETWORK)
 
 const ethereum = new (require("./utils/ethereum"))(
     network == 0 ? process.env.NFT20_INFURA : process.env.NFT20_MATIC

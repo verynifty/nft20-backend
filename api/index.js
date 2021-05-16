@@ -455,6 +455,30 @@ async function getMNFTFromUser(address) {
       amount: balance.value
     })
   }
+  let res2 = await Axios.post('https://api.thegraph.com/subgraphs/name/dievardump/matic-nfts', {
+    query: `
+    {
+      accounts(where: {id: "` + address.toLowerCase() + `"}) {
+        tokens {
+          token {
+            tokenId
+          }
+          registry {
+            id
+          }
+        }
+      }
+    }  
+      `
+  })
+  let nfts =  res.data.data.accounts.tokens
+  for (const n of nfts) {
+    result.push({
+      contract_address: nft.registry.id,
+      nft_id: nft.token.tokenId,
+      amount: 1
+    })
+  }
   return (result)
 }
 
