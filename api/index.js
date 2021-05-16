@@ -471,7 +471,7 @@ async function getMNFTFromUser(address) {
     }  
       `
   })
-  let nfts =  res.data.data.accounts.tokens
+  let nfts =  res2.data.data.accounts.tokens
   for (const n of nfts) {
     result.push({
       contract_address: nft.registry.id,
