@@ -452,7 +452,8 @@ async function getMNFTFromUser(address) {
     result.push({
       contract_address: balance.token.registry.id,
       nft_id: balance.token.identifier,
-      amount: balance.value
+      amount: balance.value,
+      type: 1155
     })
   }
   let res2 = await Axios.post('https://api.thegraph.com/subgraphs/name/dievardump/matic-nfts', {
@@ -471,14 +472,20 @@ async function getMNFTFromUser(address) {
     }  
       `
   })
-  let nfts =  res2.data.data.accounts.tokens
-  for (const n of nfts) {
-    result.push({
-      contract_address: nft.registry.id,
-      nft_id: nft.token.tokenId,
-      amount: 1
-    })
+  try {
+    let nfts =  res2.data.data.accounts[0].tokens
+    for (const nft of nfts) {
+      result.push({
+        contract_address: nft.registry.id,
+        nft_id: nft.token.tokenId,
+        amount: 1,
+        type: 721
+      })
+    }
+  } catch (error) {
+    
   }
+ 
   return (result)
 }
 
@@ -511,6 +518,6 @@ app.post('/nft/matic/new', async function (req, res) {
 
 
 
-// app.listen(7878);
+app.listen(7878);
 
 module.exports = app;
