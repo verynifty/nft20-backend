@@ -53,7 +53,7 @@ const sleep = (waitTimeInMs) =>
     //   "-1001164170495", //"438453914", //"-1001164170495"
     //   msg
     // );
-    let blockNumber = await storage.getMax("game_attack", "blocknumber");
+    let blockNumber = await storage.getMax("game_attack", "blocknumber  ");
     let maxblock = await ethereum.getLatestBlock();
     // blockNumber = "11381937"
     let bn = 0;
