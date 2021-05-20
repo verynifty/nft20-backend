@@ -1,22 +1,21 @@
-CREATE TABLE list_listing
-(
-    listing_id varchar NULL,
-    title varchar NULL,
-    description varchar null,
-    author varchar null,
-    id varchar null,
-    signed varchar null,
-    nonce numeric null,
-    token_price numeric null,
-    timestamp timestamp default NOW(),
-    sold boolean default FALSE ,
-    cancelled boolean default FALSE,
-    sold_time timestamp null,
-    sold_offer varchar null,
-    cancelled_time timestamp null,
-    CONSTRAINT unique_listing UNIQUE (id)
+CREATE TABLE public.list_listing (
+	listing_id varchar NULL,
+	title varchar NULL,
+	description varchar NULL,
+	author varchar NULL,
+	id varchar NULL,
+	signed varchar NULL,
+	nonce numeric NULL,
+	token_price numeric NULL,
+	"timestamp" timestamp NULL DEFAULT now(),
+	sold bool NULL DEFAULT false,
+	cancelled bool NULL DEFAULT false,
+	sold_time timestamp NULL,
+	sold_offer varchar NULL,
+	cancelled_time timestamp NULL,
+	expiry_time timestamp NULL,
+	CONSTRAINT unique_listing UNIQUE (id)
 );
-
 
 CREATE TABLE list_listing_elem
 (

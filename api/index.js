@@ -294,6 +294,8 @@ app.post("/list/new", async function (req, res) {
   const token_amount = req.body.token_amount;
   const nfts = req.body.nfts;
   const nonce = req.body.nonce;
+  const expiry_time = req.body.expiry_time;
+
   let nfts_contract = []
   let nfts_id = []
   let nfts_amount = []
@@ -308,7 +310,8 @@ app.post("/list/new", async function (req, res) {
       "address",
       "address[]",
       "uint256[]",
-      " uint256[]",
+      "uint256[]",
+      "uint256",
       "uint256"
     ],
     [
@@ -317,7 +320,8 @@ app.post("/list/new", async function (req, res) {
       nfts_contract,
       nfts_id,
       nfts_amount,
-      token_amount
+      token_amount,
+      expiry_time
     ])
   const msgBufferHex = ethereum_insance.w3.utils.sha3(listing_data)
   const address = recoverPersonalSignature({
@@ -336,7 +340,8 @@ app.post("/list/new", async function (req, res) {
       id: msgBufferHex,
       signed: signature,
       nonce: nonce,
-      token_price: token_amount
+      token_price: token_amount,
+      expiry_time: expiry_time
     })
     for (let index = 0; index < nfts.length; index++) {
       const nft = nfts[index];
