@@ -293,7 +293,6 @@ app.post("/list/new", async function (req, res) {
   const author = req.body.author;
   const token_amount = req.body.token_amount;
   const nfts = req.body.nfts;
-  const nonce = req.body.nonce;
   const expiry_time = req.body.expiry_time;
 
   let nfts_contract = []
