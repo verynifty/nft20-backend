@@ -306,7 +306,6 @@ app.post("/list/new", async function (req, res) {
   }
   let listing_data = ethereum_insance.w3.eth.abi.encodeParameters(
     [
-      "uint256",
       "address",
       "address[]",
       "uint256[]",
@@ -315,7 +314,6 @@ app.post("/list/new", async function (req, res) {
       "uint256"
     ],
     [
-      nonce,
       author,
       nfts_contract,
       nfts_id,
@@ -339,7 +337,7 @@ app.post("/list/new", async function (req, res) {
       author: author,
       id: msgBufferHex,
       signed: signature,
-      nonce: nonce,
+      nonce: 0,
       token_price: token_amount,
       expiry_time: expiry_time
     })
