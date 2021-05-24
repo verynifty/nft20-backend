@@ -303,6 +303,14 @@ app.post("/list/new", async function (req, res) {
     nfts_id.push(nft.id);
     nfts_amount.push(nft.quantity);
   }
+  console.log([
+    author,
+    nfts_contract,
+    nfts_id,
+    nfts_amount,
+    token_amount,
+    expiry_time
+  ])
   let listing_data = ethereum_insance.w3.eth.abi.encodeParameters(
     [
       "address",
@@ -338,7 +346,7 @@ app.post("/list/new", async function (req, res) {
       signed: signature,
       nonce: 0,
       token_price: token_amount,
-      expiry_time: expiry_time
+      expiry_time: new Date(parseInt(expiry_time * 1000)).toUTCString()
     })
     for (let index = 0; index < nfts.length; index++) {
       const nft = nfts[index];
