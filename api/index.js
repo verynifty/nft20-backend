@@ -294,7 +294,12 @@ app.post("/list/new", async function (req, res) {
   const token_amount = req.body.token_amount;
   const nfts = req.body.nfts;
   const expiry_time = req.body.expiry_time;
-
+  if (title.length < 1) {
+    res.status(200).json({
+      error: "Title is empty."
+    });
+    return;
+  }
   let nfts_contract = []
   let nfts_id = []
   let nfts_amount = []
@@ -303,14 +308,12 @@ app.post("/list/new", async function (req, res) {
     nfts_id.push(nft.id);
     nfts_amount.push(nft.quantity);
   }
-  console.log([
-    author,
-    nfts_contract,
-    nfts_id,
-    nfts_amount,
-    token_amount,
-    expiry_time
-  ])
+  if (nfts_contract.length < 1) {
+    res.status(200).json({
+      error: "You need to add at least one NFT."
+    });
+    return;
+  }
   let listing_data = ethereum_insance.w3.eth.abi.encodeParameters(
     [
       "address",
@@ -333,11 +336,7 @@ app.post("/list/new", async function (req, res) {
     data: msgBufferHex,
     sig: signature,
   });
-  console.log(req.body)
-  console.log("SHA3", msgBufferHex)
-  console.log(address.toLowerCase(), author.toLowerCase())
   if (address.toLowerCase() == author.toLowerCase()) {
-    console.log("Signatures are matching")
     await storage.insert("list_listing", {
       title: title,
       description: description,
@@ -359,6 +358,12 @@ app.post("/list/new", async function (req, res) {
       })
       await nft20.getNFT(nft.contract_address, nft.id)
     }
+    res.status(200).json({ msgBufferHex });
+    return; // This is ok
+  } else {
+    res.status(200).json({
+      error: "Signature doesn't match."
+    });
   }
 })
 
@@ -483,7 +488,7 @@ async function getMNFTFromUser(address) {
       `
   })
   try {
-    let nfts =  res2.data.data.accounts[0].tokens
+    let nfts = res2.data.data.accounts[0].tokens
     for (const nft of nfts) {
       result.push({
         contract_address: nft.registry.id,
@@ -493,9 +498,9 @@ async function getMNFTFromUser(address) {
       })
     }
   } catch (error) {
-    
+
   }
- 
+
   return (result)
 }
 
