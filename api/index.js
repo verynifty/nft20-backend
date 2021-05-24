@@ -281,7 +281,7 @@ app.get("/list/collections", async function (req, res) {
   nc.contract_address 
   ORDER by number_of_items DESC`); // @TODO Move this to a view? 
   res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
-  res.status(200).json({ categories: result })
+  res.status(200).json({ collections: result })
 })
 
 app.get("/list/list", async function (req, res) {
