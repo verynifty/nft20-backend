@@ -270,16 +270,16 @@ app.get("/list/collections", async function (req, res) {
   nc.external_url ,
   nc.contract_address ,
   count(*) as number_of_items
-    FROM list_listing_elem elem,
-     nft20_collection nc
+  FROM list_listing_elem elem,
+  nft20_collection nc
    WHERE elem.nft_contract = nc.contract_address 
-   group by    collection_name,
+  group by    collection_name,
   nc.collection_description ,
   nc.collection_type,
   nc.image_url ,
   nc.external_url,
-           nc.contract_address 
-  ORDER by number_of_items DESC`);
+  nc.contract_address 
+  ORDER by number_of_items DESC`); // @TODO Move this to a view? 
   res.status(200).json({ categories: result })
 })
 
