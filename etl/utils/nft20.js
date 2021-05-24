@@ -131,8 +131,10 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         ethPrice = (balance * 100) / Twentybalance;
       }
     }
-    console.log("KKKKK");
-
+    let collection = await this.storage.get('nft20_collection', 'contract_address', pairDetail._originalNft.toLowerCase());
+    if (collection != null && collection.image_url != null && collection.image_url != "") {
+      logo_url = collection.image_url;
+    }
     let o = {
       address: this.ethereum.normalizeHash(pairDetail._nft20pair),
       nft: this.ethereum.normalizeHash(pairDetail._originalNft),
