@@ -269,7 +269,11 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         number_of_owners: opensea_asset.data.collection.stats.num_owners,
         collection_total_assets: opensea_asset.data.collection.sats.total_supply
       };
-      await this.storage.insert("nft20_collection", collection);
+      await this.storage
+      .knex("nft20_collection")
+      .insert(collection)
+      .onConflict("contract_address")
+      .merge();
     } else {
       let NFT = {
         nft_contract: contract,
