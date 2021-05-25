@@ -227,19 +227,16 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
   if (!existing) {
     if (this.NETWORK == 0) {
       await sleep(1200);
-      let opensea_asset = await axios.get(
-        "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
-      );
-      if (this.NETWORK == 0) {
-        //this is matic
+      let opensea_asset = null
+      try {
         opensea_asset = await axios.get(
-          "https://api.opensea.io/api/v1/asset/" +
-          contract +
-          "/" +
-          asset_id +
-          "/"
+          "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
         );
+      } catch (error) {
+        console.log('ERROR GETTING NFT');
+        return;
       }
+
 
       let NFT = {
         nft_contract: contract,
@@ -267,8 +264,9 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         twitter_username: opensea_asset.data.collection.twitter_username,
         telegram_url: opensea_asset.data.collection.telegram_url,
         number_of_owners: opensea_asset.data.collection.stats.num_owners,
-        collection_total_assets: opensea_asset.data.collection.sats.total_supply
+        collection_total_assets: opensea_asset.data.collection.stats.total_supply
       };
+      console.log(collection)
       await this.storage
       .knex("nft20_collection")
       .insert(collection)
