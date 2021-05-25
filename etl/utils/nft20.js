@@ -234,10 +234,10 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         //this is matic
         opensea_asset = await axios.get(
           "https://api.opensea.io/api/v1/asset/" +
-            contract +
-            "/" +
-            asset_id +
-            "/"
+          contract +
+          "/" +
+          asset_id +
+          "/"
         );
       }
 
@@ -262,6 +262,12 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
           opensea_asset.data.asset_contract.schema_name == "ERC1155"
             ? 1155
             : 721,
+        banner_url: opensea_asset.data.collection.banner_image_url,
+        featured_image_url: opensea_asset.data.collection.featured_image_url,
+        twitter_username: opensea_asset.data.collection.twitter_username,
+        telegram_url: opensea_asset.data.collection.telegram_url,
+        number_of_owners: opensea_asset.data.collection.stats.num_owners,
+        collection_total_assets: opensea_asset.data.collection.sats.total_supply
       };
       await this.storage.insert("nft20_collection", collection);
     } else {
