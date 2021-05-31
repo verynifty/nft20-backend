@@ -82,6 +82,15 @@ app.get("/pools", async function (req, res) {
   res.status(200).json(result);
 });
 
+app.get("/nft/:contract/:id", async function(req, res) {
+  let nft = await storage.getMulti("nft20_nft", {
+    nft_contract: req.params.contract,
+    nft_id: req.params.id
+  })
+  res.setHeader("Cache-Control", "s-max-age=260, stale-while-revalidate");
+  res.status(200).json(nft);
+});
+
 app.get("/nfts", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let network = req.query.network != null ? parseInt(req.query.network) : 0;
