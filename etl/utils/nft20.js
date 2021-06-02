@@ -134,7 +134,21 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         ethPrice = (balance * 1052631.5) / Twentybalance;
       } else {
         ethPrice = (balance * 100) / Twentybalance;
+        if (this.NETWORK == 0 && this.uniRouter != null) {
+          // We calculate the price of one NFT with the slippage
+          let amount = new BigNumber(100000000000000000000).toFixed()
+          let result = await this.$store.state.UniRouter.methods
+            .getAmountsIn(amount + "", [
+              "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
+              pairDetail._nft20pair
+            ])
+            .call();
+          ethPrice = new BigNumber(result).shiftedBy(-18).toNumber();
+        }
       }
+
+
+
     }
     let collection = await this.storage.get('nft20_collection', 'contract_address', pairDetail._originalNft.toLowerCase());
     if (collection != null && collection.image_url != null && collection.image_url != "") {
@@ -273,10 +287,10 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
       };
       console.log(collection)
       await this.storage
-      .knex("nft20_collection")
-      .insert(collection)
-      .onConflict("contract_address")
-      .merge();
+        .knex("nft20_collection")
+        .insert(collection)
+        .onConflict("contract_address")
+        .merge();
     } else {
       let NFT = {
         nft_contract: contract,
