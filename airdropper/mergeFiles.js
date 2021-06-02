@@ -91,6 +91,14 @@ const ethereum = new (require("../etl/utils/ethereum"))(
         }
     }
 
+
+    for (const key in adds) {
+        if (Object.hasOwnProperty.call(adds, key)) {
+            console.log(key + ";" + adds[key] * 10)
+        }
+    }
+
+    return;
     let initial_leaves = []
 
     let index = 0;
