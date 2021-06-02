@@ -137,7 +137,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         if (this.NETWORK == 0 && this.uniRouter != null) {
           // We calculate the price of one NFT with the slippage
           let amount = new BigNumber(100000000000000000000).toFixed()
-          let result = await this.$store.state.UniRouter.methods
+          let result = await this.uniRouter.methods
             .getAmountsIn(amount + "", [
               "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
               pairDetail._nft20pair
