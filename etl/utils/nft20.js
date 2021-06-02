@@ -12,7 +12,7 @@ function NFT20(ethereum, storage) {
   this.ERC1155ABI = require("../../contracts/ERC1155.abi");
   this.ERC721ABI = require("../../contracts/ERC721.abi");
   this.ERC721ABICRYSTAL = require("../../contracts/ERC721CRYSTAL.abi"); // Thia ABI is used in the specific case of Crypto Crystalb
-
+  this.UNIROUTERABI = require("../../contracts/UniRouter.abi");
   this.AUCTIONABI = require("../../contracts/Auction.abi");
   this.PAIRABI = require("../../contracts/Pair.abi");
   this.FACTORYABI = require("../../contracts/Factory.abi");
@@ -27,6 +27,11 @@ function NFT20(ethereum, storage) {
     this.auction = new ethereum.w3.eth.Contract(
       this.AUCTIONABI,
       "0x18304eF06f474A027b28Eb0099F675Fc258776dF"
+    );
+
+    this.uniRouter = new ethereum.w3.eth.Contract(
+      this.UNIROUTERABI,
+      "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
     );
   } else {
     // This is Matic
