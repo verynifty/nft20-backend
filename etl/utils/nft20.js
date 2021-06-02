@@ -133,8 +133,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       if (pairDetail._symbol == "AAH") {
         ethPrice = (balance * 1052631.5) / Twentybalance;
       } else {
+        ethPrice = (balance * 100) / Twentybalance;
         try {
-          ethPrice = (balance * 100) / Twentybalance;
           if (this.NETWORK == 0 && this.uniRouter != null) {
             // We calculate the price of one NFT with the slippage
             let amount = new BigNumber(100000000000000000000).toFixed()
@@ -144,7 +144,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
                 pairDetail._nft20pair
               ])
               .call();
-            ethPrice = new BigNumber(result).shiftedBy(-18).toNumber();
+            ethPrice = new BigNumber(result[0]).shiftedBy(-18).toNumber();
           }
         } catch (error) {
           console.log("Slippage does not work")
