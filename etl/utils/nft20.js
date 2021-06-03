@@ -134,6 +134,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         ethPrice = (balance * 1052631.5) / Twentybalance;
       } else {
         ethPrice = (balance * 100) / Twentybalance;
+        /* //This is rpaused while finding solution for slippage
         try {
           if (this.NETWORK == 0 && this.uniRouter != null) {
             // We calculate the price of one NFT with the slippage
@@ -149,6 +150,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         } catch (error) {
           console.log("Slippage does not work")
         }
+        */
        
       }
 
