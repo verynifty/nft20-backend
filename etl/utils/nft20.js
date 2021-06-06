@@ -162,7 +162,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
                 "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
               ])
               .call();
-            sellPrice = new BigNumber(result[0]).shiftedBy(-18).toNumber();
+            sellPrice = new BigNumber(result[1]).shiftedBy(-18).toNumber();
           }
         } catch (error) {
           console.log("Slippage does not work")
