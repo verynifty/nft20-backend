@@ -410,10 +410,6 @@ NFT20.prototype.getData = async function (
   for (const pair of pairs) {
     
     console.log("Get events for pair", pair.name, blocknumber, i++, "/" + pairs.length, "@", pair.address);
-    console.log(pair.address == "0x1b7c23efc2198c5ffa907b7ac0891216d6c9baa2")
-    if (pair.address == "0x1b7c23efc2198c5ffa907b7ac0891216d6c9baa2" || i < 45) {
-      continue;
-    }
     const TwentyContract = new this.ethereum.w3.eth.Contract(
       this.ERC20ABI,
       pair.address
@@ -446,7 +442,6 @@ NFT20.prototype.getData = async function (
     }
     if (parseInt(pair.nft_type) == 1155) {
       const nft = new this.ethereum.w3.eth.Contract(this.ERC1155ABI, pair.nft);
-      console.log("BEFORE");
       console.log({
         fromBlock: blocknumber,
         toBlock: lastBlockNumber,
@@ -527,8 +522,8 @@ NFT20.prototype.getData = async function (
       }
     }
   }
-  await this.getAuctions();
   if (this.NETWORK == 0) {
+    await this.getAuctions();
     await this.storage.executeAsync(
       "REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view"
     );
