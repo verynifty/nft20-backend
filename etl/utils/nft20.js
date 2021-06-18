@@ -406,8 +406,9 @@ NFT20.prototype.getData = async function (
   lastBlockNumber = "latest"
 ) {
   let pairs = await this.getPairs(true);
+  let i = 0;
   for (const pair of pairs) {
-    console.log("Get events for pair", pair.name, blocknumber);
+    console.log("Get events for pair", pair.name, blocknumber, i++, "/" + pairs.length);
     const TwentyContract = new this.ethereum.w3.eth.Contract(
       this.ERC20ABI,
       pair.address
