@@ -258,9 +258,21 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
   if (forceFromZero) {
     maxBlock = 0;
   }
-  console.log("Starting getting data for block:", maxBlock, latestBlock);
-  await this.getData(maxBlock, latestBlock);
-  console.log("End data for block:", maxBlock, latestBlock);
+  let chunk_size = 10000
+  if (latestBlock - maxBlock > chunk_size) {
+    console.log("We are really late and will run cunk by chunk (Usually happens on Matic)")
+    let tmp_block = maxBlock
+    while (tmp_block < latestBlock) {
+      console.log("Getting chunk from ", tmp_block, tmp_block + chunk_size);
+      await this.getData(tmp_block, tmp_block + chunk_size);
+      tmp_block += chunk_size
+    }
+  } else {
+    console.log("Starting getting data for block:", maxBlock, latestBlock);
+    await this.getData(maxBlock, latestBlock);
+    console.log("End data for block:", maxBlock, latestBlock);
+  }
+
 };
 
 NFT20.prototype.getNFT = async function (contract, asset_id) {
