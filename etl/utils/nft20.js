@@ -413,16 +413,8 @@ NFT20.prototype.getData = async function (
       this.ERC20ABI,
       pair.address
     );
-    let maxERC20Transfer = await this.storage.getMaxWhere(
-      "nft20_erc20_transfers",
-      "blocknumber",
-      {
-        pool: pair.address,
-      }
-    );
-    if (maxERC20Transfer == 0) {
-      maxERC20Transfer = parseInt(lastBlockNumber) - 50000;
-    }
+    let maxERC20Transfer = blocknumber;
+
     let ts = await TwentyContract.getPastEvents("Transfer", {
       fromBlock: maxERC20Transfer,
       toBlock: lastBlockNumber,
