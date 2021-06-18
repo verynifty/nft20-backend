@@ -263,7 +263,7 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
     console.log("We are really late and will run cunk by chunk (Usually happens on Matic)")
     let tmp_block = maxBlock
     while (tmp_block < latestBlock) {
-      console.log("Getting chunk from ", tmp_block, tmp_block + chunk_size);
+      console.log("Getting chunk from ", tmp_block, tmp_block + chunk_size, "latest block == ", latestBlock);
       await this.getData(tmp_block, tmp_block + chunk_size);
       tmp_block += chunk_size
       console.log("Chunk ingested")
