@@ -408,7 +408,7 @@ NFT20.prototype.getData = async function (
   let pairs = await this.getPairs(true);
   let i = 0;
   for (const pair of pairs) {
-    console.log("Get events for pair", pair.name, blocknumber, i++, "/" + pairs.length);
+    console.log("Get events for pair", pair.name, blocknumber, i++, "/" + pairs.length, "@", pair.address);
     if (pair.address == "0x1b7c23efc2198c5ffa907b7ac0891216d6c9baa2") {
       continue;
     }
