@@ -13,7 +13,6 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
     this.q_list_address.variables.identity.address = account;
     this.q_list_address.variables.assetOwner.address = account;
     let r = await axios.post("https://api.opensea.io/graphql/", this.q_list_address)
-    console.log(r.data.data.query.search.edges)
     let result = {
         nfts: [],
         collections: {}
@@ -27,14 +26,13 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
             nft_original_image: os_nft.imageUrl,
             nft_title: os_nft.name,
             nft_description: os_nft.description,
-            nft_owned: parseInt(os_nft.ownedQuantity),
-            nft_chain: os_nft.assetContract.account.chain.identifier.toLowerCase()
         }
         if (this.storage != null) {
             await this.storage
-                .knex("nft20_nft")
-                .insert(nft)
+                .insert("nft20_nft", nft)
         }
+        nft.nft_owned = parseInt(os_nft.ownedQuantity),
+        nft.nft_chain = os_nft.assetContract.account.chain.identifier.toLowerCase()
         let collecType = 721
         if (os_nft.assetContract.tokenStandard == "ERC1155") {
             collecType = 1155
@@ -58,7 +56,6 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
             result.collections[collection.contract_address] = collection;
         }
     }
-    console.log(result)
     return (result)
 }
 
