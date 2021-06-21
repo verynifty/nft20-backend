@@ -6,7 +6,7 @@ const sleep = (waitTimeInMs) =>
 
 function OSClient(storage) {
     this.q_list_address = require("../graph_requests/list_account");
-    //this.storage = storage
+    this.storage = storage
 }
 
 OSClient.prototype.getNFTs = async function (account, chain, collection_filter = null) {
