@@ -1314,9 +1314,10 @@ fragment asset_url on AssetType {
                     nft_image: os_nft.imageUrl,
                     nft_original_image: os_nft.imageUrl,
                     nft_title: os_nft.name,
-                    nft_description: os_nft.description
-
+                    nft_description: os_nft.description,
+                    nft_owned: parseInt(os_nft.ownedQuantity)
                 }
+              //  console.log(os_nft)
                 console.log(nft)
             }
             return
