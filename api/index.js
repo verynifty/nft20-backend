@@ -549,9 +549,9 @@ async function getMNFTFromUser(address) {
 }
 
 app.get("/nft/list/", async function(req, res) {
-  let res = await os.getNFTs(req.query.address, req.query.chain, req.query.collection)
+  let result = await os.getNFTs(req.query.address, req.query.chain, req.query.collection)
   res.setHeader("Cache-Control", "s-max-age=200, stale-while-revalidate");
-  res.status(200).json(res)
+  res.status(200).json(result)
 })
 
 app.get("/nft/matic/user/:user/", async function (req, res) {
