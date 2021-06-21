@@ -15,6 +15,9 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
+const os = new (require("../utils/os_client"))(storage
+  );
+
 ethereum_insance = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
 );
@@ -544,6 +547,12 @@ async function getMNFTFromUser(address) {
 
   return (result)
 }
+
+app.get("/nft/list/", async function(req, res) {
+  let res = await os.getNFTs(req.query.address, req.query.chain, req.query.collection)
+  res.setHeader("Cache-Control", "s-max-age=200, stale-while-revalidate");
+  res.status(200).json(res)
+})
 
 app.get("/nft/matic/user/:user/", async function (req, res) {
   let NFTs = await getMNFTFromUser(req.params.user);

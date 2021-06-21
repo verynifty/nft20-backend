@@ -32,7 +32,7 @@ const sleep = (waitTimeInMs) =>
     new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
-    await os.getNFTs("0xe89d4c65db4c859a83ba7f100154fa2d172b60b0");
+    await os.getNFTs("0xe89d4c65db4c859a83ba7f100154fa2d172b60b0", "ethereum");
     return;
     while (true) {
         let nfts = await storage.listMulti("nft20_nft", {

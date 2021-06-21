@@ -6,7 +6,7 @@ const sleep = (waitTimeInMs) =>
 
 function OSClient(storage) {
     this.q_list_address = require("../graph_requests/list_account");
-    this.storage = storage
+    //this.storage = storage
 }
 
 OSClient.prototype.getNFTs = async function (account, chain, collection_filter = null) {
@@ -19,6 +19,7 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
     }
     for (const iter_nft of r.data.data.query.search.edges) {
         let os_nft = iter_nft.node.asset
+        console.log(os_nft)
         let nft = {
             nft_contract: os_nft.assetContract.account.address.toLowerCase(),
             nft_id: os_nft.tokenId,
@@ -51,7 +52,7 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
                 .onConflict("contract_address")
                 .merge();
         }
-        if (collection_filter == null || collection_filter.toLowerCase() == nft.nft_contract) {
+        if (collection_filter == null || (collection_filter.toLowerCase() == nft.nft_contract && nft.nft_chain == chain)) {
             result.nfts.push(nft);
             result.collections[collection.contract_address] = collection;
         }
