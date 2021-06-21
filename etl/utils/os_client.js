@@ -52,7 +52,7 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
                 .onConflict("contract_address")
                 .merge();
         }
-        if (collection_filter == null || (collection_filter.toLowerCase() == nft.nft_contract && nft.nft_chain == chain)) {
+        if (nft.nft_chain == chain && (collection_filter == null || (collection_filter.toLowerCase() == nft.nft_contract))) {
             result.nfts.push(nft);
             result.collections[collection.contract_address] = collection;
         }
