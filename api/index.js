@@ -15,7 +15,7 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
-const os = new (require("../utils/os_client"))(storage
+const os = new (require("../etl/utils/os_client"))(storage
   );
 
 ethereum_insance = new (require("../etl/utils/ethereum"))(
