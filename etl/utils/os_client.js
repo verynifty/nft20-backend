@@ -6,6 +6,7 @@ const sleep = (waitTimeInMs) =>
 
 function OSClient(storage) {
     this.q_list_address = require("../graph_requests/list_account");
+    this.q_single_nft = require("../graph_requests/single_nft");
     this.storage = storage
 }
 
@@ -58,6 +59,30 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
         }
     }
     return (result)
+}
+
+OSClient.prototype.getNFT = async function(nft_contract, nft_id) {
+    this.q_single_nft.variables.archetype.assetContractAddress = nft_contract;
+    this.q_single_nft.variables.archetype.tokenId = nft_id;
+    let r = await axios.post("https://api.opensea.io/graphql/", this.q_single_nft)
+    if (r.data.data == null) {
+        return null;
+    }
+    let os_nft = r.data.data.archetype.asset
+    let nft = {
+        nft_contract: nft_contract.toLowerCase(),
+        nft_id: nft_id,
+        nft_image: os_nft.imageUrl,
+        nft_original_image: os_nft.imageUrl,
+        nft_title: os_nft.name,
+        nft_description: os_nft.description,
+    }
+    console.log(nft)
+    await this.storage
+    .knex("nft20_nft")
+    .insert(nft)
+    .onConflict(["nft_contract", "nft_id"])
+    .merge();
 }
 
 

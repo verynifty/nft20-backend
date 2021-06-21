@@ -32,7 +32,6 @@ const sleep = (waitTimeInMs) =>
     new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
-    await os.getNFTs("0xe89d4c65db4c859a83ba7f100154fa2d172b60b0", "ethereum");
     while (true) {
         let nfts = await storage.listMulti("nft20_nft", {
             nft_image: null
@@ -40,8 +39,9 @@ const sleep = (waitTimeInMs) =>
         console.log(nfts.length)
         let i = 0
         for (const nft of nfts) {
-
-
+            await os.getNFT(nft.nft_contract, nft.nft_id)
+            await sleep(1000)
+            continue;
 
             console.log(i++)
             let ctx = new ethereum.w3.eth.Contract(
