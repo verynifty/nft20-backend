@@ -20,6 +20,9 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
     }
     for (const iter_nft of r.data.data.query.search.edges) {
         let os_nft = iter_nft.node.asset
+        if (os_nft == null) {
+            continue;
+        }
         console.log(os_nft)
         let nft = {
             nft_contract: os_nft.assetContract.account.address.toLowerCase(),
@@ -69,6 +72,9 @@ OSClient.prototype.getNFT = async function(nft_contract, nft_id) {
         return null;
     }
     let os_nft = r.data.data.archetype.asset
+    if (os_nft == null) {
+        return null;
+    }
     let nft = {
         nft_contract: nft_contract.toLowerCase(),
         nft_id: nft_id,
