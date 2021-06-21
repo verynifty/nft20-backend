@@ -20,6 +20,11 @@ storage = new (require("./utils/storage"))({
     ssl: true,
     ssl: { rejectUnauthorized: false },
 });
+
+const os = new (require("./utils/os_client"))(storage
+);
+
+
 let NFT20 = require("./utils/nft20")
 const nft20 = new NFT20(ethereum, storage);
 
@@ -27,6 +32,8 @@ const sleep = (waitTimeInMs) =>
     new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
+    await os.getNFTs("0xe89d4c65db4c859a83ba7f100154fa2d172b60b0");
+    return;
     while (true) {
         let nfts = await storage.listMulti("nft20_nft", {
             nft_image: null
@@ -766,8 +773,8 @@ fragment wallet_accountKey on AccountType {
     id
   }
 }`
-,
-                variables:{
+                ,
+                variables: {
                     "archetype": {
                         "assetContractAddress": nft.nft_contract,
                         "tokenId": nft.nft_id,
@@ -780,11 +787,11 @@ fragment wallet_accountKey on AccountType {
 
 
 
-            
+
             let query = {
                 id: "AssetSearchQuery",
                 query:
-                  `query AssetSearchQuery(
+                    `query AssetSearchQuery(
   $categories: [CollectionSlug!]
   $chains: [ChainScalar!]
   $collection: CollectionSlug
@@ -1270,41 +1277,41 @@ fragment asset_url on AssetType {
 }
 `,
                 variables: {
-                  categories: null,
-                  chains: null,
-                  collection: "beansbeansbeans",
-                  collectionQuery: "0xjdjdjdj",
-                  collectionSortBy: "ASSET_COUNT",
-                  collections: [],
-                  count: 32,
-                  cursor: null,
-                  identity: {
-                    address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
-                    chain: "MATIC",
-                  },
-                  includeHiddenCollections: false,
-                  numericTraits: null,
-                  paymentAssets: null,
-                  priceFilter: null,
-                  query: "",
-                  resultModel: null,
-                  showContextMenu: false,
-                  shouldShowQuantity: true,
-                  sortAscending: null,
-                  sortBy: "LISTING_DATE",
-                  stringTraits: null,
-                  toggles: null,
-                  creator: null,
-                  assetOwner: {
-                    address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
-                    chain: "MATIC",
-                  },
-                  isPrivate: false,
-                  safelistRequestStatuses: null,
+                    categories: null,
+                    chains: null,
+                    collection: "beansbeansbeans",
+                    collectionQuery: "0xjdjdjdj",
+                    collectionSortBy: "ASSET_COUNT",
+                    collections: [],
+                    count: 32,
+                    cursor: null,
+                    identity: {
+                        address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
+                        chain: "MATIC",
+                    },
+                    includeHiddenCollections: false,
+                    numericTraits: null,
+                    paymentAssets: null,
+                    priceFilter: null,
+                    query: "",
+                    resultModel: null,
+                    showContextMenu: false,
+                    shouldShowQuantity: true,
+                    sortAscending: null,
+                    sortBy: "LISTING_DATE",
+                    stringTraits: null,
+                    toggles: null,
+                    creator: null,
+                    assetOwner: {
+                        address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
+                        chain: "MATIC",
+                    },
+                    isPrivate: false,
+                    safelistRequestStatuses: null,
                 },
-              };
-            
-            let r = await Axios.post("https://api.opensea.io/graphql/",query)
+            };
+
+            let r = await Axios.post("https://api.opensea.io/graphql/", query)
             console.log(r.data.data.query.search.edges)
             for (const iter_nft of r.data.data.query.search.edges) {
                 let os_nft = iter_nft.node.asset
@@ -1317,7 +1324,7 @@ fragment asset_url on AssetType {
                     nft_description: os_nft.description,
                     nft_owned: parseInt(os_nft.ownedQuantity)
                 }
-              //  console.log(os_nft)
+                //  console.log(os_nft)
                 console.log(nft)
             }
             return
@@ -1345,13 +1352,13 @@ fragment asset_url on AssetType {
             await sleep(2000)
             continue;
 
-          /*  try {
-                let data = await Axios.get("https://api.covalenthq.com/v1/137/tokens/" + nft.nft_contract + "/nft_metadata/" + nft.nft_id + "/?key=ckey_b782b28d28c743ce8249ecef46f")
-                console.log(data.data.data.items[0])
-
-            } catch (e) {
-
-            } */
+            /*  try {
+                  let data = await Axios.get("https://api.covalenthq.com/v1/137/tokens/" + nft.nft_contract + "/nft_metadata/" + nft.nft_id + "/?key=ckey_b782b28d28c743ce8249ecef46f")
+                  console.log(data.data.data.items[0])
+  
+              } catch (e) {
+  
+              } */
 
             console.log(i++)
             let ctx = new ethereum.w3.eth.Contract(
@@ -1386,7 +1393,7 @@ fragment asset_url on AssetType {
             } catch (error) {
                 console.log("error")
             }
-           
+
         }
         return
 
