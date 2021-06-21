@@ -7,4 +7,9 @@ const sleep = (waitTimeInMs) =>
 function OSClient() {
 }
 
+OSClient.prototype.getNFTs(account, chain, collection = null) {
+    
+}
+
+
 module.exports = OSClient;
