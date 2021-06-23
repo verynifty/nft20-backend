@@ -4,6 +4,8 @@ const BigNumber = require("bignumber.js");
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
+// lastblock muse = 12291439
+
 function NFT20(ethereum, storage) {
   this.ethereum = ethereum;
   this.DEPLOYED_BLOCK = 11023280;
@@ -16,6 +18,12 @@ function NFT20(ethereum, storage) {
   this.AUCTIONABI = require("../../contracts/Auction.abi");
   this.PAIRABI = require("../../contracts/Pair.abi");
   this.FACTORYABI = require("../../contracts/Factory.abi");
+
+  this.museContract = new ethereum.w3.eth.Contract(
+    this.ERC20ABI,
+    "0xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81"
+  );
+
   this.NETWORK =
     process.env.NETWORK == null ? 0 : parseInt(process.env.NETWORK);
   if (this.NETWORK == 0) {
@@ -60,6 +68,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     assets = await axios.get(
       "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets.json"
     );
+
   } else if (this.NETWORK == 1) {
     assets = await axios.get(
       "https://raw.githubusercontent.com/verynifty/nft20-assets/master/assets_matic.json"
@@ -72,10 +81,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let pairDetail = await this.factory.methods
       .getPairByNftAddress(index)
       .call();
-    // console.log(pairDetail)
-    /*   if (pairDetail._symbol != "FRAM20") {
-         continue
-       } */
+
     let pairOnGithub = assets.data.filter(
       (asset) => asset.symbol == pairDetail._symbol
     );
@@ -167,7 +173,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         } catch (error) {
           console.log("Slippage does not work")
         }
-       
+
       }
 
 
@@ -269,12 +275,71 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
       console.log("Chunk ingested")
     }
   } else {
+    if (this.NETWORK == 0) {
+      const museTransfers = await this.museContract.getPastEvents("Transfer", {
+        fromBlock: maxBlock,
+        toBlock: latestBlock,
+      });
+      for (const t of museTransfers) {
+        let tx = await this.ethereum.getTransaction(t.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(t.blockNumber);
+        let event = {
+          amount: t.returnValues.value,
+          blocknumber: t.blockNumber,
+          transactionhash: this.ethereum.normalizeHash(t.transactionHash),
+          from: this.ethereum.normalizeHash(tx.from),
+          to: this.ethereum.normalizeHash(tx.to),
+          logindex: t.logIndex,
+          timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+          sender: this.ethereum.normalizeHash(t.returnValues.from),
+          receiver: this.ethereum.normalizeHash(t.returnValues.to),
+        };
+        //  console.log(feed_event)
+        await this.storage.insert("muse_transfers", event);
+      }
+    }
     console.log("Starting getting data for block:", maxBlock, latestBlock);
     await this.getData(maxBlock, latestBlock);
     console.log("End data for block:", maxBlock, latestBlock);
   }
 
 };
+
+NFT20.prototype.fixMuseTransfers = async function() {
+  let chunkJump = 1000;
+  let latest = 12293556
+  while (true) {
+    console.log("FROM ", latest, latest + chunkJump)
+    const museTransfers = await this.museContract.getPastEvents("Transfer", {
+      fromBlock: latest -10,
+      toBlock: latest + chunkJump,
+    });
+    console.log("FOUND ", museTransfers.length)
+    for (const t of museTransfers) {
+      let tx = await this.ethereum.getTransaction(t.transactionHash);
+      let timestamp = await this.ethereum.getBlockTimestamp(t.blockNumber);
+      console.log(t.blockNumber)
+      let event = {
+        amount: t.returnValues.value,
+        blocknumber: t.blockNumber,
+        transactionhash: this.ethereum.normalizeHash(t.transactionHash),
+        from: this.ethereum.normalizeHash(tx.from),
+        to: this.ethereum.normalizeHash(tx.to),
+        logindex: t.logIndex,
+        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+        sender: this.ethereum.normalizeHash(t.returnValues.from),
+        receiver: this.ethereum.normalizeHash(t.returnValues.to),
+      };
+      //  console.log(feed_event)
+      await this.storage.insert("muse_transfers", event);
+    }
+    latest += chunkJump
+  }
+  
+
+
+
+}
 
 NFT20.prototype.getNFT = async function (contract, asset_id) {
   let existing = await this.storage.getMulti("nft20_nft", {
@@ -408,8 +473,8 @@ NFT20.prototype.getData = async function (
   let pairs = await this.getPairs(true);
   let i = 0;
   for (const pair of pairs) {
-    
-    console.log("Get events for pair", pair.name, blocknumber+" -> " + lastBlockNumber, i++, "/" + pairs.length, "@", pair.address);
+
+    console.log("Get events for pair", pair.name, blocknumber + " -> " + lastBlockNumber, i++, "/" + pairs.length, "@", pair.address);
     const TwentyContract = new this.ethereum.w3.eth.Contract(
       this.ERC20ABI,
       pair.address
