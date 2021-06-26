@@ -308,7 +308,7 @@ app.get("/list/collections", async function (req, res) {
 app.get("/nft20/webhooks", async function (req, res) {
   let result = await storage.executeAsync(`SELECT * FROM nft20_webhooks`); 
   res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
-  res.status(200).json({result)
+  res.status(200).json(result)
 })
 
 app.get("/list/list", async function (req, res) {
