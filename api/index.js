@@ -49,10 +49,10 @@ app.get("/activity", async function (req, res) {
     query.where("user", req.query.user);
   }
   if (req.query.pool) {
-    query.where("address", req.query.pool);
+    query.where("address", req.query.pool.toLowerCase());
   }
   if (req.query.nft) {
-    query.where("nft", req.query.nft);
+    query.where("nft", req.query.nft).toLowerCase();
   }
   if (network) {
     query.where("network", network)
