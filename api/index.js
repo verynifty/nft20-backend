@@ -48,10 +48,10 @@ app.get("/activity", async function (req, res) {
   if (req.query.user) {
     query.where("user", req.query.user);
   }
-  if (req.query.nft) {
-    query.where("address", req.query.address);
-  }
   if (req.query.pool) {
+    query.where("address", req.query.pool);
+  }
+  if (req.query.nft) {
     query.where("nft", req.query.nft);
   }
   if (network) {
