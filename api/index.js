@@ -305,6 +305,12 @@ app.get("/list/collections", async function (req, res) {
   res.status(200).json({ collections: result })
 })
 
+app.get("/nft20/webhooks", async function (req, res) {
+  let result = await storage.executeAsync(`SELECT * FROM nft20_webhooks`); 
+  res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
+  res.status(200).json({ collections: result })
+})
+
 app.get("/list/list", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = null;
