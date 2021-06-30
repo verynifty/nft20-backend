@@ -95,6 +95,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     let ethPrice = 0;
     let buyPrice = 0;
     let sellPrice = 0;
+    let lp_version = null;
     let hidden = false;
     let logo_url =
       "https://space-cdn-dokomaps.fra1.digitaloceanspaces.com/nft20/placeholder.png";
@@ -125,6 +126,12 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
           this.ERC20ABI,
           "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619" //MATIC WETH
         );
+      }
+
+      if (pairOnGithub.uniswap_v3) {
+        lp_version = 3;
+      } else {
+        lp_version = 2
       }
 
       // console.log(price_of_eth);
@@ -198,7 +205,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       nft_value: nftValue,
       network: this.NETWORK,
       buy_price_eth: buyPrice,
-      sell_price_eth: sellPrice
+      sell_price_eth: sellPrice,
+      lp_version: lp_version
     };
     await this.storage
       .knex("nft20_pair")
