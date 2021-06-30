@@ -191,7 +191,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
               let result = await this.uniRouter.methods
                 .getAmountsOut(amount + "", [
                   pairDetail._nft20pair,
-                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" //WETH
                 ])
                 .call();
               sellPrice = new BigNumber(result[1]).shiftedBy(-18).toNumber();
@@ -204,26 +204,28 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
           if (this.NETWORK == 0 && this.uniQuoterV3 != null) {
             try {
               // This is how much eth to get 100 tokens
-              let result = await this.uniQuoterV3.methods.quoteExactInputSingle(
-                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              let result = await this.uniQuoterV3.methods.quoteExactOutputSingle(
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
                 pairDetail._nft20pair,
                 lp_fee,
                 amount + "",
                 0
               ).call()
+              console.log("RESSSULT = ", result/ 1e18)
               sellPrice = new BigNumber(result).shiftedBy(-18).toNumber();
             } catch (error) {
               console.log("Slippage does not work v3", error)
             }
             try {
               // This is how much eth we get to sell 100 tokens
-              let result = await this.uniQuoterV3.methods.quoteExactOutputSingle(
+              let result = await this.uniQuoterV3.methods.quoteExactInputSingle(
                 pairDetail._nft20pair,
-                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
                 lp_fee,
                 amount + "",
                 0
               ).call()
+              console.log("RESSSULT = ", result/1e18)
               buyPrice = new BigNumber(result).shiftedBy(-18).toNumber();
             } catch (error) {
               console.log("Slippage does not work v3", error)
