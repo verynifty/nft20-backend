@@ -140,12 +140,18 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
           "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619" //MATIC WETH
         );
       }
-
+      console.log(pairDetail._name)
       if (pairOnGithub.uniswap_v3) {
         lp_version = 3;
-        lp_fee = 10000;
+        if (pairOnGithub.lp_fees != null) {
+          lp_fee = pairOnGithub.lp_fees;
+        } else {
+          lp_fee = 10000; // default to 0.1%
+        }
       } else {
         lp_version = 2;
+        console.log("Continue")
+        continue;
       }
 
       // console.log(price_of_eth);
@@ -163,13 +169,13 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         ethPrice = (balance * 1052631.5) / Twentybalance;
       } else {
         ethPrice = (balance * 100) / Twentybalance;
+        let amount = new BigNumber(100000000000000000000).toFixed()
         if (lp_version == 2) {
           if (this.NETWORK == 0 && this.uniRouter != null) {
-
             try {
 
               // We calculate the price of one NFT with the slippage
-              let amount = new BigNumber(100000000000000000000).toFixed()
+              
               let result = await this.uniRouter.methods
                 .getAmountsIn(amount + "", [
                   "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
@@ -184,7 +190,6 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
 
             try {
               // We calculate the price of one NFT with the slippage
-              let amount = new BigNumber(100000000000000000000).toFixed()
               let result = await this.uniRouter.methods
                 .getAmountsOut(amount + "", [
                   pairDetail._nft20pair,
@@ -198,9 +203,34 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             }
           }
         } else {
-          if (this.NETWORK == 0 && this.uniRouter != null) {
+          if (this.NETWORK == 0 && this.uniQuoterV3 != null) {
+            try {
+              // This is how much eth to get 100 tokens
+              let result = await this.uniQuoterV3.methods.quoteExactInputSingle(
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                pairDetail._nft20pair,
+                lp_fee,
+                amount + "",
+                0
+              ).call()
+              sellPrice = new BigNumber(result).shiftedBy(-18).toNumber();
+            } catch (error) {
+              console.log("Slippage does not work v3", error)
+            }
+            try {
+              // This is how much eth we get to sell 100 tokens
+              let result = await this.uniQuoterV3.methods.quoteExactOutputSingle(
+                pairDetail._nft20pair,
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                lp_fee,
+                amount + "",
+                0
+              ).call()
+              buyPrice = new BigNumber(result).shiftedBy(-18).toNumber();
+            } catch (error) {
+              console.log("Slippage does not work v3", error)
+            }
           }
-
         }
       }
 
