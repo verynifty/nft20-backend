@@ -1,3 +1,5 @@
+
+
 CREATE OR REPLACE VIEW public.nft20_pool_view
 as
 SELECT p.address,
@@ -10,6 +12,10 @@ SELECT p.address,
     p.nft_usd_price,
     p.nft_eth_price,
     p.network,
+    p.sell_price_eth,
+    p.buy_price_eth,
+    p.lp_version,
+    p.lp_fee,
     c.banner_url ,
     c.image_url,
     c.collection_description,
