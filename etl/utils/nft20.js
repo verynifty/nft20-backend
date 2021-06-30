@@ -158,10 +158,10 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       } else {
         ethPrice = (balance * 100) / Twentybalance;
         if (lp_version == 2) {
+          if (this.NETWORK == 0 && this.uniRouter != null) {
 
+            try {
 
-          try {
-            if (this.NETWORK == 0 && this.uniRouter != null) {
               // We calculate the price of one NFT with the slippage
               let amount = new BigNumber(100000000000000000000).toFixed()
               let result = await this.uniRouter.methods
@@ -171,13 +171,12 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
                 ])
                 .call();
               buyPrice = new BigNumber(result[0]).shiftedBy(-18).toNumber();
-            }
-          } catch (error) {
-            console.log("Slippage does not work")
-          }
 
-          try {
-            if (this.NETWORK == 0 && this.uniRouter != null) {
+            } catch (error) {
+              console.log("Slippage does not work")
+            }
+
+            try {
               // We calculate the price of one NFT with the slippage
               let amount = new BigNumber(100000000000000000000).toFixed()
               let result = await this.uniRouter.methods
@@ -187,12 +186,15 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
                 ])
                 .call();
               sellPrice = new BigNumber(result[1]).shiftedBy(-18).toNumber();
+
+            } catch (error) {
+              console.log("Slippage does not work")
             }
-          } catch (error) {
-            console.log("Slippage does not work")
           }
         } else {
-          
+          if (this.NETWORK == 0 && this.uniRouter != null) {
+          }
+
         }
       }
 
