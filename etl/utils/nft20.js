@@ -157,38 +157,43 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         ethPrice = (balance * 1052631.5) / Twentybalance;
       } else {
         ethPrice = (balance * 100) / Twentybalance;
-        try {
-          if (this.NETWORK == 0 && this.uniRouter != null) {
-            // We calculate the price of one NFT with the slippage
-            let amount = new BigNumber(100000000000000000000).toFixed()
-            let result = await this.uniRouter.methods
-              .getAmountsIn(amount + "", [
-                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
-                pairDetail._nft20pair
-              ])
-              .call();
-            buyPrice = new BigNumber(result[0]).shiftedBy(-18).toNumber();
-          }
-        } catch (error) {
-          console.log("Slippage does not work")
-        }
+        if (lp_version == 2) {
 
-        try {
-          if (this.NETWORK == 0 && this.uniRouter != null) {
-            // We calculate the price of one NFT with the slippage
-            let amount = new BigNumber(100000000000000000000).toFixed()
-            let result = await this.uniRouter.methods
-              .getAmountsOut(amount + "", [
-                pairDetail._nft20pair,
-                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-              ])
-              .call();
-            sellPrice = new BigNumber(result[1]).shiftedBy(-18).toNumber();
-          }
-        } catch (error) {
-          console.log("Slippage does not work")
-        }
 
+          try {
+            if (this.NETWORK == 0 && this.uniRouter != null) {
+              // We calculate the price of one NFT with the slippage
+              let amount = new BigNumber(100000000000000000000).toFixed()
+              let result = await this.uniRouter.methods
+                .getAmountsIn(amount + "", [
+                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
+                  pairDetail._nft20pair
+                ])
+                .call();
+              buyPrice = new BigNumber(result[0]).shiftedBy(-18).toNumber();
+            }
+          } catch (error) {
+            console.log("Slippage does not work")
+          }
+
+          try {
+            if (this.NETWORK == 0 && this.uniRouter != null) {
+              // We calculate the price of one NFT with the slippage
+              let amount = new BigNumber(100000000000000000000).toFixed()
+              let result = await this.uniRouter.methods
+                .getAmountsOut(amount + "", [
+                  pairDetail._nft20pair,
+                  "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                ])
+                .call();
+              sellPrice = new BigNumber(result[1]).shiftedBy(-18).toNumber();
+            }
+          } catch (error) {
+            console.log("Slippage does not work")
+          }
+        } else {
+          
+        }
       }
 
 
@@ -322,13 +327,13 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
 
 };
 
-NFT20.prototype.fixMuseTransfers = async function() {
+NFT20.prototype.fixMuseTransfers = async function () {
   let chunkJump = 1000;
   let latest = 12293556
   while (true) {
     console.log("FROM ", latest, latest + chunkJump)
     const museTransfers = await this.museContract.getPastEvents("Transfer", {
-      fromBlock: latest -10,
+      fromBlock: latest - 10,
       toBlock: latest + chunkJump,
     });
     console.log("FOUND ", museTransfers.length)
@@ -352,7 +357,7 @@ NFT20.prototype.fixMuseTransfers = async function() {
     }
     latest += chunkJump
   }
-  
+
 
 
 
