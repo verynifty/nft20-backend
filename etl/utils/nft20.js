@@ -150,8 +150,6 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
         }
       } else {
         lp_version = 2;
-        console.log("Continue")
-        continue;
       }
 
       // console.log(price_of_eth);
