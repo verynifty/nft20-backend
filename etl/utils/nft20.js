@@ -16,6 +16,7 @@ function NFT20(ethereum, storage) {
   this.ERC721ABICRYSTAL = require("../../contracts/ERC721CRYSTAL.abi"); // Thia ABI is used in the specific case of Crypto Crystalb
   this.UNIROUTERABI = require("../../contracts/UniRouter.abi");
   this.UNIROUTERV3ABI = require("../../contracts/UniRouterV3.abi");
+  this.UNIQUOTERV3ABI = require("../../contracts/UniQuoterV3.abi");
 
   this.AUCTIONABI = require("../../contracts/Auction.abi");
   this.PAIRABI = require("../../contracts/Pair.abi");
@@ -46,6 +47,11 @@ function NFT20(ethereum, storage) {
     this.uniRouterV3 = new ethereum.w3.eth.Contract(
       this.UNIROUTERV3ABI,
       "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+    )
+
+    this.uniQuoterV3 = new ethereum.w3.eth.Contract(
+      this.UNIQUOTERV3ABI,
+      "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6"
     )
   } else {
     // This is Matic
