@@ -74,6 +74,8 @@ app.get("/pools", async function (req, res) {
   let query = storage.knex.select("*").from("nft20_pool_view");
   req.query.nft ? query.where("nft", req.query.nft) : "";
   req.query.withLp ? query.where("lp_usd_balance", ">", 2000) : "";
+  req.query.pool ? query.where("address", req.query.pool) : "";
+  
   query.where("network", network)
 
   let result = await query.paginate({
