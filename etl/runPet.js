@@ -25,7 +25,7 @@ const sleep = (waitTimeInMs) =>
 (async () => {
   while (true) {
     try {
-      await PET.getLastData();
+      await PET.run();
     } catch (error) {
       console.log("An error occured", error)
     }

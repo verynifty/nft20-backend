@@ -15,6 +15,12 @@ function Pet(ethereum, storage) {
     );
 }
 
+Pet.prototype.run = async function() {
+    let maxBlock = await this.ethereum.getLatestBlock();
+    let minBlock = await this.storage.getMax("pet", "blocknumber");
+
+}
+
 Pet.prototype.updatePet = async function(playerId) {
     if (id == null) {
         return;
