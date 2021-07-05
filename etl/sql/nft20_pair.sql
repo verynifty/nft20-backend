@@ -20,6 +20,7 @@ CREATE TABLE public.nft20_pair (
 	sell_price_eth numeric NULL,
 	lp_version numeric NULL,
 	lp_fee numeric NULL,
+	index_order numeric NULL,
 	CONSTRAINT nft20_pair_pk PRIMARY KEY (address),
 	CONSTRAINT unique_pair UNIQUE (address)
 );
