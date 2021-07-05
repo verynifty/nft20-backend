@@ -258,7 +258,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       buy_price_eth: buyPrice,
       sell_price_eth: sellPrice,
       lp_version: lp_version,
-      lp_fee: lp_fee
+      lp_fee: lp_fee,
+      index_order: index
     };
     await this.storage
       .knex("nft20_pair")
