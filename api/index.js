@@ -79,7 +79,7 @@ app.get("/pools", async function (req, res) {
   query.where("network", network)
 
   let result = await query.paginate({
-    perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 5000,
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
@@ -126,7 +126,7 @@ app.get("/nfts", async function (req, res) {
     query = storage.knex.select("*").from("nft20_nfts_view");
   }
   let result = await query.paginate({
-    perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
+    perPage: req.query.perPage ? parseInt(req.query.perPage) : 5000,
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
