@@ -230,6 +230,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             } catch (error) {
               console.log("Slippage does not work v3", error)
             }
+            if (buyPrice == 0 && sellPrice == 0) {
+              ethPrice = 0;
+            }
           }
         }
       }
