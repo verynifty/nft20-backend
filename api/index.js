@@ -116,6 +116,12 @@ app.get("/nfts", async function (req, res) {
       .from("nft20_nfts_view")
       .where("pool", req.query.pool.toLowerCase())
       .where("availabe_quantity", ">", 0);
+  } else if (req.query.nft != null) {
+    query = storage.knex
+      .select("*")
+      .from("nft20_nfts_view")
+      .where("nft_contract", req.query.nft.toLowerCase())
+      .where("availabe_quantity", ">", 0);
   } else {
     query = storage.knex.select("*").from("nft20_nfts_view");
   }
