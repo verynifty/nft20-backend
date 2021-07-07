@@ -72,9 +72,9 @@ app.get("/pools", async function (req, res) {
   let network = req.query.network != null ? parseInt(req.query.network) : 0;
 
   let query = storage.knex.select("*").from("nft20_pool_view");
-  req.query.nft ? query.where("nft", req.query.nft) : "";
+  req.query.nft ? query.where("nft", req.query.nft.toLocaleLowerCase()) : "";
   req.query.withLp ? query.where("lp_usd_balance", ">", 2000) : "";
-  req.query.pool ? query.where("address", req.query.pool) : "";
+  req.query.pool ? query.where("address", req.query.pool.toLocaleLowerCase()) : "";
   
   query.where("network", network)
 
