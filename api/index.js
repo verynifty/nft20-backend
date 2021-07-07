@@ -52,7 +52,7 @@ app.get("/activity", async function (req, res) {
     query.where("address", req.query.pool.toLowerCase());
   }
   if (req.query.nft) {
-    query.where("nft", req.query.nft).toLowerCase();
+    query.where("nft", req.query.nft.toLowerCase());
   }
   if (network) {
     query.where("network", network)
