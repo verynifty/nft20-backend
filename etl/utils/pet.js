@@ -15,6 +15,17 @@ function Pet(ethereum, storage) {
     );
 }
 
+
+/* Sidenotes TODO:
+
+* Add event to giveLife giveLife(newId)
+* Add event to bonk
+* Add event to fatality
+* Add event to feed
+* add caretaker to getPetInfo
+
+*/
+
 Pet.prototype.run = async function() {
     let maxBlock = await this.ethereum.getLatestBlock();
     let minBlock = await this.storage.getMax("pet", "blocknumber");
