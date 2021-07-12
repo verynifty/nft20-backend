@@ -7,6 +7,7 @@ const sleep = (waitTimeInMs) =>
 function OSClient(storage) {
     this.q_list_address = require("../graph_requests/list_account");
     this.q_single_nft = require("../graph_requests/single_nft");
+    this.q_all_collections = require("../graph_requests/all_collections");
     this.storage = storage
 }
 
@@ -89,6 +90,16 @@ OSClient.prototype.getNFT = async function(nft_contract, nft_id) {
     .insert(nft)
     .onConflict(["nft_contract", "nft_id"])
     .merge();
+}
+
+OSClient.prototype.getStats = async function() {
+    let r = await axios.post("https://api.opensea.io/graphql/", this.q_all_collections)
+    if (r.data.data == null) {
+        return;
+    }
+    let all_collections = r.data.data.collections.edges;
+    console.log(all_collections)
+    return(all_collections);
 }
 
 

@@ -1,6 +1,6 @@
 module.exports = {
     id: "rankingsQuery",
-    query = `query rankingsQuery(
+    query: `query rankingsQuery(
   $chain: [ChainScalar!]
   $count: Int!
   $cursor: String
