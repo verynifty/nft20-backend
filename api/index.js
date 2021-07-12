@@ -597,11 +597,14 @@ app.post('/nft/matic/new', async function (req, res) {
 
 app.post("/pepeswantstovote", async function (req, res) {
   let address = req.body.address.toLowerCase();
+  let nft_address = req.body.nft_address.toLowerCase();
+
   let score = req.body.isHappy ? +1 : -1;
   await this.storage.insert("pepevote", {
     address: address,
     amount: score,
-    time: storage.knex.fn.now()
+    time: storage.knex.fn.now(),
+    nft_address: nft_address
   })
   res.status(200).json(true);
 })
