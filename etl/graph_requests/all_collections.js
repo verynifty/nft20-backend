@@ -36,6 +36,14 @@ fragment rankings_collections on Query {
           totalVolume
           id
         }
+        assetContracts(first: 2) {
+          edges {
+            node {          
+              id
+              name
+            }
+          }
+        }
         id
         __typename
       }
