@@ -603,6 +603,7 @@ app.post("/pepeswantstovote", async function (req, res) {
     amount: score,
     time: storage.knex.fn.now()
   })
+  res.status(200).json(true);
 })
 
 app.listen(7878);
