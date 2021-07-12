@@ -18,3 +18,6 @@ from (
 where rn = 1
 order by "time" ;
 
+CREATE OR REPLACE VIEW pepevote_nfts AS
+select  COUNT(*) as votes, sum(amount) as pepescore, nft_address from  pepevote_clean_view  group by nft_address  order by 2 DESC
+
