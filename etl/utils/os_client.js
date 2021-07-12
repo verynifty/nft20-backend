@@ -98,7 +98,13 @@ OSClient.prototype.getStats = async function() {
         return;
     }
     let all_collections = r.data.data.collections.edges;
-    console.log(all_collections)
+    for (const collection of all_collections) {
+        if (collection.node.assetContracts.edges.length > 1) {
+            console.log("TOO MUCH ITEMS")
+            console.log(collection.node.assetContracts.edges)
+        }
+        //console.log(collection.node.assetContracts.edges)
+    }
     return(all_collections);
 }
 

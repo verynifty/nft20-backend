@@ -41,6 +41,10 @@ fragment rankings_collections on Query {
             node {          
               id
               name
+              address
+              account {
+                address
+              }
             }
           }
         }
