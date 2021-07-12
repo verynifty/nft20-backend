@@ -39,10 +39,13 @@ SELECT p.address,
     COALESCE(sum(h.volume_eth) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint::numeric) AS volume_today_eth,
     COALESCE(sum(h.volume_eth) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint::numeric) AS volume_weekly_eth,
     COALESCE(sum(h.volume_usd), 0::numeric) AS volume_usd,
-    COALESCE(sum(h.volume_eth), 0::numeric) AS volume_eth
+    COALESCE(sum(h.volume_eth), 0::numeric) AS volume_eth,
+    COALESCE(pepe.pepescore, 0::numeric) AS pepe_score,
+        COALESCE(pepe.votes, 0::numeric) AS pepe_votes
    FROM nft20_pair p
      LEFT JOIN nft20_history h ON h.address::text = p.address::text
       LEFT JOIN nft20_collection c ON c.contract_address::text = p.nft::text
+            LEFT JOIN pepevote_nfts pepe ON pepe.nft_address::text = c.contract_address::text
   WHERE p.hidden = false
   GROUP BY p.address,    c.banner_url ,
     c.image_url,
@@ -52,5 +55,7 @@ SELECT p.address,
     c.featured_image_url ,
     c.telegram_url ,
     c.twitter_username ,
-    c.number_of_owners 
+    c.number_of_owners,
+    pepe.pepescore,
+    pepe.votes
   ORDER BY p.name;
