@@ -16,7 +16,7 @@ storage = new (require("../etl/utils/storage"))({
 });
 
 const os = new (require("../etl/utils/os_client"))(storage
-  );
+);
 
 ethereum_insance = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
@@ -75,7 +75,7 @@ app.get("/pools", async function (req, res) {
   req.query.nft ? query.where("nft", req.query.nft.toLocaleLowerCase()) : "";
   req.query.withLp ? query.where("lp_usd_balance", ">", 2000) : "";
   req.query.pool ? query.where("address", req.query.pool.toLocaleLowerCase()) : "";
-  
+
   query.where("network", network)
 
   let result = await query.paginate({
@@ -87,7 +87,7 @@ app.get("/pools", async function (req, res) {
   res.status(200).json(result);
 });
 
-app.get("/nft/:contract/:id", async function(req, res) {
+app.get("/nft/:contract/:id", async function (req, res) {
   let nft = await storage.getMulti("nft20_nft", {
     nft_contract: req.params.contract,
     nft_id: req.params.id
@@ -314,7 +314,7 @@ app.get("/list/collections", async function (req, res) {
 })
 
 app.get("/nft20/webhooks", async function (req, res) {
-  let result = await storage.executeAsync(`SELECT * FROM nft20_webhooks`); 
+  let result = await storage.executeAsync(`SELECT * FROM nft20_webhooks`);
   res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
   res.status(200).json(result)
 })
@@ -561,8 +561,8 @@ async function getMNFTFromUser(address) {
 
   return (result)
 }
-  
-app.get("/nft/list/", async function(req, res) {
+
+app.get("/nft/list/", async function (req, res) {
   let result = await os.getNFTs(req.query.address, req.query.chain, req.query.collection)
   res.setHeader("Cache-Control", "s-max-age=200, stale-while-revalidate");
   res.status(200).json(result)
@@ -596,15 +596,26 @@ app.post('/nft/matic/new', async function (req, res) {
 })
 
 app.post("/pepeswantstovote", async function (req, res) {
-  let address = req.body.address.toLowerCase();
-  let nft_address = req.body.nft_address.toLowerCase();
-
+  let address = req.body.address;
+  let nft_address = req.body.nft_address;
+  let pool = req.body.pool;
+  const signature = req.body.sig;
+  const msg = address + pool + nft_address || "0x";
+  const msgBufferHex = bufferToHex(Buffer.from(msg, "utf8"));
+  const p_address = recoverPersonalSignature({
+    data: msgBufferHex,
+    sig: sig,
+  });
+  if (p_address.toLowerCase() != address.toLowerCase()) {
+    res.status(200).json(false);
+    return;
+  }
   let score = req.body.isHappy ? +1 : -1;
   await this.storage.insert("pepevote", {
-    address: address,
+    address: address.toLowerCase(),
     amount: score,
     time: storage.knex.fn.now(),
-    nft_address: nft_address
+    nft_address: nft_address.toLowerCase()
   })
   res.status(200).json(true);
 })
