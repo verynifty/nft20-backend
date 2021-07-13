@@ -604,7 +604,7 @@ app.post("/pepeswantstovote", async function (req, res) {
   const msgBufferHex = bufferToHex(Buffer.from(msg, "utf8"));
   const p_address = recoverPersonalSignature({
     data: msgBufferHex,
-    sig: sig,
+    sig: req.body.sig,
   });
   if (p_address.toLowerCase() != address.toLowerCase()) {
     res.status(200).json(false);
