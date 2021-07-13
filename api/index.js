@@ -607,7 +607,7 @@ app.post("/pepeswantstovote", async function (req, res) {
     sig: req.body.sig,
   });
   if (p_address.toLowerCase() != address.toLowerCase()) {
-    res.status(200).json(false);
+    res.status(200).json([p_address.toLowerCase(), address.toLowerCase(), false]);
     return;
   }
   let score = req.body.isHappy ? +1 : -1;
