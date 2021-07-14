@@ -494,7 +494,7 @@ tokenId
       collectionQuery: "0xjdjdjdj",
       collectionSortBy: "ASSET_COUNT",
       collections: [],
-      count: 200,
+      count: 100,
       cursor: null,
       identity: {
         address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
