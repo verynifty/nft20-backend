@@ -99,14 +99,14 @@ Cudl.prototype.run = async function () {
         await this.updatePet(event.returnValues.victim)
         await this.updatePet(event.returnValues.winner)
     }
-    events = await this.game.getPastEvents("cudl_register", {
+    events = await this.game.getPastEvents("NewPlayer", {
         fromBlock: minBlock,
         toBlock: maxBlock,
     });
     for (const event of events) {
         let tx = await this.ethereum.getTransaction(event.transactionHash);
         let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-        await this.storage.insert("game_claim", {
+        await this.storage.insert("cudl_register", {
             blocknumber: event.blockNumber,
             transactionhash: this.ethereum.normalizeHash(event.transactionHash),
             from: this.ethereum.normalizeHash(tx.from),
@@ -140,7 +140,7 @@ Cudl.prototype.updatePet = async function (playerId) {
             owner: this.ethereum.normalizeHash(infos._owner),
             nft_contract: this.ethereum.normalizeHash(infos._nftOrigin),
             nft_id: infos._nftId,
-            caretaker: careTaker,
+            caretaker: this.ethereum.normalizeHash(careTaker),
             tod: new Date(parseInt(infos._timeOfDeath * 1000)).toUTCString()
         }
         await this.storage
