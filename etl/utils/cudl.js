@@ -129,8 +129,9 @@ Cudl.prototype.updatePet = async function (playerId) {
     }
     try {
         let infos = await this.pet.methods.getInfo(playerId).call();
+        let careTaker = await this.pet.methods.getCaretaker().call();
         let player = {
-            player_id: infos._playerId,
+            pet_id: infos._playerId,
             is_alive: infos._isAlive,
             score: infos._score,
             expected_reward: infos._expectedReward,
@@ -139,6 +140,7 @@ Cudl.prototype.updatePet = async function (playerId) {
             owner: this.ethereum.normalizeHash(infos._owner),
             nft_contract: this.ethereum.normalizeHash(infos._nftOrigin),
             nft_id: infos._nftId,
+            caretaker: careTaker,
             tod: new Date(parseInt(infos._timeOfDeath * 1000)).toUTCString()
         }
         await this.storage
