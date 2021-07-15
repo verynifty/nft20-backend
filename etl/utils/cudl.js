@@ -40,7 +40,7 @@ Cudl.prototype.run = async function () {
     for (const event of events) {
         let tx = await this.ethereum.getTransaction(event.transactionHash);
         let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-        await this.storage.insert("game_claim", {
+        await this.storage.insert("cudl_mined", {
             blocknumber: event.blockNumber,
             transactionhash: this.ethereum.normalizeHash(event.transactionHash),
             from: this.ethereum.normalizeHash(tx.from),
@@ -61,7 +61,7 @@ Cudl.prototype.run = async function () {
     for (const event of events) {
         let tx = await this.ethereum.getTransaction(event.transactionHash);
         let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-        await this.storage.insert("game_claim", {
+        await this.storage.insert("cudl_feed", {
             blocknumber: event.blockNumber,
             transactionhash: this.ethereum.normalizeHash(event.transactionHash),
             from: this.ethereum.normalizeHash(tx.from),
@@ -84,7 +84,7 @@ Cudl.prototype.run = async function () {
     for (const event of events) {
         let tx = await this.ethereum.getTransaction(event.transactionHash);
         let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-        await this.storage.insert("game_claim", {
+        await this.storage.insert("cudl_fatalize", {
             blocknumber: event.blockNumber,
             transactionhash: this.ethereum.normalizeHash(event.transactionHash),
             from: this.ethereum.normalizeHash(tx.from),
@@ -99,7 +99,7 @@ Cudl.prototype.run = async function () {
         await this.updatePet(event.returnValues.victim)
         await this.updatePet(event.returnValues.winner)
     }
-    events = await this.game.getPastEvents("NewPlayer", {
+    events = await this.game.getPastEvents("cudl_register", {
         fromBlock: minBlock,
         toBlock: maxBlock,
     });
