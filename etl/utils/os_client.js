@@ -29,7 +29,7 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
             if (os_nft == null) {
                 continue;
             }
-            console.log(os_nft)
+            //console.log(os_nft)
             let nft = {
                 nft_contract: os_nft.assetContract.account.address.toLowerCase(),
                 nft_id: os_nft.tokenId,
@@ -38,10 +38,10 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
                 nft_title: os_nft.name,
                 nft_description: os_nft.description,
             }
-            if (this.storage != null) {
+         /*   if (this.storage != null) {
                 await this.storage
                     .insert("nft20_nft", nft)
-            }
+            } */
             nft.nft_owned = parseInt(os_nft.ownedQuantity),
                 nft.nft_chain = os_nft.assetContract.account.chain.identifier.toLowerCase()
             let collecType = 721
@@ -55,23 +55,24 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
                 collection_description: os_nft.collection.description,
                 collection_type: collecType
             }
-            if (this.storage != null) {
+           /* if (this.storage != null) {
                 await this.storage
                     .knex("nft20_collection")
                     .insert(collection)
                     .onConflict("contract_address")
                     .merge();
-            }
+            } */
             if (nft.nft_chain == chain && (collection_filter == null || (collection_filter.toLowerCase() == nft.nft_contract))) {
                 result.nfts.push(nft);
                 result.collections[collection.contract_address] = collection;
             }
 
-            if (r.data.data.query.search.pageInfo.hasNextPage && r.data.data.query.search.pageInfo.endCursor) {
-                this.q_list_address.variables.cursor = r.data.data.query.search.pageInfo.endCursor
-            } else {
-                run_query = false;
-            }
+        }
+        console.log(r.data.data.query.search.pageInfo)
+        if (r.data.data.query.search.pageInfo.hasNextPage && r.data.data.query.search.pageInfo.endCursor) {
+            this.q_list_address.variables.cursor = r.data.data.query.search.pageInfo.endCursor
+        } else {
+            run_query = false;
         }
 
     }
