@@ -61,10 +61,8 @@ Cudl.prototype.run = async function () {
             timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
             gasprice: tx.gasPrice,
             pet: event.returnValues.nftId,
-            item: event.returnValues.itemId,
-            time_extension: event.returnValues.itemTimeExtension,
             amount: event.returnValues.reward,
-            recipient: this.ethereum.normalizeHash(event.returnValues.buyer)
+            recipient: this.ethereum.normalizeHash(event.returnValues.recipient)
         });
         await this.updatePet(event.returnValues.nftId)
     }
@@ -106,12 +104,12 @@ Cudl.prototype.run = async function () {
             logindex: event.logIndex,
             timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
             gasprice: tx.gasPrice,
-            victim: event.returnValues.victim,
-            winner:  event.returnValues.winner,
+            victim: event.returnValues.opponentId,
+            winner: event.returnValues.nftId,
             badguy: this.ethereum.normalizeHash(event.returnValues.killer)
         });
-        await this.updatePet(event.returnValues.victim)
-        await this.updatePet(event.returnValues.winner)
+        await this.updatePet(event.returnValues.nftId)
+        await this.updatePet(event.returnValues.opponentId)
     }
     events = await this.game.getPastEvents("NewPlayer", {
         fromBlock: minBlock,
@@ -147,6 +145,7 @@ Cudl.prototype.updatePet = async function (playerId) {
         let player = {
             pet_id: infos._playerId,
             is_alive: infos._isAlive,
+            is_starving: infos._isStarving,
             score: infos._score,
             expected_reward: infos._expectedReward,
             time_until_death: infos._timeUntilDeath,
@@ -163,7 +162,15 @@ Cudl.prototype.updatePet = async function (playerId) {
             .onConflict("player_id")
             .merge();
     } catch (error) {
-        console.log("Failed to update pet cause ", error)
+        console.log("The pet must be dead")
+        let player = {
+            pet_id: playerId,
+            is_alive: false
+        }
+        await this.storage
+            .update("cudl_pet", "pet_id", {
+                is_alive: false
+            })
     }
 }
 
