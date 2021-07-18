@@ -16,8 +16,8 @@ storage = new (require("./utils/storage"))({
   ssl: true,
   ssl: { rejectUnauthorized: false },
 });
-let PET = require("./utils/pet")
-const pet = new PET(ethereum, storage);
+let CUDL = require("./utils/cudl")
+const cudl = new CUDL(ethereum, storage);
 
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
@@ -25,7 +25,7 @@ const sleep = (waitTimeInMs) =>
 (async () => {
   while (true) {
     try {
-      await PET.run();
+      await cudl.run();
     } catch (error) {
       console.log("An error occured", error)
     }
