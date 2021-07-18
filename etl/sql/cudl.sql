@@ -5,6 +5,7 @@
 CREATE TABLE cudl_pet (
 	pet_id numeric NULL,
 	is_alive bool NULL,
+    is_starving bool NULL,
 	score numeric NULL,
 	expected_reward numeric NULL,
 	time_until_death numeric NULL,
@@ -19,8 +20,6 @@ CREATE TABLE cudl_pet (
 
 CREATE TABLE cudl_mined
 (
-    victim numeric NULL,
-    "killer" varchar NULL,
     blocknumber numeric NULL,
     transactionhash varchar NULL,
     "from" varchar NULL,
@@ -37,8 +36,6 @@ CREATE TABLE cudl_mined
 
 CREATE TABLE cudl_feed
 (
-    victim numeric NULL,
-    "killer" varchar NULL,
     blocknumber numeric NULL,
     transactionhash varchar NULL,
     "from" varchar NULL,
@@ -57,8 +54,6 @@ CREATE TABLE cudl_feed
 
 CREATE TABLE cudl_fatalize
 (
-    victim numeric NULL,
-    "killer" varchar NULL,
     blocknumber numeric NULL,
     transactionhash varchar NULL,
     "from" varchar NULL,
@@ -75,8 +70,6 @@ CREATE TABLE cudl_fatalize
 
 CREATE TABLE cudl_register
 (
-    victim numeric NULL,
-    "killer" varchar NULL,
     blocknumber numeric NULL,
     transactionhash varchar NULL,
     "from" varchar NULL,
