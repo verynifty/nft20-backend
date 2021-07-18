@@ -18,14 +18,26 @@ function Cudl(ethereum, storage) {
 
 /* 
 
-event Mined(uint256 nftId, uint256 reward, address recipient);
-    event BuyAccessory(uint256 nftId, uint256 itemId, uint256 amount, uint256 itemTimeExtension, address buyer);
+  event Mined(uint256 nftId, uint256 reward, address recipient);
+    event BuyAccessory(
+        uint256 nftId,
+        uint256 itemId,
+        uint256 amount,
+        uint256 itemTimeExtension,
+        address buyer
+    );
     event Fatalize(uint256 opponentId, uint256 nftId, address killer);
     event NewPlayer(
         address nftAddress,
         uint256 nftId,
         uint256 playerId,
         address owner
+    );
+    event Bonk(
+        uint256 attacker,
+        uint256 victim,
+        uint256 winner,
+        uint256 reward
     );
 */
 
