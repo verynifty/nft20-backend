@@ -9,9 +9,9 @@ function Cudl(ethereum, storage) {
     this.storage = storage;
     this.ERC20ABI = require("../../contracts/ERC20.abi");
     this.PETABI = require("../../contracts/pet.abi"); //TODO set ABI
-    this.pet = new ethereum.w3.eth.Contract( //TODO set address
+    this.pet = new ethereum.w3.eth.Contract( 
         this.PETABI,
-        ""
+        "0x9c10AeD865b63f0A789ae64041581EAc63458209"
     );
 }
 
@@ -128,7 +128,7 @@ Cudl.prototype.run = async function () {
             gasprice: tx.gasPrice,
             originnft: this.ethereum.normalizeHash(event.returnValues.nftAddress),
             originid: this.ethereum.normalizeHash(event.returnValues.nftId),
-            victim: event.returnValues.playerId,
+            pet_id: event.returnValues.playerId,
             owner: this.ethereum.normalizeHash(event.returnValues.owner),
         });
         await this.updatePet(event.returnValues.playerId)
