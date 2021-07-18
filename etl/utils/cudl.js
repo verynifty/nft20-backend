@@ -61,8 +61,10 @@ Cudl.prototype.run = async function () {
             timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
             gasprice: tx.gasPrice,
             pet: event.returnValues.nftId,
+            item: event.returnValues.itemId,
+            time_extension: event.returnValues.itemTimeExtension,
             amount: event.returnValues.reward,
-            recipient: this.ethereum.normalizeHash(event.returnValues.recipient)
+            recipient: this.ethereum.normalizeHash(event.returnValues.buyer)
         });
         await this.updatePet(event.returnValues.nftId)
     }
