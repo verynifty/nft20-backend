@@ -80,7 +80,7 @@ CREATE TABLE cudl_register
 	gasprice numeric NULL,
 	originnft varchar NULL,
 	originid numeric NULL,
-	victim numeric NULL,
+	pet_id numeric NULL,
 	"owner" varchar NULL,
     CONSTRAINT unique_cudl_register UNIQUE (transactionhash, logindex)
 );
