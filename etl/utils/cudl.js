@@ -42,7 +42,7 @@ function Cudl(ethereum, storage) {
 */
 
 Cudl.prototype.run = async function () {
-    let maxBlock = await this.ethereum.getLatestBlock();
+    let maxBlock = await this.ethereum.getLatestBlock() - 2;
     let deployed_block = 12847722;
     let minBlock = Math.min(deployed_block, await this.storage.getMax("cudl_mined", "blocknumber"),  await this.storage.getMax("cudl_feed", "blocknumber"));
     let events = null;
