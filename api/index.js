@@ -46,7 +46,7 @@ app.get("/activity", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex.select("*").from("nft20_history");
   if (req.query.user) {
-    query.where("user", req.query.user);
+    query.where("user", req.query.user.toLowerCase());
   }
   if (req.query.pool) {
     query.where("address", req.query.pool.toLowerCase());
