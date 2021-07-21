@@ -9,7 +9,7 @@ function Cudl(ethereum, storage) {
     this.storage = storage;
     this.ERC20ABI = require("../../contracts/ERC20.abi");
     this.PETABI = require("../../contracts/Cudl.abi"); //TODO set ABI
-    this.pet = new ethereum.w3.eth.Contract( 
+    this.game = new ethereum.w3.eth.Contract( 
         this.PETABI,
         "0x9c10AeD865b63f0A789ae64041581EAc63458209"
     );
@@ -46,6 +46,7 @@ Cudl.prototype.run = async function () {
     let deployed_block = 12847722;
     let minBlock = Math.max(deployed_block, await this.storage.getMax("cudl_mined", "blocknumber"),  await this.storage.getMax("cudl_feed", "blocknumber"));
     let events = null;
+    /*
     events = await this.game.getPastEvents("Mined", {
         fromBlock: minBlock,
         toBlock: maxBlock,
@@ -111,7 +112,7 @@ Cudl.prototype.run = async function () {
         });
         await this.updatePet(event.returnValues.nftId)
         await this.updatePet(event.returnValues.opponentId)
-    }
+    } */
     events = await this.game.getPastEvents("NewPlayer", {
         fromBlock: minBlock,
         toBlock: maxBlock,
@@ -141,8 +142,8 @@ Cudl.prototype.updatePet = async function (playerId) {
         return;
     }
     try {
-        let infos = await this.pet.methods.getInfo(playerId).call();
-        let careTaker = await this.pet.methods.getCaretaker().call();
+        let infos = await this.game.methods.getInfo(playerId).call();
+        let careTaker = await this.game.methods.getCaretaker().call();
         let player = {
             pet_id: infos._playerId,
             is_alive: infos._isAlive,
