@@ -628,6 +628,7 @@ app.get("/cudl/leaderboard", async function (req, res) {
   let grumpy = await this.storage.knex
   .select("*")
   .from("cudl_pet")
+  .where("is_alive", true)
   .where("tod", '<', this.storage.knex.fn.now()).orderBy("score", "DESC")
   res.status(200).json({
     leaderboard: leaderboard,
