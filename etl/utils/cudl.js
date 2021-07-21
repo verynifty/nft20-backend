@@ -138,39 +138,41 @@ Cudl.prototype.run = async function () {
 }
 
 Cudl.prototype.updatePet = async function (playerId) {
-    if (id == null) {
+    if (playerId == null) {
         return;
     }
     try {
-        let infos = await this.game.methods.getInfo(playerId).call();
-        let careTaker = await this.game.methods.getCaretaker().call();
+        let infos = await this.game.methods.getPetInfo(playerId).call();
+        let careTaker = await this.game.methods.getCareTaker(playerId, infos._owner).call();
+        console.log(infos)
         let player = {
-            pet_id: infos._playerId,
+            pet_id: infos._pet,
             is_alive: infos._isAlive,
             is_starving: infos._isStarving,
             score: infos._score,
             expected_reward: infos._expectedReward,
-            time_until_death: infos._timeUntilDeath,
-            time_born: setDead == false ? new Date(parseInt(infos._timeBorn * 1000)).toUTCString() : null,
+            time_born: new Date(parseInt(infos._timepetBorn) * 1000).toUTCString(),
             owner: this.ethereum.normalizeHash(infos._owner),
-            nft_contract: this.ethereum.normalizeHash(infos._nftOrigin),
-            nft_id: infos._nftId,
+            nft_contract: this.ethereum.normalizeHash(infos._token),
+            nft_id: infos._tokenId,
             caretaker: this.ethereum.normalizeHash(careTaker),
-            tod: new Date(parseInt(infos._timeOfDeath * 1000)).toUTCString()
+            tod: new Date(parseInt(infos._timeUntilStarving) * 1000).toUTCString()
         }
+        console.log(player)
         await this.storage
             .knex("cudl_pet")
             .insert(player)
-            .onConflict("player_id")
+            .onConflict("pet_id")
             .merge();
     } catch (error) {
+        console.log(error)
         console.log("The pet must be dead")
         let player = {
             pet_id: playerId,
             is_alive: false
         }
         await this.storage
-            .update("cudl_pet", "pet_id", {
+            .update("cudl_pet", "pet_id", playerId, {
                 is_alive: false
             })
     }
