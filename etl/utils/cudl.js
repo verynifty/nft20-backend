@@ -46,7 +46,7 @@ Cudl.prototype.run = async function () {
     let deployed_block = 12847722;
     let minBlock = Math.max(deployed_block, await this.storage.getMax("cudl_mined", "blocknumber"),  await this.storage.getMax("cudl_feed", "blocknumber"));
     let events = null;
-    /*
+    
     events = await this.game.getPastEvents("Mined", {
         fromBlock: minBlock,
         toBlock: maxBlock,
@@ -112,7 +112,7 @@ Cudl.prototype.run = async function () {
         });
         await this.updatePet(event.returnValues.nftId)
         await this.updatePet(event.returnValues.opponentId)
-    } */
+    } 
     events = await this.game.getPastEvents("NewPlayer", {
         fromBlock: minBlock,
         toBlock: maxBlock,
@@ -144,7 +144,6 @@ Cudl.prototype.updatePet = async function (playerId) {
     try {
         let infos = await this.game.methods.getPetInfo(playerId).call();
         let careTaker = await this.game.methods.getCareTaker(playerId, infos._owner).call();
-        console.log(infos)
         let player = {
             pet_id: infos._pet,
             is_alive: infos._isAlive,
@@ -158,7 +157,6 @@ Cudl.prototype.updatePet = async function (playerId) {
             caretaker: this.ethereum.normalizeHash(careTaker),
             tod: new Date(parseInt(infos._timeUntilStarving) * 1000).toUTCString()
         }
-        console.log(player)
         await this.storage
             .knex("cudl_pet")
             .insert(player)
