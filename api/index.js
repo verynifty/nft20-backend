@@ -620,8 +620,8 @@ app.post("/pepeswantstovote", async function (req, res) {
   res.status(200).json(true);
 })
 
-app.get("/culd/leaderboard", async function (req, res) {
-  let leaderboard = storage.knex
+app.get("/cudl/leaderboard", async function (req, res) {
+  let leaderboard = this.storage.knex
   .select("*")
   .from("cudl_pet")
   .where("is_alive", true).orderBy("score", "DESC")
