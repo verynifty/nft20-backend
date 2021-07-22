@@ -611,7 +611,7 @@ app.get("user/leaderboard", async function (req, res) {
   ORDER BY 4 DESC
   `); // @TODO Move this to a view? 
   res.setHeader("Cache-Control", "s-max-age=5000, stale-while-revalidate");
-  res.status(200).json({ collections: result })
+  res.status(200).json(result)
 })
 
 app.post("/pepeswantstovote", async function (req, res) {
