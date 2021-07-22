@@ -595,6 +595,25 @@ app.post('/nft/matic/new', async function (req, res) {
   res.status(200).json(true);
 })
 
+app.get("user/leaderboard", async function (req, res) {
+  let result = await storage.executeAsync(`SELECT count(*) AS "count",
+   sum(CASE WHEN "public"."nft20_history"."type" = 'Withdraw' THEN 1 ELSE 0.0 END) AS "buys", 
+   sum(CASE WHEN "public"."nft20_history"."type" = 'Deposit' THEN 1 ELSE 0.0 END) AS "sells",
+    sum(CASE WHEN "public"."nft20_history"."type" = 'Swap' THEN 1 ELSE 0.0 END) AS "swaps",
+     sum("public"."nft20_history"."volume_eth") AS volume_eth",
+      sum("public"."nft20_history"."volume_usd") AS "volume_usd",
+      sum("public"."nft20_history"."total_transfers") AS "nft_traded",
+       count(distinct "nft20_pair__via__pool"."address") AS "pools_interacted_with",
+        max("public"."nft20_history"."volume_eth") AS "biggest_trade",
+         avg("public"."nft20_history"."volume_usd") AS "average_trade"
+  FROM "public"."nft20_history"
+  LEFT JOIN "public"."nft20_pair" "nft20_pair__via__pool" ON "public"."nft20_history"."pool" = "nft20_pair__via__pool"."address"
+  ORDER BY 4 DESC
+  `); // @TODO Move this to a view? 
+  res.setHeader("Cache-Control", "s-max-age=5000, stale-while-revalidate");
+  res.status(200).json({ collections: result })
+})
+
 app.post("/pepeswantstovote", async function (req, res) {
   let address = req.body.address;
   let nft_address = req.body.nft_address;
