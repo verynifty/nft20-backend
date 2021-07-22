@@ -608,6 +608,7 @@ app.get("/user/leaderboard", async function (req, res) {
          avg("public"."nft20_history"."volume_usd") AS "average_trade"
   FROM "public"."nft20_history"
   LEFT JOIN "public"."nft20_pair" "nft20_pair__via__pool" ON "public"."nft20_history"."pool" = "nft20_pair__via__pool"."address"
+  group by "from"
   ORDER BY 4 DESC
   `); // @TODO Move this to a view? 
   res.setHeader("Cache-Control", "s-max-age=5000, stale-while-revalidate");
