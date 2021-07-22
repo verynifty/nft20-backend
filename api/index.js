@@ -596,7 +596,9 @@ app.post('/nft/matic/new', async function (req, res) {
 })
 
 app.get("/user/leaderboard", async function (req, res) {
-  let result = await storage.executeAsync(`SELECT count(*) AS "count",
+  let result = await storage.executeAsync(`SELECT
+  "from" AS "user", 
+  count(*) AS "count",
    sum(CASE WHEN "public"."nft20_history"."type" = 'Withdraw' THEN 1 ELSE 0 END) AS "buys", 
    sum(CASE WHEN "public"."nft20_history"."type" = 'Deposit' THEN 1 ELSE 0 END) AS "sells",
     sum(CASE WHEN "public"."nft20_history"."type" = 'Swap' THEN 1 ELSE 0 END) AS "swaps",
