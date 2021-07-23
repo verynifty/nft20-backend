@@ -44,13 +44,13 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
                     .insert("nft20_nft", nft)
             } 
             nft.nft_owned = parseInt(os_nft.ownedQuantity),
-                nft.nft_chain = os_nft.assetContract.account.chain.identifier.toLowerCase()
+                nft.nft_chain = os_nft.assetContract.chain.toLowerCase()
             let collecType = 721
             if (os_nft.assetContract.tokenStandard == "ERC1155") {
                 collecType = 1155
             }
             let collection = {
-                contract_address: os_nft.assetContract.account.address.toLowerCase(),
+                contract_address: os_nft.assetContract.address.toLowerCase(),
                 image_url: os_nft.collection.imageUrl,
                 collection_name: os_nft.collection.name,
                 collection_description: os_nft.collection.description,

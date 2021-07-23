@@ -105,14 +105,7 @@ isDelisted
 assetContract {
 address
 tokenStandard
-account {
-address
-chain {
-identifier
-id
-}
-id
-}
+chain
 openseaVersion
 id
 }
