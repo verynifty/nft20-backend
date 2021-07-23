@@ -45,6 +45,8 @@ Cudl.prototype.run = async function () {
     let maxBlock = await this.ethereum.getLatestBlock() - 2;
     let deployed_block = 12847722;
     let minBlock = Math.max(deployed_block, await this.storage.getMax("cudl_mined", "blocknumber"),  await this.storage.getMax("cudl_feed", "blocknumber"));
+    minBlock -= 2;
+    
     let events = null;
     
     events = await this.game.getPastEvents("Mined", {
@@ -113,6 +115,32 @@ Cudl.prototype.run = async function () {
         await this.updatePet(event.returnValues.nftId)
         await this.updatePet(event.returnValues.opponentId)
     } 
+
+    events = await this.game.getPastEvents("Bonk", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+    });
+    for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("cudl_bonk", {
+            blocknumber: event.blockNumber,
+            transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+            from: this.ethereum.normalizeHash(tx.from),
+            to: this.ethereum.normalizeHash(tx.to),
+            logindex: event.logIndex,
+            timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+            gasprice: tx.gasPrice,
+            attacker: event.returnValues.opponentId,
+            victim: event.returnValues.victim,
+            winner: event.returnValues.winner,
+            reward: event.returnValues.reward,
+
+        });
+        await this.updatePet(event.returnValues.attacker)
+        await this.updatePet(event.returnValues.victim)
+    } 
+
     events = await this.game.getPastEvents("NewPlayer", {
         fromBlock: minBlock,
         toBlock: maxBlock,
