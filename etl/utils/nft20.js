@@ -233,18 +233,21 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             if (buyPrice == 0 && sellPrice == 0) {
               ethPrice = 0;
             } else {
-              await this.storage
-              .knex("nft20_price_feed")
-              .insert({
-                nft_address: pairDetail._originalNft,
-                eth_buy_price: buyPrice,
-                eth_sell_price: sellPrice,
-                usd_buy_price: buyPrice * price_of_eth,
-                usd_sell_price: sellPrice * price_of_eth,
-                time: this.storage.knex.fn.now()
-              })
+             
             }
           }
+        }
+        if (buyPrice != 0 && sellPrice != 0) {
+          await this.storage
+          .knex("nft20_price_feed")
+          .insert({
+            nft_address: this.ethereum.normalizeHash(pairDetail._originalNft),
+            eth_buy_price: buyPrice,
+            eth_sell_price: sellPrice,
+            usd_buy_price: buyPrice * price_of_eth,
+            usd_sell_price: sellPrice * price_of_eth,
+            time: this.storage.knex.fn.now()
+          })
         }
       }
 
