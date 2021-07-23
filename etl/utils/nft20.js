@@ -239,7 +239,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             }
           }
         }
-        if (buyPrice != 0 && sellPrice != 0 && this.counter % 4 == 0) {
+        if (buyPrice != 0 && sellPrice != 0 && this.counter % 3 == 0) {
           await this.storage
           .knex("nft20_price_feed")
           .insert({
