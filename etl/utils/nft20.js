@@ -21,6 +21,7 @@ function NFT20(ethereum, storage) {
   this.AUCTIONABI = require("../../contracts/Auction.abi");
   this.PAIRABI = require("../../contracts/Pair.abi");
   this.FACTORYABI = require("../../contracts/Factory.abi");
+  this.counter = 0;
 
   this.museContract = new ethereum.w3.eth.Contract(
     this.ERC20ABI,
@@ -73,6 +74,7 @@ function NFT20(ethereum, storage) {
 }
 
 NFT20.prototype.getPairs = async function (withUpdate = false) {
+  this.counter++  
   let pairs = [];
   let pairCount = parseInt(await this.factory.methods.counter().call());
   let assets;
@@ -237,7 +239,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             }
           }
         }
-        if (buyPrice != 0 && sellPrice != 0) {
+        if (buyPrice != 0 && sellPrice != 0 && this.counter % 4 == 0) {
           await this.storage
           .knex("nft20_price_feed")
           .insert({
