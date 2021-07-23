@@ -1,0 +1,8 @@
+CREATE TABLE public.nft20_price_feed (
+	nft_address varchar NULL,
+	eth_buy_price numeric NULL,
+    usd_buy_price numeric NULL,
+    eth_sell_price numeric NULL,
+    usd_sell_price numeric NULL,
+	"time" timestamp NULL
+);
