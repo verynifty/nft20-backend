@@ -30,8 +30,9 @@ OSClient.prototype.getNFTs = async function (account, chain, collection_filter =
                 continue;
             }
             //console.log(os_nft)
+            console.log(os_nft)
             let nft = {
-                nft_contract: os_nft.assetContract.account.address.toLowerCase(),
+                nft_contract: os_nft.assetContract.address.toLowerCase(),
                 nft_id: os_nft.tokenId,
                 nft_image: os_nft.imageUrl,
                 nft_original_image: os_nft.imageUrl,

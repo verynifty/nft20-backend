@@ -103,6 +103,7 @@ id
 hasUnlockableContent
 isDelisted
 assetContract {
+address
 tokenStandard
 account {
 address
