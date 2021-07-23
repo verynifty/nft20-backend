@@ -687,6 +687,16 @@ app.get("/cudl/bonks", async function (req, res) {
   });
 });
 
+app.get("/cudl/:id", async function (req, res) {
+  let pet = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("pet_id", req.params.id);
+  res.status(200).json({
+    pet,
+  });
+});
+
 app.listen(7878);
 
 module.exports = app;
