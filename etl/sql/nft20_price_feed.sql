@@ -23,3 +23,20 @@ SELECT
 FROM nft20_price_feed npf 
 GROUP BY date_trunc('hour', "time" )  , nft_address
 ORDER BY "time"  
+
+CREATE OR REPLACE VIEW nft20_price_feed_day_view
+as
+SELECT  
+    date_trunc('day', "time" ) "time" ,
+    npf .nft_address,
+    (array_agg((eth_buy_price + eth_sell_price)/2 ORDER BY "time" ASC))[1] o_eth,
+    MAX((eth_buy_price + eth_sell_price)/2) h_eth,
+    MIN((eth_buy_price + eth_sell_price)/2) l_eth,
+    (array_agg((eth_buy_price + eth_sell_price)/2 ORDER BY "time" DESC))[1] c_eth,
+        (array_agg((usd_buy_price + usd_sell_price)/2 ORDER BY "time" ASC))[1] o_usd,
+    MAX((usd_buy_price + usd_sell_price)/2) h_usd,
+    MIN((usd_buy_price + usd_sell_price)/2) l_usd,
+    (array_agg((usd_buy_price + usd_sell_price)/2 ORDER BY "time" DESC))[1] c_usd
+FROM nft20_price_feed npf 
+GROUP BY date_trunc('day', "time" )  , nft_address
+ORDER BY "time"  
