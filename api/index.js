@@ -659,6 +659,11 @@ app.post("/pepeswantstovote", async function (req, res) {
   res.status(200).json(true);
 });
 
+app.get("/price/hour", async function(req, res) {
+  let data = this.storage.knex.select("*").from("nft20_price_feed_hour_view").where("nft_address", req.query.address.toLowerCase())
+  res.status(200).json(data);
+}) 
+
 app.get("/cudl/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
     .select("*")
