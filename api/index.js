@@ -15,8 +15,7 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
-const os = new (require("../etl/utils/os_client"))(storage
-);
+const os = new (require("../etl/utils/os_client"))(storage);
 
 ethereum_insance = new (require("../etl/utils/ethereum"))(
   process.env.NFT20_INFURA
@@ -29,10 +28,7 @@ matic = new (require("../etl/utils/ethereum_insance"))(
 
 //const ERC1155ABI = require("../../contracts/ERC1155.abi");
 
-const nft20 = new (require("../etl/utils/nft20"))(
-  ethereum_insance,
-  storage
-)
+const nft20 = new (require("../etl/utils/nft20"))(ethereum_insance, storage);
 
 var cors = require("cors");
 var app = express();
@@ -55,7 +51,7 @@ app.get("/activity", async function (req, res) {
     query.where("nft", req.query.nft.toLowerCase());
   }
   if (network) {
-    query.where("network", network)
+    query.where("network", network);
   }
   query.orderBy("timestamp", "desc");
   let result = await query.paginate({
@@ -74,9 +70,11 @@ app.get("/pools", async function (req, res) {
   let query = storage.knex.select("*").from("nft20_pool_view");
   req.query.nft ? query.where("nft", req.query.nft.toLocaleLowerCase()) : "";
   req.query.withLp ? query.where("lp_usd_balance", ">", 2000) : "";
-  req.query.pool ? query.where("address", req.query.pool.toLocaleLowerCase()) : "";
+  req.query.pool
+    ? query.where("address", req.query.pool.toLocaleLowerCase())
+    : "";
 
-  query.where("network", network)
+  query.where("network", network);
 
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 5000,
@@ -90,19 +88,17 @@ app.get("/pools", async function (req, res) {
 app.get("/nft/:contract/:id", async function (req, res) {
   let nft = await storage.getMulti("nft20_nft", {
     nft_contract: req.params.contract,
-    nft_id: req.params.id
-  })
+    nft_id: req.params.id,
+  });
   let collection = await storage.getMulti("nft20_collection", {
     contract_address: req.params.contract,
-  })
+  });
   res.setHeader("Cache-Control", "s-max-age=260, stale-while-revalidate");
-  // TODO Do something if none exist 
-  res.status(200).json(
-    {
-      nft: nft,
-      collection: collection
-    }
-  );
+  // TODO Do something if none exist
+  res.status(200).json({
+    nft: nft,
+    collection: collection,
+  });
 });
 
 app.get("/nfts", async function (req, res) {
@@ -166,18 +162,14 @@ app.get("/status", async function (req, res) {
 app.get("/wcat/:id", async function (req, res) {
   let id = parseInt(req.params.id);
   if (id >= 0 && id <= 624) {
-    res.status(200).json(
-      {
-        "description": "A wrapped CryptoCat.",
-        "external_url": `https://cryptocats.thetwentysix.io/#cbp=cats/${id}.html`,
-        "image": `https://cryptocats.thetwentysix.io/contents/images/cats/${id}.png`,
-        "name": `wCrypto Cat ${id}`,
-        "attributes": [
-        ]
-      }
-    )
-  }
-  else {
+    res.status(200).json({
+      description: "A wrapped CryptoCat.",
+      external_url: `https://cryptocats.thetwentysix.io/#cbp=cats/${id}.html`,
+      image: `https://cryptocats.thetwentysix.io/contents/images/cats/${id}.png`,
+      name: `wCrypto Cat ${id}`,
+      attributes: [],
+    });
+  } else {
     res.status(400).send("cat not found");
   }
 });
@@ -203,9 +195,16 @@ app.get("/nfttopool/:nft", async function (req, res) {
 
 app.get("/auctions", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
-  let query = storage.knex.select("*").from("nft20_auctions").orderBy('auction_id', 'desc');
+  let query = storage.knex
+    .select("*")
+    .from("nft20_auctions")
+    .orderBy("auction_id", "desc");
   if (req.query.pair != null) {
-    query = storage.knex.select("*").where("pair", req.query.pair.toLowerCase()).from("nft20_auctions").orderBy('auction_id', 'desc');
+    query = storage.knex
+      .select("*")
+      .where("pair", req.query.pair.toLowerCase())
+      .from("nft20_auctions")
+      .orderBy("auction_id", "desc");
   }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 100,
@@ -219,8 +218,10 @@ app.get("/auctions", async function (req, res) {
 app.get("/leaderboard", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
 
-  let query = storage.knex.select(['name', 'address', 'score', 'avatar']).from("nft20_score").orderBy('score', 'desc');
-
+  let query = storage.knex
+    .select(["name", "address", "score", "avatar"])
+    .from("nft20_score")
+    .orderBy("score", "desc");
 
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
@@ -230,7 +231,6 @@ app.get("/leaderboard", async function (req, res) {
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result);
 });
-
 
 app.post("/name", async function (req, res) {
   const name = req.body.name;
@@ -270,11 +270,11 @@ app.post("/name", async function (req, res) {
 
 app.get("/irdrap/:address", async function (req, res) {
   let airdrop = await storage.getMulti("game_airdrop", {
-    address: req.params.address.toLowerCase()
-  })
+    address: req.params.address.toLowerCase(),
+  });
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(airdrop);
-})
+});
 
 app.post("/collection", async function (req, res) {
   for (const collection of req.body.collections) {
@@ -284,11 +284,11 @@ app.post("/collection", async function (req, res) {
 
 app.get("/list/listing/:id", async function (req, res) {
   let listing = await storage.getMulti("listing_view", {
-    id: req.params.id
-  })
+    id: req.params.id,
+  });
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(listing);
-})
+});
 
 app.get("/list/collections", async function (req, res) {
   let result = await storage.executeAsync(`SELECT 
@@ -308,16 +308,16 @@ app.get("/list/collections", async function (req, res) {
   nc.image_url ,
   nc.external_url,
   nc.contract_address 
-  ORDER by number_of_items DESC`); // @TODO Move this to a view? 
+  ORDER by number_of_items DESC`); // @TODO Move this to a view?
   res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
-  res.status(200).json({ collections: result })
-})
+  res.status(200).json({ collections: result });
+});
 
 app.get("/nft20/webhooks", async function (req, res) {
   let result = await storage.executeAsync(`SELECT * FROM nft20_webhooks`);
   res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
-  res.status(200).json(result)
-})
+  res.status(200).json(result);
+});
 
 app.get("/list/list", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
@@ -327,13 +327,14 @@ app.get("/list/list", async function (req, res) {
       .select("*")
       .from("listing_view")
       .where("cancelled", false)
-      .where("sold", false).whereRaw('? ~ ANY(contracts)', [req.query.contract_address])
+      .where("sold", false)
+      .whereRaw("? ~ ANY(contracts)", [req.query.contract_address]);
   } else {
     query = storage.knex
       .select("*")
       .from("listing_view")
       .where("cancelled", false)
-      .where("sold", false)
+      .where("sold", false);
   }
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 50,
@@ -342,7 +343,7 @@ app.get("/list/list", async function (req, res) {
   });
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result);
-})
+});
 
 app.post("/list/new", async function (req, res) {
   const title = req.body.title;
@@ -354,13 +355,13 @@ app.post("/list/new", async function (req, res) {
   const expiry_time = req.body.expiry_time;
   if (title.length < 1) {
     res.status(200).json({
-      error: "Title is empty."
+      error: "Title is empty.",
     });
     return;
   }
-  let nfts_contract = []
-  let nfts_id = []
-  let nfts_amount = []
+  let nfts_contract = [];
+  let nfts_id = [];
+  let nfts_amount = [];
   for (const nft of nfts) {
     nfts_contract.push(nft.contract_address);
     nfts_id.push(nft.id);
@@ -368,28 +369,15 @@ app.post("/list/new", async function (req, res) {
   }
   if (nfts_contract.length < 1) {
     res.status(200).json({
-      error: "You need to add at least one NFT."
+      error: "You need to add at least one NFT.",
     });
     return;
   }
   let listing_data = ethereum_insance.w3.eth.abi.encodeParameters(
-    [
-      "address",
-      "address[]",
-      "uint256[]",
-      "uint256[]",
-      "uint256",
-      "uint256"
-    ],
-    [
-      author,
-      nfts_contract,
-      nfts_id,
-      nfts_amount,
-      token_amount,
-      expiry_time
-    ])
-  const msgBufferHex = ethereum_insance.w3.utils.sha3(listing_data)
+    ["address", "address[]", "uint256[]", "uint256[]", "uint256", "uint256"],
+    [author, nfts_contract, nfts_id, nfts_amount, token_amount, expiry_time]
+  );
+  const msgBufferHex = ethereum_insance.w3.utils.sha3(listing_data);
   const address = recoverPersonalSignature({
     data: msgBufferHex,
     sig: signature,
@@ -403,8 +391,8 @@ app.post("/list/new", async function (req, res) {
       signed: signature,
       nonce: 0,
       token_price: token_amount,
-      expiry_time: new Date(parseInt(expiry_time * 1000)).toUTCString()
-    })
+      expiry_time: new Date(parseInt(expiry_time * 1000)).toUTCString(),
+    });
     for (let index = 0; index < nfts.length; index++) {
       const nft = nfts[index];
       await storage.insert("list_listing_elem", {
@@ -412,30 +400,31 @@ app.post("/list/new", async function (req, res) {
         nft_contract: nft.contract_address,
         nft_id: nft.id,
         nft_amount: nft.quantity,
-        nonce: index
-      })
-      await nft20.getNFT(nft.contract_address, nft.id)
+        nonce: index,
+      });
+      await nft20.getNFT(nft.contract_address, nft.id);
     }
     res.status(200).json({ msgBufferHex });
     return; // This is ok
   } else {
     res.status(200).json({
-      error: "Signature doesn't match."
+      error: "Signature doesn't match.",
     });
   }
-})
+});
 
 /**
  * GAME API
  */
-
 
 app.get("/game/leaderboard", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .whereNotNull("time_born").whereRaw("tod > NOW()").orderBy("time_born", "ASC")
+    .whereNotNull("time_born")
+    .whereRaw("tod > NOW()")
+    .orderBy("time_born", "ASC");
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -450,7 +439,9 @@ app.get("/game/deathvalley", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .whereNotNull("time_born").whereRaw("tod <= NOW()").orderBy("time_born", "ASC")
+    .whereNotNull("time_born")
+    .whereRaw("tod <= NOW()")
+    .orderBy("time_born", "ASC");
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -462,7 +453,9 @@ app.get("/game/deathvalley", async function (req, res) {
 
 app.get("/game/player/:id", async function (req, res) {
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
-  let result = await this.storage.getMulti("game_players_view", { "player_id": req.params.id })
+  let result = await this.storage.getMulti("game_players_view", {
+    player_id: req.params.id,
+  });
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(result);
 });
@@ -472,7 +465,8 @@ app.get("/game/user/:owner", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .where("owner", req.params.owner.toLowerCase()).orderBy("time_born", "ASC")
+    .where("owner", req.params.owner.toLowerCase())
+    .orderBy("time_born", "ASC");
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -487,7 +481,8 @@ app.get("/game/dead", async function (req, res) {
   let query = storage.knex
     .select("*")
     .from("game_players_view")
-    .where("time_born", null).orderBy("time_born", "ASC")
+    .where("time_born", null)
+    .orderBy("time_born", "ASC");
   let result = await query.paginate({
     perPage: req.query.perPage ? parseInt(req.query.perPage) : 500,
     currentPage: currentPage ? currentPage : 0,
@@ -497,15 +492,18 @@ app.get("/game/dead", async function (req, res) {
   res.status(200).json(result.data);
 });
 
-
 /* NFT API */
 
-
 async function getMNFTFromUser(address) {
-  let res = await Axios.post('https://api.thegraph.com/subgraphs/name/grandsmarquis/erc1155matic', {
-    query: `
+  let res = await Axios.post(
+    "https://api.thegraph.com/subgraphs/name/grandsmarquis/erc1155matic",
+    {
+      query:
+        `
       {
-          balances (where: {account: "` + address.toLowerCase() + `"}) {
+          balances (where: {account: "` +
+        address.toLowerCase() +
+        `"}) {
             id
           value
           token {
@@ -517,22 +515,28 @@ async function getMNFTFromUser(address) {
           }
       }
       
-      `
-  })
-  let result = []
-  let balances = res.data.data.balances
+      `,
+    }
+  );
+  let result = [];
+  let balances = res.data.data.balances;
   for (const balance of balances) {
     result.push({
       contract_address: balance.token.registry.id,
       nft_id: balance.token.identifier,
       amount: balance.value,
-      type: 1155
-    })
+      type: 1155,
+    });
   }
-  let res2 = await Axios.post('https://api.thegraph.com/subgraphs/name/dievardump/matic-nfts', {
-    query: `
+  let res2 = await Axios.post(
+    "https://api.thegraph.com/subgraphs/name/dievardump/matic-nfts",
     {
-      accounts(where: {id: "` + address.toLowerCase() + `"}) {
+      query:
+        `
+    {
+      accounts(where: {id: "` +
+        address.toLowerCase() +
+        `"}) {
         tokens {
           token {
             tokenId
@@ -543,57 +547,68 @@ async function getMNFTFromUser(address) {
         }
       }
     }  
-      `
-  })
+      `,
+    }
+  );
   try {
-    let nfts = res2.data.data.accounts[0].tokens
+    let nfts = res2.data.data.accounts[0].tokens;
     for (const nft of nfts) {
       result.push({
         contract_address: nft.registry.id,
         nft_id: nft.token.tokenId,
         amount: 1,
-        type: 721
-      })
+        type: 721,
+      });
     }
-  } catch (error) {
+  } catch (error) {}
 
-  }
-
-  return (result)
+  return result;
 }
 
 app.get("/nft/list/", async function (req, res) {
-  let result = await os.getNFTs(req.query.address, req.query.chain, req.query.collection)
+  let result = await os.getNFTs(
+    req.query.address,
+    req.query.chain,
+    req.query.collection
+  );
   res.setHeader("Cache-Control", "s-max-age=200, stale-while-revalidate");
-  res.status(200).json(result)
-})
+  res.status(200).json(result);
+});
 
 app.get("/nft/matic/user/:user/", async function (req, res) {
   let NFTs = await getMNFTFromUser(req.params.user);
   if (req.query.contract_address != null) {
-    NFTs = NFTs.filter(NFT => NFT.contract_address == req.query.contract_address.toLowerCase())
+    NFTs = NFTs.filter(
+      (NFT) => NFT.contract_address == req.query.contract_address.toLowerCase()
+    );
   }
   res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
   res.status(200).json(NFTs);
-})
+});
 
-app.post('/nft/matic/new', async function (req, res) {
+app.post("/nft/matic/new", async function (req, res) {
   for (const nft of req.body.nfts) {
     let existing = await this.storage.getMulti("nft20_nft", {
       nft_contract: nft.nft_contract,
       nft_id: nft.nft_id,
     });
-    if (existing && existing.nft_image == null) { //UPDATE
-      await this.storage.updateMulti("nft20_nft", {
-        nft_contract: nft.nft_contract,
-        nft_id: nft.nft_id,
-      }, nft)
-    } else { //INSERT
-      await this.storage.insert("nft20_nft", nft)
+    if (existing && existing.nft_image == null) {
+      //UPDATE
+      await this.storage.updateMulti(
+        "nft20_nft",
+        {
+          nft_contract: nft.nft_contract,
+          nft_id: nft.nft_id,
+        },
+        nft
+      );
+    } else {
+      //INSERT
+      await this.storage.insert("nft20_nft", nft);
     }
   }
   res.status(200).json(true);
-})
+});
 
 app.get("/user/leaderboard", async function (req, res) {
   let result = await storage.executeAsync(`SELECT
@@ -612,10 +627,10 @@ app.get("/user/leaderboard", async function (req, res) {
   LEFT JOIN "public"."nft20_pair" "nft20_pair__via__pool" ON "public"."nft20_history"."pool" = "nft20_pair__via__pool"."address"
   group by "from"
   ORDER BY 4 DESC
-  `); // @TODO Move this to a view? 
+  `); // @TODO Move this to a view?
   res.setHeader("Cache-Control", "s-max-age=5000, stale-while-revalidate");
-  res.status(200).json(result)
-})
+  res.status(200).json(result);
+});
 
 app.post("/pepeswantstovote", async function (req, res) {
   let address = req.body.address;
@@ -629,7 +644,9 @@ app.post("/pepeswantstovote", async function (req, res) {
     sig: req.body.sig,
   });
   if (p_address.toLowerCase() != address.toLowerCase()) {
-    res.status(200).json([p_address.toLowerCase(), address.toLowerCase(), false]);
+    res
+      .status(200)
+      .json([p_address.toLowerCase(), address.toLowerCase(), false]);
     return;
   }
   let score = req.body.isHappy ? +1 : -1;
@@ -637,26 +654,48 @@ app.post("/pepeswantstovote", async function (req, res) {
     address: address.toLowerCase(),
     amount: score,
     time: storage.knex.fn.now(),
-    nft_address: nft_address.toLowerCase()
-  })
+    nft_address: nft_address.toLowerCase(),
+  });
   res.status(200).json(true);
-})
+});
 
 app.get("/cudl/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
     .select("*")
     .from("cudl_pet")
-    .where("is_alive", true).orderBy("score", "DESC")
+    .where("is_alive", true)
+    .orderBy("score", "DESC");
   let grumpy = await this.storage.knex
     .select("*")
     .from("cudl_pet")
     .where("is_alive", true)
-    .where("tod", '<', this.storage.knex.fn.now()).orderBy("score", "DESC")
+    .where("tod", "<", this.storage.knex.fn.now())
+    .orderBy("score", "DESC");
   res.status(200).json({
     leaderboard: leaderboard,
-    grumpy: grumpy
-  })
-})
+    grumpy: grumpy,
+  });
+});
+
+app.get("/cudl/bonks", async function (req, res) {
+  let bonks = await this.storage.knex
+    .select("*")
+    .from("cudl_bonk")
+    .orderBy("timestamp", "DESC");
+  res.status(200).json({
+    bonks: bonks,
+  });
+});
+
+app.get("/cudl/:id", async function (req, res) {
+  let pet = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("pet_id", req.params.id);
+  res.status(200).json({
+    pet,
+  });
+});
 
 app.listen(7878);
 
