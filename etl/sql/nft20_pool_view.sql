@@ -1,6 +1,5 @@
-CREATE OR REPLACE VIEW public.nft20_pool_view
-as
-SELECT p.address,
+     CREATE OR REPLACE VIEW public.nft20_pool_view
+as SELECT p.address,
     p.nft,
     p.nft_type,
     p.name,
@@ -58,7 +57,7 @@ price_high_day_usd
      LEFT JOIN nft20_history h ON h.address::text = p.address::text
       LEFT JOIN nft20_collection c ON c.contract_address::text = p.nft::text
             LEFT JOIN pepevote_nfts pepe ON pepe.nft_address::text = c.contract_address::text
-                 LEFT JOIN nft20_price_summary price ON price.nft_address::text = p.nft::text
+                 LEFT JOIN nft20_price_summary_view price ON price.nft_address::text = p.nft::text
   WHERE p.hidden = false
   GROUP BY p.address,    c.banner_url ,
     c.image_url,
