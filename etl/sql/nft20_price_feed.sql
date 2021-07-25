@@ -41,7 +41,7 @@ FROM nft20_price_feed npf
 GROUP BY date_trunc('day', "time" )  , nft_address
 ORDER BY "time"  
 
-create or replace view nft20_price_summary as 
+create MATERIALIZED view nft20_price_summary_view as 
 select 
 w.nft_address,
   (array_agg(w.c_usd ORDER BY w."time" DESC))[1] as  price_now_usd,
@@ -61,3 +61,4 @@ w.nft_address,
    from nft20_price_feed_day_view w, nft20_price_feed_day_view d
       where w."time" >= NOW() - interval '1 week' and  d."time" >= NOW() - interval '1 day' and w.nft_address =d.nft_address 
       group by w.nft_address 
+
