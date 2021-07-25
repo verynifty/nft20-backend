@@ -40,3 +40,24 @@ SELECT
 FROM nft20_price_feed npf 
 GROUP BY date_trunc('day', "time" )  , nft_address
 ORDER BY "time"  
+
+create or replace view nft20_price_summary as 
+select 
+w.nft_address,
+  (array_agg(w.c_usd ORDER BY w."time" DESC))[1] as  price_now_usd,
+   (array_agg(w.o_usd ORDER BY w."time" ASC))[1] as price_one_week_ago_usd,
+      (array_agg(d.o_usd  ORDER BY d."time" asc  )   )[1]   as price_one_day_ago_usd,
+        (array_agg(w.c_eth ORDER BY w."time" DESC))[1] as  price_now_eth,
+   (array_agg(w.o_eth ORDER BY w."time" ASC))[1] as price_one_week_ago_eth,
+      (array_agg(d.o_eth  ORDER BY d."time" asc  )   )[1]   as price_one_day_ago_eth,
+      min(d.l_eth ) as price_low_day_eth,
+            max(d.h_eth ) as price_high_day_eth,
+      min(w.l_eth ) as price_low_week_eth,
+            max(w.h_eth ) as price_high_week_eth,
+                  min(d.l_usd ) as price_low_day_usd,
+            max(d.h_usd ) as price_high_day_usd,
+      min(w.l_usd ) as price_low_week_usd,
+            max(w.h_usd) as price_high_week_usd
+   from nft20_price_feed_day_view w, nft20_price_feed_day_view d
+      where w."time" >= NOW() - interval '1 week' and  d."time" >= NOW() - interval '1 day' and w.nft_address =d.nft_address 
+      group by w.nft_address 
