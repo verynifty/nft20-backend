@@ -76,7 +76,7 @@ function NFT20(ethereum, storage) {
 NFT20.prototype.getPairs = async function (withUpdate = false) {
   this.counter++  
   if (this.counter % 2 == 0) {
-    this.storage.executeAsync('REFRESH MATERIALIZED VIEW concurrently nft20_price_summary_view')
+    await this.storage.executeAsync('REFRESH MATERIALIZED VIEW concurrently nft20_price_summary_view')
   }
   let pairs = [];
   let pairCount = parseInt(await this.factory.methods.counter().call());
@@ -671,9 +671,11 @@ NFT20.prototype.getData = async function (
   }
   if (this.NETWORK == 0) {
     await this.getAuctions();
+    /*
     await this.storage.executeAsync(
       "REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view"
     );
+     */
   }
 };
 
