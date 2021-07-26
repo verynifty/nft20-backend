@@ -715,7 +715,7 @@ app.get("/cudl/:id", async function (req, res) {
 
 app.get("/cudl/ingame", async function (req, res) {
   let pet = await this.storage.knex
-    .select("nft_contract nft_id")
+    .select("*")
     .from("cudl_pet")
     .where("nft_id", req.query.id)
     .where("nft_contract", req.query.contract);
