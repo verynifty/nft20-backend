@@ -721,9 +721,9 @@ app.get("/cudl/ingame", async function (req, res) {
     .where("nft_contract", req.query.contract);
 
   if (pet.length > 0) {
-    res.status(200).json(true);
+    res.status(200).json({ result: true });
   } else {
-    res.status(200).json(false);
+    res.status(200).json({ result: false });
   }
 });
 
