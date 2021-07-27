@@ -16,6 +16,7 @@ function Cudl(ethereum, storage) {
 }
 
 Cudl.prototype.run = async function () {
+  let petToUpdate = {}
   let maxBlock = (await this.ethereum.getLatestBlock()) - 2;
   let deployed_block = 12847722;
   let minBlock = Math.max(
@@ -46,7 +47,7 @@ Cudl.prototype.run = async function () {
       amount: event.returnValues.reward,
       recipient: this.ethereum.normalizeHash(event.returnValues.recipient),
     });
-    await this.updatePet(event.returnValues.nftId);
+    petToUpdate[event.returnValues.nftId] = true;
   }
   events = await this.game.getPastEvents("BuyAccessory", {
     fromBlock: minBlock,
@@ -69,7 +70,7 @@ Cudl.prototype.run = async function () {
       time_extension: event.returnValues.itemTimeExtension,
       buyer: this.ethereum.normalizeHash(event.returnValues.buyer),
     });
-    await this.updatePet(event.returnValues.nftId);
+    petToUpdate[event.returnValues.nftId] = true;
   }
   events = await this.game.getPastEvents("Fatalize", {
     fromBlock: minBlock,
@@ -90,8 +91,8 @@ Cudl.prototype.run = async function () {
       winner: event.returnValues.nftId,
       badguy: this.ethereum.normalizeHash(event.returnValues.killer),
     });
-    await this.updatePet(event.returnValues.nftId);
-    await this.updatePet(event.returnValues.opponentId);
+    petToUpdate[event.returnValues.nftId] = true;
+    petToUpdate[event.returnValues.opponentId] = true;
   }
 
   events = await this.game.getPastEvents("Bonk", {
@@ -114,8 +115,8 @@ Cudl.prototype.run = async function () {
       winner: event.returnValues.winner,
       reward: event.returnValues.reward,
     });
-    await this.updatePet(event.returnValues.attacker);
-    await this.updatePet(event.returnValues.victim);
+    petToUpdate[event.returnValues.attacker] = true;
+    petToUpdate[event.returnValues.victim] = true;
   }
 
   events = await this.game.getPastEvents("NewPlayer", {
@@ -138,7 +139,11 @@ Cudl.prototype.run = async function () {
       pet_id: event.returnValues.playerId,
       owner: this.ethereum.normalizeHash(event.returnValues.owner),
     });
-    await this.updatePet(event.returnValues.playerId);
+    petToUpdate[event.returnValues.playerId] = true;
+  }
+  petToUpdate = Object.keys(petToUpdate)
+  for (const pet of petToUpdate) {
+    await this.updatePet(pet);
   }
 };
 
