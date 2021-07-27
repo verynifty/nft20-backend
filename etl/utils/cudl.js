@@ -37,7 +37,7 @@ Cudl.prototype.run = async function () {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
-  console.log("Making Mined events :", events.length())
+  console.log("Making Mined events :", events.length)
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -55,12 +55,13 @@ Cudl.prototype.run = async function () {
     });
     petToUpdate[event.returnValues.nftId] = true;
   }
-  console.log("Making BuyAccessory events :", events.length())
 
   events = await this.game.getPastEvents("BuyAccessory", {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
+  console.log("Making BuyAccessory events :", events.length)
+
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -80,12 +81,13 @@ Cudl.prototype.run = async function () {
     });
     petToUpdate[event.returnValues.nftId] = true;
   }
-  console.log("Making Fatalize events :", events.length())
 
   events = await this.game.getPastEvents("Fatalize", {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
+  console.log("Making Fatalize events :", events.length)
+
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -104,12 +106,13 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.nftId] = true;
     petToUpdate[event.returnValues.opponentId] = true;
   }
-  console.log("Making Bonk events :", events.length())
 
   events = await this.game.getPastEvents("Bonk", {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
+  console.log("Making Bonk events :", events.length)
+
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -130,12 +133,13 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.victim] = true;
   }
 
-  console.log("Making NewPlayer events :", events.length())
 
   events = await this.game.getPastEvents("NewPlayer", {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
+  console.log("Making NewPlayer events :", events.length)
+
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -155,7 +159,7 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.playerId] = true;
   }
   petToUpdate = Object.keys(petToUpdate)
-  console.log("updating pets :", pet.length())
+  console.log("updating pets :", pet.length)
   for (const pet of petToUpdate) {
     await this.updatePet(pet);
   }
