@@ -16,7 +16,7 @@ CREATE TABLE cudl_pet
     caretaker varchar NULL,
     nft_id numeric NULL,
     tod timestamp NULL,
-    CONSTRAINT unique_game_players UNIQUE (player_id)
+    CONSTRAINT unique_cudl_pet UNIQUE (pet_id)
 );
 
 CREATE TABLE cudl_mined
