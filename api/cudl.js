@@ -20,7 +20,7 @@ router.get("/:owner", async function (req, res) {
   let careTaking = await this.storage.knex
     .select("*")
     .from("cudl_pet")
-    .where("caretaker", req.params.address.toLowerCase());
+    .where("caretaker", req.params.owner.toLowerCase());
 
   petsOwned.concat(careTaking);
   res.status(200).json({
