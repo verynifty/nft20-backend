@@ -5,6 +5,8 @@ const { bufferToHex } = require("ethereumjs-util");
 
 const { default: Axios } = require("axios");
 
+var cudlRouter = require("./cudl");
+
 storage = new (require("../etl/utils/storage"))({
   user: process.env.NFT20_DB_USER,
   host: process.env.NFT20_DB_HOST,
@@ -36,6 +38,8 @@ var app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
+
+app.use("/cudl", cudlRouter);
 
 app.get("/activity", async function (req, res) {
   let network = req.query.network;
@@ -673,58 +677,6 @@ app.get("/price/day", async function (req, res) {
     .from("nft20_price_feed_day_view")
     .where("nft_address", req.query.address.toLowerCase());
   res.status(200).json(data);
-});
-
-app.get("/cudl/leaderboard", async function (req, res) {
-  let leaderboard = await this.storage.knex
-    .select("*")
-    .from("cudl_pet")
-    .where("is_alive", true)
-    .orderBy("score", "DESC");
-  let grumpy = await this.storage.knex
-    .select("*")
-    .from("cudl_pet")
-    .where("is_alive", true)
-    .where("tod", "<", this.storage.knex.fn.now())
-    .orderBy("score", "DESC");
-  res.status(200).json({
-    leaderboard: leaderboard,
-    grumpy: grumpy,
-  });
-});
-
-app.get("/cudl/bonks", async function (req, res) {
-  let bonks = await this.storage.knex
-    .select("*")
-    .from("cudl_bonk")
-    .orderBy("timestamp", "DESC");
-  res.status(200).json({
-    bonks: bonks,
-  });
-});
-
-app.get("/cudl/:id", async function (req, res) {
-  let pet = await this.storage.knex
-    .select("*")
-    .from("cudl_pet")
-    .where("pet_id", req.params.id);
-  res.status(200).json({
-    pet,
-  });
-});
-
-app.get("/cudl/ingame", async function (req, res) {
-  let pet = await this.storage.knex
-    .select("*")
-    .from("cudl_pet")
-    .where("nft_id", parseInt(req.query.id))
-    .where("nft_contract", req.query.contract.toLowerCase());
-
-  if (pet.length > 0) {
-    res.status(200).json({ result: true });
-  } else {
-    res.status(200).json({ result: false });
-  }
 });
 
 app.listen(7878);
