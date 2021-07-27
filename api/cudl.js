@@ -11,6 +11,17 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
+router.get("/:owner", async function (req, res) {
+  let pets = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("owner", req.params.owner.toLowerCase());
+
+  res.status(200).json({
+    pets,
+  });
+});
+
 router.get("/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
     .select("*")
