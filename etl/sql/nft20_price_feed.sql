@@ -41,7 +41,7 @@ FROM nft20_price_feed npf
 GROUP BY date_trunc('day', "time" )  , nft_address
 ORDER BY "time"  
 
- 
+ CREATE MATERIALIZED VIEW public.nft20_price_summary_view AS
  SELECT w.nft_address,
     (array_agg(w.c_usd ORDER BY w."time" DESC))[1] AS price_now_usd,
     (array_agg(w.o_usd ORDER BY w."time"))[1] AS price_one_week_ago_usd,
