@@ -25,10 +25,15 @@ Cudl.prototype.run = async function () {
     await this.storage.getMax("cudl_feed", "blocknumber")
   );
   console.log("Start ingesting on ", minBlock, maxBlock, maxBlock - minBlock);
+ 
+  /*
+  //This will be for later
   if (maxBlock - minBlock > 20000) {
     console.log("Limiting ingestion to 3 days");
-    minBlock + 20000 
+    maxBlock = minBlock + 20000 
   }
+  */
+
   minBlock -= 2;
 
   let events = [];
@@ -159,7 +164,7 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.playerId] = true;
   }
   petToUpdate = Object.keys(petToUpdate)
-  console.log("updating pets :", pet.length)
+  console.log("updating pets :", petToUpdate.length)
   for (const pet of petToUpdate) {
     await this.updatePet(pet);
   }
