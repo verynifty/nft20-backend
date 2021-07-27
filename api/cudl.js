@@ -11,7 +11,7 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
-router.get("/:owner", async function (req, res) {
+router.get("/owner/:owner", async function (req, res) {
   let petsOwned = await this.storage.knex
     .select("*")
     .from("cudl_pet")
