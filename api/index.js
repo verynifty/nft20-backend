@@ -659,15 +659,21 @@ app.post("/pepeswantstovote", async function (req, res) {
   res.status(200).json(true);
 });
 
-app.get("/price/hour", async function(req, res) {
-  let data = await this.storage.knex.select("*").from("nft20_price_feed_hour_view").where("nft_address", req.query.address.toLowerCase())
+app.get("/price/hour", async function (req, res) {
+  let data = await this.storage.knex
+    .select("*")
+    .from("nft20_price_feed_hour_view")
+    .where("nft_address", req.query.address.toLowerCase());
   res.status(200).json(data);
-}) 
+});
 
-app.get("/price/day", async function(req, res) {
-  let data = await this.storage.knex.select("*").from("nft20_price_feed_day_view").where("nft_address", req.query.address.toLowerCase())
+app.get("/price/day", async function (req, res) {
+  let data = await this.storage.knex
+    .select("*")
+    .from("nft20_price_feed_day_view")
+    .where("nft_address", req.query.address.toLowerCase());
   res.status(200).json(data);
-}) 
+});
 
 app.get("/cudl/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
@@ -705,6 +711,20 @@ app.get("/cudl/:id", async function (req, res) {
   res.status(200).json({
     pet,
   });
+});
+
+app.get("/cudl/ingame", async function (req, res) {
+  let pet = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("nft_id", parseInt(req.query.id))
+    .where("nft_contract", req.query.contract.toLowerCase());
+
+  if (pet.length > 0) {
+    res.status(200).json({ result: true });
+  } else {
+    res.status(200).json({ result: false });
+  }
 });
 
 app.listen(7878);
