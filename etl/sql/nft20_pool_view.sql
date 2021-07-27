@@ -16,7 +16,7 @@ as SELECT p.address,
  GROUP BY p.address
   
   
-    CREATE OR REPLACE VIEW public.nft20_pool_view
+ CREATE OR REPLACE VIEW public.nft20_pool_view
 as 
 SELECT p.address,
     p.nft,
@@ -72,7 +72,7 @@ price_low_day_usd,
 price_low_week_usd,
 price_high_week_usd,
 price_high_day_usd,
-json_build_object('usd', trendline_usd, 'eth', trendline_eth)
+json_build_object('usd', trendline_usd, 'eth', trendline_eth) as trendline
    FROM nft20_pair p
      LEFT JOIN nft20_history_summary_view h ON h.address::text = p.address::text
       LEFT JOIN nft20_collection c ON c.contract_address::text = p.nft::text
