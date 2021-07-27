@@ -24,7 +24,7 @@ router.get("/:owner", async function (req, res) {
 
   petsOwned.concat(careTaking);
   res.status(200).json({
-    pets,
+    petsOwned,
   });
 });
 
