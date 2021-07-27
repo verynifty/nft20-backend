@@ -190,6 +190,7 @@ Cudl.prototype.updatePet = async function (playerId) {
       nft_contract: this.ethereum.normalizeHash(infos._token),
       nft_id: infos._tokenId,
       caretaker: this.ethereum.normalizeHash(careTaker),
+      last_time_mined: new Date(parseInt(infos._lastTimeMined) * 1000).toUTCString(),
       tod: new Date(parseInt(infos._timeUntilStarving) * 1000).toUTCString(),
     };
     await this.storage
