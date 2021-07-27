@@ -12,11 +12,17 @@ storage = new (require("../etl/utils/storage"))({
 });
 
 router.get("/:owner", async function (req, res) {
-  let pets = await this.storage.knex
+  let petsOwned = await this.storage.knex
     .select("*")
     .from("cudl_pet")
     .where("owner", req.params.owner.toLowerCase());
 
+  let careTaking = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("caretaker", req.params.address.toLowerCase());
+
+  pets.concat(careTaking);
   res.status(200).json({
     pets,
   });
