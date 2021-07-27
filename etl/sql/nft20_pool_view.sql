@@ -1,5 +1,24 @@
-     CREATE OR REPLACE VIEW public.nft20_pool_view
+     CREATE OR REPLACE VIEW public.nft20_history_summary_view
 as SELECT p.address,
+    COALESCE(sum(h.amount), 0::numeric) AS nft_locked,
+    COALESCE(sum(h.amount) * 100::numeric, 0::numeric) AS token_supply,
+    COALESCE(sum(h.total_transfers), 0::numeric) AS total_nft_transfers,
+    COALESCE(count(DISTINCT h."user"), 0::bigint) AS pool_users,
+    COALESCE(count(DISTINCT h."user") FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint) AS users_today,
+    COALESCE(count(DISTINCT h."user") FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint) AS users_weekly,
+    COALESCE(sum(h.volume_usd) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint::numeric) AS volume_today_usd,
+    COALESCE(sum(h.volume_usd) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint::numeric) AS volume_weekly_usd,
+    COALESCE(sum(h.volume_eth) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint::numeric) AS volume_today_eth,
+    COALESCE(sum(h.volume_eth) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint::numeric) AS volume_weekly_eth,
+    COALESCE(sum(h.volume_usd), 0::numeric) AS volume_usd,
+    COALESCE(sum(h.volume_eth), 0::numeric) AS volume_eth,
+ FROM nft20_history h
+ GROUP BY p.address
+  
+  
+    CREATE OR REPLACE VIEW public.nft20_pool_view
+as 
+SELECT p.address,
     p.nft,
     p.nft_type,
     p.name,
@@ -23,18 +42,18 @@ as SELECT p.address,
     c.telegram_url ,
     c.twitter_username ,
     c.number_of_owners ,
-    COALESCE(sum(h.amount), 0::numeric) AS nft_locked,
-    COALESCE(sum(h.amount) * 100::numeric, 0::numeric) AS token_supply,
-    COALESCE(sum(h.total_transfers), 0::numeric) AS total_nft_transfers,
-    COALESCE(count(DISTINCT h."user"), 0::bigint) AS pool_users,
+    h.nft_locked,
+    h.token_supply,
+    h.total_nft_transfers,
+    h.pool_users,
     p.logo_url,
-    COALESCE(count(DISTINCT h."user") FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint) AS users_today,
-    COALESCE(count(DISTINCT h."user") FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint) AS users_weekly,
+    h.users_today,
+    h.users_weekly,
     p.nft_value,
-    COALESCE(sum(h.volume_usd) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint::numeric) AS volume_today_usd,
-    COALESCE(sum(h.volume_usd) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint::numeric) AS volume_weekly_usd,
-    COALESCE(sum(h.volume_eth) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '1 day'::interval)), 0::bigint::numeric) AS volume_today_eth,
-    COALESCE(sum(h.volume_eth) FILTER (WHERE h."timestamp" > (CURRENT_DATE - '7 days'::interval)), 0::bigint::numeric) AS volume_weekly_eth,
+    h.volume_today_usd,
+    h.volume_weekly_usd,
+    h.volume_today_eth,
+    h.volume_weekly_eth,
     COALESCE(sum(h.volume_usd), 0::numeric) AS volume_usd,
     COALESCE(sum(h.volume_eth), 0::numeric) AS volume_eth,
     COALESCE(pepe.pepescore, 0::numeric) AS pepe_score,
@@ -52,9 +71,10 @@ price_high_week_eth,
 price_low_day_usd,
 price_low_week_usd,
 price_high_week_usd,
-price_high_day_usd
+price_high_day_usd,
+json_build_object('usd', trendline_usd, 'eth', trendline_eth)
    FROM nft20_pair p
-     LEFT JOIN nft20_history h ON h.address::text = p.address::text
+     LEFT JOIN nft20_history_summary_view h ON h.address::text = p.address::text
       LEFT JOIN nft20_collection c ON c.contract_address::text = p.nft::text
             LEFT JOIN pepevote_nfts pepe ON pepe.nft_address::text = c.contract_address::text
                  LEFT JOIN nft20_price_summary_view price ON price.nft_address::text = p.nft::text
@@ -84,5 +104,18 @@ price_high_week_eth,
 price_low_day_usd,
 price_low_week_usd,
 price_high_week_usd,
-price_high_day_usd
+price_high_day_usd,
+   h.nft_locked,
+    h.token_supply,
+    h.total_nft_transfers,
+    h.pool_users,
+    h.users_today,
+    h.users_weekly,
+    p.nft_value,
+    h.volume_today_usd,
+    h.volume_weekly_usd,
+    h.volume_today_eth,
+    h.volume_weekly_eth,
+    trendline_usd,
+    trendline_eth
   ORDER BY p.name;

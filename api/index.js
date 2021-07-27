@@ -93,7 +93,7 @@ app.get("/nft/:contract/:id", async function (req, res) {
   let collection = await storage.getMulti("nft20_collection", {
     contract_address: req.params.contract,
   });
-  res.setHeader("Cache-Control", "s-max-age=260, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=300, stale-while-revalidate");
   // TODO Do something if none exist
   res.status(200).json({
     nft: nft,
