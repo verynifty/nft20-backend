@@ -22,7 +22,7 @@ router.get("/:owner", async function (req, res) {
     .from("cudl_pet")
     .where("caretaker", req.params.address.toLowerCase());
 
-  pets.concat(careTaking);
+  petsOwned.concat(careTaking);
   res.status(200).json({
     pets,
   });
