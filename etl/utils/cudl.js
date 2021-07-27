@@ -24,6 +24,11 @@ Cudl.prototype.run = async function () {
     await this.storage.getMax("cudl_mined", "blocknumber"),
     await this.storage.getMax("cudl_feed", "blocknumber")
   );
+  console.log("Start ingesting on ", minBlock, maxBlock, maxBlock - minBlock);
+  if (maxBlock - minBlock > 20000) {
+    console.log("Limiting ingestion to 3 days");
+    minBlock + 20000 
+  }
   minBlock -= 2;
 
   let events = null;
@@ -32,6 +37,7 @@ Cudl.prototype.run = async function () {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
+  console.log("Making Mined events :", events.lenght())
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -49,6 +55,8 @@ Cudl.prototype.run = async function () {
     });
     petToUpdate[event.returnValues.nftId] = true;
   }
+  console.log("Making BuyAccessory events :", events.lenght())
+
   events = await this.game.getPastEvents("BuyAccessory", {
     fromBlock: minBlock,
     toBlock: maxBlock,
@@ -72,6 +80,8 @@ Cudl.prototype.run = async function () {
     });
     petToUpdate[event.returnValues.nftId] = true;
   }
+  console.log("Making Fatalize events :", events.lenght())
+
   events = await this.game.getPastEvents("Fatalize", {
     fromBlock: minBlock,
     toBlock: maxBlock,
@@ -94,6 +104,7 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.nftId] = true;
     petToUpdate[event.returnValues.opponentId] = true;
   }
+  console.log("Making Bonk events :", events.lenght())
 
   events = await this.game.getPastEvents("Bonk", {
     fromBlock: minBlock,
@@ -119,6 +130,8 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.victim] = true;
   }
 
+  console.log("Making NewPlayer events :", events.lenght())
+
   events = await this.game.getPastEvents("NewPlayer", {
     fromBlock: minBlock,
     toBlock: maxBlock,
@@ -142,6 +155,7 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.playerId] = true;
   }
   petToUpdate = Object.keys(petToUpdate)
+  console.log("updating pets :", pet.lenght())
   for (const pet of petToUpdate) {
     await this.updatePet(pet);
   }
