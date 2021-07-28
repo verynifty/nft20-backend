@@ -22,3 +22,17 @@ CREATE TABLE nft20_collection (
 	collection_type NUMERIC null,
 	CONSTRAINT unique_collection UNIQUE (contract_address)
 );
+
+
+CREATE OR REPLACE VIEW public.nft20_nfts_view
+AS 
+SELECT a.pool AS pool,
+    n.nft_contract,
+    n.nft_id,
+    n.nft_image,
+    n.nft_title,
+    n.nft_description,
+    availabe_quantity,
+    n.nft_trait 
+   FROM (select a.id, a.nft,  a.pool as pool, sum(a.amount) AS availabe_quantity FROM  nft20_action a group by a.id, a.pool, a.nft) as a
+   join nft20_nft n on n.nft_contract::text = a.nft::text AND n.nft_id = a.id
