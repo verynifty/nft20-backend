@@ -106,7 +106,7 @@ CREATE TABLE cudl_bonk
 
 
 CREATE OR REPLACE VIEW cudl_pet_view AS
-select p.*, row_number () over (order by is_alive desc, score desc )
+select p.*, row_number () over (order by is_alive desc, score desc ) as ranking
 from cudl_pet p
 
 -- Permissions
