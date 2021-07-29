@@ -104,6 +104,11 @@ CREATE TABLE cudl_bonk
     CONSTRAINT unique_cudl_bonk UNIQUE (transactionhash, logindex)
 );
 
+
+CREATE OR REPLACE VIEW cudl_pet_view AS
+select p.*, row_number () over (order by is_alive desc, score desc )
+from cudl_pet p
+
 -- Permissions
 
 ALTER TABLE public.game_players OWNER TO doadmin;
