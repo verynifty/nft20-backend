@@ -32,12 +32,12 @@ router.get("/owner/:owner", async function (req, res) {
 router.get("/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
     .select("*")
-    .from("cudl_pet")
+    .from("cudl_pet_view")
     .where("is_alive", true)
     .orderBy("score", "DESC");
   let grumpy = await this.storage.knex
     .select("*")
-    .from("cudl_pet")
+    .from("cudl_pet_view")
     .where("is_alive", true)
     .where("tod", "<", this.storage.knex.fn.now())
     .orderBy("score", "DESC");
@@ -60,7 +60,7 @@ router.get("/bonks", async function (req, res) {
 router.get("/:id", async function (req, res) {
   let pet = await this.storage.knex
     .select("*")
-    .from("cudl_pet")
+    .from("cudl_pet_view")
     .where("pet_id", req.params.id);
   res.status(200).json({
     pet,
@@ -84,7 +84,7 @@ router.get("/ingame", async function (req, res) {
 router.get("/caretaking/:address", async function (req, res) {
   let pet = await this.storage.knex
     .select("*")
-    .from("cudl_pet")
+    .from("cudl_pet_view")
     .where("caretaker", req.params.address.toLowerCase());
 
   res.status(200).json({
