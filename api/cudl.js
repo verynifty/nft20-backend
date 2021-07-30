@@ -11,7 +11,31 @@ storage = new (require("../etl/utils/storage"))({
   ssl: { rejectUnauthorized: false },
 });
 
+ethereum_insance = new (require("../etl/utils/ethereum"))(
+  process.env.NFT20_INFURA
+);
+
+const cudl = new (require("../etl/utils/cudl"))(ethereum_insance, storage);
+
+
+
 router.get("/owner/:owner", async function (req, res) {
+  let petsOwned = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("owner", req.params.owner.toLowerCase());
+
+  let careTaking = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("caretaker", req.params.owner.toLowerCase());
+
+  if (req.query.refresh) {
+    for (const pet of petsOwned) {
+      await cudl.updatePet(pet.pet_id)
+    }
+  }
+
   let petsOwned = await this.storage.knex
     .select("*")
     .from("cudl_pet")
@@ -58,6 +82,9 @@ router.get("/bonks", async function (req, res) {
 });
 
 router.get("/:id", async function (req, res) {
+  if (req.query.refresh) {
+    await cudl.updatePet(req.params.id)
+  }
   let pet = await this.storage.knex
     .select("*")
     .from("cudl_pet_view")
