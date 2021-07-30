@@ -36,11 +36,6 @@ router.get("/owner/:owner", async function (req, res) {
     }
   }
 
-  let petsOwned = await this.storage.knex
-    .select("*")
-    .from("cudl_pet")
-    .where("owner", req.params.owner.toLowerCase());
-
   let careTaking = await this.storage.knex
     .select("*")
     .from("cudl_pet")
