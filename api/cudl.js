@@ -36,12 +36,6 @@ router.get("/owner/:owner", async function (req, res) {
     }
   }
 
-
-  let careTaking = await this.storage.knex
-    .select("*")
-    .from("cudl_pet")
-    .where("caretaker", req.params.owner.toLowerCase());
-
   //   petsOwned.concat(careTaking);
   res.status(200).json({
     petsOwned,
