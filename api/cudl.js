@@ -36,6 +36,7 @@ router.get("/owner/:owner", async function (req, res) {
     }
   }
 
+
   let careTaking = await this.storage.knex
     .select("*")
     .from("cudl_pet")
