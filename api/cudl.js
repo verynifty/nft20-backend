@@ -43,6 +43,15 @@ router.get("/owner/:owner", async function (req, res) {
   });
 });
 
+router.get("/refresh", async function (req, res) {
+  let maxId = await this.storage.getMax("cudl_pet", "pet_id")
+  let i = 0;
+  while (i < maxId) {
+    await cudl.updatePet(i++)
+  }
+  res.status(200).json(maxId)
+})
+
 router.get("/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
     .select("*")
