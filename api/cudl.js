@@ -70,6 +70,15 @@ router.get("/leaderboard", async function (req, res) {
   });
 });
 
+router.get("/upcoming", async function (req, res) {
+  let upcoming = await this.storage.knex
+    .select("*")
+    .from("cudl_pet_view")
+    .where("is_alive", true)
+    .orderBy("tod", "ASC");
+  res.status(200).json(upcoming);
+});
+
 router.get("/bonks", async function (req, res) {
   let bonks = await this.storage.knex
     .select("*")
