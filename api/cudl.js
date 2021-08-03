@@ -62,6 +62,7 @@ router.get("/leaderboard", async function (req, res) {
     .select("*")
     .from("cudl_pet_view")
     .where("is_starving", true)
+     .where("is_alive", true)
     .where("tod", "<", this.storage.knex.fn.now())
     .orderBy("score", "DESC");
   res.status(200).json({
