@@ -17,8 +17,6 @@ ethereum_insance = new (require("../etl/utils/ethereum"))(
 
 const cudl = new (require("../etl/utils/cudl"))(ethereum_insance, storage);
 
-
-
 router.get("/owner/:owner", async function (req, res) {
   let petsOwned = await this.storage.knex
     .select("*")
@@ -30,9 +28,14 @@ router.get("/owner/:owner", async function (req, res) {
     .from("cudl_pet")
     .where("caretaker", req.params.owner.toLowerCase());
 
+  if (req.query.alive) {
+    petsOwned.where("is_alive", true);
+    careTaking.where("is_alive", true);
+  }
+
   if (req.query.refresh) {
     for (const pet of petsOwned) {
-      await cudl.updatePet(pet.pet_id)
+      await cudl.updatePet(pet.pet_id);
     }
   }
 
@@ -44,13 +47,13 @@ router.get("/owner/:owner", async function (req, res) {
 });
 
 router.get("/refresh", async function (req, res) {
-  let maxId = await this.storage.getMax("cudl_pet", "pet_id")
+  let maxId = await this.storage.getMax("cudl_pet", "pet_id");
   let i = 0;
   while (i < maxId) {
-    await cudl.updatePet(i++)
+    await cudl.updatePet(i++);
   }
-  res.status(200).json(maxId)
-})
+  res.status(200).json(maxId);
+});
 
 router.get("/leaderboard", async function (req, res) {
   let leaderboard = await this.storage.knex
@@ -62,7 +65,7 @@ router.get("/leaderboard", async function (req, res) {
     .select("*")
     .from("cudl_pet_view")
     .where("is_starving", true)
-     .where("is_alive", true)
+    .where("is_alive", true)
     .where("tod", "<", this.storage.knex.fn.now())
     .orderBy("score", "DESC");
   res.status(200).json({
@@ -92,7 +95,7 @@ router.get("/bonks", async function (req, res) {
 
 router.get("/:id", async function (req, res) {
   if (req.query.refresh) {
-    await cudl.updatePet(req.params.id)
+    await cudl.updatePet(req.params.id);
   }
   let pet = await this.storage.knex
     .select("*")
