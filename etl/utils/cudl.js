@@ -1,5 +1,6 @@
 const axios = require("axios");
 const BigNumber = require("bignumber.js");
+const e = require("express");
 
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
@@ -13,6 +14,7 @@ function Cudl(ethereum, storage) {
     this.PETABI,
     "0x9c10AeD865b63f0A789ae64041581EAc63458209"
   );
+  this.run = 0;
 }
 
 Cudl.prototype.run = async function () {
@@ -25,7 +27,7 @@ Cudl.prototype.run = async function () {
     await this.storage.getMax("cudl_feed", "blocknumber")
   );
   console.log("Start ingesting on ", minBlock, maxBlock, maxBlock - minBlock);
- 
+
   /*
   //This will be for later
   if (maxBlock - minBlock > 20000) {
@@ -165,9 +167,19 @@ Cudl.prototype.run = async function () {
   }
   petToUpdate = Object.keys(petToUpdate)
   console.log("updating pets :", petToUpdate.length)
-  for (const pet of petToUpdate) {
-    await this.updatePet(pet);
+  if (this.run % 10 == 0) {
+    let maxId = await this.storage.getMax("cudl_pet", "pet_id")
+    let i = 0;
+    while (i < maxId) {
+      await this.updatePet(i++)
+    }
+  } else {
+    for (const pet of petToUpdate) {
+      await this.updatePet(pet);
+    }
   }
+  this.run++;
+
 };
 
 Cudl.prototype.updatePet = async function (playerId) {
