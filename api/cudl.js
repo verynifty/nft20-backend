@@ -21,17 +21,14 @@ router.get("/owner/:owner", async function (req, res) {
   let petsOwned = await this.storage.knex
     .select("*")
     .from("cudl_pet")
-    .where("owner", req.params.owner.toLowerCase());
+    .where("owner", req.params.owner.toLowerCase())
+    .where("is_alive", req.query.alive ? true : false);
 
   let careTaking = await this.storage.knex
     .select("*")
     .from("cudl_pet")
-    .where("caretaker", req.params.owner.toLowerCase());
-
-  if (req.query.alive) {
-    petsOwned.where("is_alive", true);
-    careTaking.where("is_alive", true);
-  }
+    .where("caretaker", req.params.owner.toLowerCase())
+    .where("is_alive", req.query.alive ? true : false);
 
   if (req.query.refresh) {
     for (const pet of petsOwned) {
