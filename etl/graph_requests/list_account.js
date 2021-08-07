@@ -1,7 +1,7 @@
 module.exports = {
-    "id": "AssetSearchQuery",
-    "query":
-      `query AssetSearchQuery(
+  "id": "AssetSearchQuery",
+  "query":
+    `query AssetSearchQuery(
 $categories: [CollectionSlug!]
 $chains: [ChainScalar!]
 $collection: CollectionSlug
@@ -103,9 +103,15 @@ id
 hasUnlockableContent
 isDelisted
 assetContract {
-address
 tokenStandard
-chain
+account {
+address
+chain {
+identifier
+id
+}
+id
+}
 openseaVersion
 id
 }
@@ -481,37 +487,37 @@ id
 tokenId
 }
 `,
-    variables: {
-      categories: null,
-      chains: null,
-      collection: "beansbeansbeans",
-      collectionQuery: "0xjdjdjdj",
-      collectionSortBy: "ASSET_COUNT",
-      collections: [],
-      count: 100,
-      cursor: null,
-      identity: {
-        address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
-        chain: "MATIC",
-      },
-      includeHiddenCollections: false,
-      numericTraits: null,
-      paymentAssets: null,
-      priceFilter: null,
-      query: "",
-      resultModel: null,
-      showContextMenu: false,
-      shouldShowQuantity: true,
-      sortAscending: null,
-      sortBy: "LISTING_DATE",
-      stringTraits: null,
-      toggles: null,
-      creator: null,
-      assetOwner: {
-        address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
-        chain: "MATIC",
-      },
-      isPrivate: false,
-      safelistRequestStatuses: null,
-    }
-  };
+  variables: {
+    categories: null,
+    chains: null,
+    collection: "beansbeansbeans",
+    collectionQuery: "0xjdjdjdj",
+    collectionSortBy: "ASSET_COUNT",
+    collections: [],
+    count: 100,
+    cursor: null,
+    identity: {
+      address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
+      chain: "MATIC",
+    },
+    includeHiddenCollections: false,
+    numericTraits: null,
+    paymentAssets: null,
+    priceFilter: null,
+    query: "",
+    resultModel: null,
+    showContextMenu: false,
+    shouldShowQuantity: true,
+    sortAscending: null,
+    sortBy: "LISTING_DATE",
+    stringTraits: null,
+    toggles: null,
+    creator: null,
+    assetOwner: {
+      address: "0x4B5922ABf25858d012d12bb1184e5d3d0B6D6BE4", //this.$store.state.account,
+      chain: "MATIC",
+    },
+    isPrivate: false,
+    safelistRequestStatuses: null,
+  }
+};
