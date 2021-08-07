@@ -22,7 +22,7 @@ router.get("/owner/:owner", async function (req, res) {
     .select("*")
     .from("cudl_pet")
     .where("owner", req.params.owner.toLowerCase())
-    .where("is_alive", true);
+    .where("is_alive", req.query.dead ? false : true);
 
   let careTaking = await this.storage.knex
     .select("*")
