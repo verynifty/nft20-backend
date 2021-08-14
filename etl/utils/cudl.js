@@ -183,6 +183,61 @@ Cudl.prototype.run = async function () {
       await this.updatePet(pet);
     }
   }
+
+  try {
+    events = await this.bazaar.getPastEvents("Hibernation", {
+      fromBlock: minBlock,
+      toBlock: maxBlock,
+    });
+    console.log("Making Hibernation events :", events.length)
+  
+    for (const event of events) {
+      let tx = await this.ethereum.getTransaction(event.transactionHash);
+      let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+      await this.storage.insert("cudl_hibernation", {
+        blocknumber: event.blockNumber,
+        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+        from: this.ethereum.normalizeHash(tx.from),
+        to: this.ethereum.normalizeHash(tx.to),
+        logindex: event.logIndex,
+        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+        gasprice: tx.gasPrice,
+        pet_id: event.returnValues.nftId
+      });
+      petToUpdate[event.returnValues.nftId] = true;
+    }
+
+  } catch (error) {
+    console.log("Hibernation", error)
+  }
+
+  try {
+    events = await this.bazaar.getPastEvents("ChangeName", {
+      fromBlock: minBlock,
+      toBlock: maxBlock,
+    });
+    console.log("Making ChangeName events :", events.length)
+  
+    for (const event of events) {
+      let tx = await this.ethereum.getTransaction(event.transactionHash);
+      let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+      await this.storage.insert("cudl_changename", {
+        blocknumber: event.blockNumber,
+        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+        from: this.ethereum.normalizeHash(tx.from),
+        to: this.ethereum.normalizeHash(tx.to),
+        logindex: event.logIndex,
+        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+        gasprice: tx.gasPrice,
+        pet_id: event.returnValues.nftId
+      });
+      petToUpdate[event.returnValues.nftId] = true;
+    }
+
+  } catch (error) {
+    console.log("ChangeName", error)
+  }
+  
   this.runs++;
 
 };
