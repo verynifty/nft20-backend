@@ -129,7 +129,7 @@ CREATE TABLE cudl_hibernation
     "to" varchar NULL,
     gasprice numeric NULL,
     pet_id numeric NULL,
-    CONSTRAINT unique_cudl_changename UNIQUE (transactionhash, logindex)
+    CONSTRAINT unique_cudl_hibernation UNIQUE (transactionhash, logindex)
 );
 
 CREATE TABLE cudl_attack
