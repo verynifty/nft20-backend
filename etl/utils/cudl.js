@@ -9,10 +9,15 @@ function Cudl(ethereum, storage) {
   this.ethereum = ethereum;
   this.storage = storage;
   this.ERC20ABI = require("../../contracts/ERC20.abi");
-  this.PETABI = require("../../contracts/Cudl.abi"); //TODO set ABI
+  this.PETABI = require("../../contracts/Cudl.abi"); 
+  this.BAZAARABI = require("../../contracts/Cudl.abi") //TODO set ABI
   this.game = new ethereum.w3.eth.Contract(
     this.PETABI,
     "0x9c10AeD865b63f0A789ae64041581EAc63458209"
+  );
+  this.bazaar = new ethereum.w3.eth.Contract(
+    this.BAZAARABI,
+    "0x9c10AeD865b63f0A789ae64041581EAc63458209" //TODO set Address
   );
   this.runs = 0;
 }
@@ -191,6 +196,10 @@ Cudl.prototype.updatePet = async function (playerId) {
     let careTaker = await this.game.methods
       .getCareTaker(playerId, infos._owner)
       .call();
+    let name =  null /* await this.bazaar.methods
+      .petName(playerId)
+      .call();
+      */
     let player = {
       pet_id: infos._pet,
       is_alive: infos._isAlive,
@@ -204,6 +213,7 @@ Cudl.prototype.updatePet = async function (playerId) {
       caretaker: this.ethereum.normalizeHash(careTaker),
       last_time_mined: new Date(parseInt(infos._lastTimeMined) * 1000).toUTCString(),
       tod: new Date(parseInt(infos._timeUntilStarving) * 1000).toUTCString(),
+      name: name
     };
     await this.storage
       .knex("cudl_pet")

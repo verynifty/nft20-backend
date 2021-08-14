@@ -2,22 +2,22 @@
 
 -- DROP TABLE public.game_players;
 
-CREATE TABLE cudl_pet
-(
-    pet_id numeric NULL,
-    is_alive bool NULL,
-    is_starving bool NULL,
-    score numeric NULL,
-    expected_reward numeric NULL,
-    time_until_death numeric NULL,
-    time_born timestamp NULL,
-    "owner" varchar NULL,
-    nft_contract varchar NULL,
-    caretaker varchar NULL,
-    nft_id numeric NULL,
-    tod timestamp NULL,
-    last_time_mined TIMESTAMP NULL,
-    CONSTRAINT unique_cudl_pet UNIQUE (pet_id)
+
+CREATE TABLE cudl_pet (
+	pet_id numeric NULL,
+	is_alive bool NULL,
+	is_starving bool NULL,
+	score numeric NULL,
+	expected_reward numeric NULL,
+	time_born timestamp NULL,
+	"owner" varchar NULL,
+	nft_contract varchar NULL,
+	caretaker varchar NULL,
+	nft_id numeric NULL,
+	tod timestamp NULL,
+	last_time_mined timestamp NULL,
+	"name" varchar NULL,
+	CONSTRAINT unique_cudl_pet UNIQUE (pet_id)
 );
 
 CREATE TABLE cudl_mined
