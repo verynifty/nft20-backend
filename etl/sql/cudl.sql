@@ -104,6 +104,50 @@ CREATE TABLE cudl_bonk
     CONSTRAINT unique_cudl_bonk UNIQUE (transactionhash, logindex)
 );
 
+CREATE TABLE cudl_changename
+(
+    blocknumber numeric NULL,
+    transactionhash varchar NULL,
+    "from" varchar NULL,
+    logindex numeric NULL,
+    "timestamp" timestamp NULL,
+    addonid numeric NULL,
+    "to" varchar NULL,
+    gasprice numeric NULL,
+    pet_id numeric NULL,
+    CONSTRAINT unique_cudl_changename UNIQUE (transactionhash, logindex)
+);
+
+CREATE TABLE cudl_hibernation
+(
+    blocknumber numeric NULL,
+    transactionhash varchar NULL,
+    "from" varchar NULL,
+    logindex numeric NULL,
+    "timestamp" timestamp NULL,
+    addonid numeric NULL,
+    "to" varchar NULL,
+    gasprice numeric NULL,
+    pet_id numeric NULL,
+    CONSTRAINT unique_cudl_changename UNIQUE (transactionhash, logindex)
+);
+
+CREATE TABLE cudl_attack
+(
+    blocknumber numeric NULL,
+    transactionhash varchar NULL,
+    "from" varchar NULL,
+    logindex numeric NULL,
+    "timestamp" timestamp NULL,
+    addonid numeric NULL,
+    "to" varchar NULL,
+    gasprice numeric NULL,
+    attacker numeric NULL,
+    victim numeric NULL,
+    score numeric NULL,
+    CONSTRAINT unique_cudl_attack UNIQUE (transactionhash, logindex)
+);
+
 
 CREATE OR REPLACE VIEW cudl_pet_view AS
 select p.*, row_number () over (order by is_alive desc, score desc ) as ranking
