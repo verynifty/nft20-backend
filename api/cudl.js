@@ -30,6 +30,12 @@ router.get("/owner/:owner", async function (req, res) {
     .where("caretaker", req.params.owner.toLowerCase())
     .where("is_alive", true);
 
+  let dead = await this.storage.knex
+    .select("*")
+    .from("cudl_pet")
+    .where("caretaker", req.params.owner.toLowerCase())
+    .where("is_alive", false);
+
   if (req.query.refresh) {
     for (const pet of petsOwned) {
       await cudl.updatePet(pet.pet_id);
@@ -40,6 +46,7 @@ router.get("/owner/:owner", async function (req, res) {
   res.status(200).json({
     petsOwned,
     careTaking,
+    dead
   });
 });
 
@@ -68,6 +75,7 @@ router.get("/leaderboard", async function (req, res) {
   res.status(200).json({
     leaderboard: leaderboard,
     grumpy: grumpy,
+    dead: dead
   });
 });
 
