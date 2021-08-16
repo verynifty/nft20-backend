@@ -74,8 +74,7 @@ router.get("/leaderboard", async function (req, res) {
     .orderBy("score", "DESC");
   res.status(200).json({
     leaderboard: leaderboard,
-    grumpy: grumpy,
-    dead: dead
+    grumpy: grumpy
   });
 });
 
