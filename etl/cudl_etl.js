@@ -2,7 +2,7 @@ require('dotenv').config()
 let network = process.env.NETWORK == null ? 0 : parseInt(process.env.NETWORK)
 
 const ethereum = new (require("./utils/ethereum"))(
-  network == 0 ? process.env.NFT20_INFURA : process.env.NFT20_MATIC
+  process.env.NFT20_INFURA
 );
 
 console.log(process.env.NFT20_DB_USER)

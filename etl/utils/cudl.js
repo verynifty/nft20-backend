@@ -13,11 +13,11 @@ function Cudl(ethereum, storage) {
   this.BAZAARABI = require("../../contracts/Cudl.abi") //TODO set ABI
   this.game = new ethereum.w3.eth.Contract(
     this.PETABI,
-    "0x9c10AeD865b63f0A789ae64041581EAc63458209"
+    "0xe8791A9BA6DBc99690dBD7fBfdcA6d91B617c532"
   );
   this.bazaar = new ethereum.w3.eth.Contract(
     this.BAZAARABI,
-    "0x9c10AeD865b63f0A789ae64041581EAc63458209" //TODO set Address
+    "0x065886F25c2c6273A0365d0cBE43A17E75b6C9C9" //TODO set Address
   );
   this.runs = 0;
 }
@@ -25,7 +25,7 @@ function Cudl(ethereum, storage) {
 Cudl.prototype.run = async function () {
   let petToUpdate = {}
   let maxBlock = (await this.ethereum.getLatestBlock()) - 2;
-  let deployed_block = 12847722;
+  let deployed_block = 428655;
   let minBlock = Math.max(
     deployed_block,
     await this.storage.getMax("cudl_mined", "blocknumber"),
@@ -183,7 +183,7 @@ Cudl.prototype.run = async function () {
       await this.updatePet(pet);
     }
   }
-
+/*
   try {
     events = await this.bazaar.getPastEvents("Hibernation", {
       fromBlock: minBlock,
@@ -237,7 +237,7 @@ Cudl.prototype.run = async function () {
   } catch (error) {
     console.log("ChangeName", error)
   }
-  
+  */
   this.runs++;
 
 };
