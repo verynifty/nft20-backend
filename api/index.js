@@ -63,7 +63,7 @@ app.get("/activity", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=240, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -130,7 +130,7 @@ app.get("/nfts", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=240, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -232,7 +232,7 @@ app.get("/leaderboard", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=240, stale-while-revalidate");
   res.status(200).json(result);
 });
 
