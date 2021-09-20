@@ -85,7 +85,7 @@ app.get("/pools", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=120, stale-while-revalidate");
   res.status(200).json(result);
 });
 
