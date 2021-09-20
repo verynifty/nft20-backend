@@ -272,14 +272,6 @@ app.post("/name", async function (req, res) {
   }
 });
 
-app.get("/irdrap/:address", async function (req, res) {
-  let airdrop = await storage.getMulti("game_airdrop", {
-    address: req.params.address.toLowerCase(),
-  });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
-  res.status(200).json(airdrop);
-});
-
 app.post("/collection", async function (req, res) {
   for (const collection of req.body.collections) {
     await this.storage.insert("nft20_collection", collection);
