@@ -262,8 +262,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     if (collection != null && collection.image_url != null && collection.image_url != "") {
       logo_url = collection.image_url;
     }
-    if (nft_eth_price == Infinity) {
-      nft_eth_price = 0;
+    if (ethPrice == Infinity) {
+      ethPrice = 0;
     }
     let o = {
       address: this.ethereum.normalizeHash(pairDetail._nft20pair),
