@@ -262,6 +262,9 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     if (collection != null && collection.image_url != null && collection.image_url != "") {
       logo_url = collection.image_url;
     }
+    if (nft_eth_price == Infinity) {
+      nft_eth_price = 0;
+    }
     let o = {
       address: this.ethereum.normalizeHash(pairDetail._nft20pair),
       nft: this.ethereum.normalizeHash(pairDetail._originalNft),
@@ -282,7 +285,6 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       lp_fee: lp_fee,
       index_order: index
     };
-    console.log(o)
     await this.storage
       .knex("nft20_pair")
       .insert(o)
