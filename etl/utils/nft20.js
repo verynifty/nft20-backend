@@ -282,6 +282,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
       lp_fee: lp_fee,
       index_order: index
     };
+    console.log(o)
     await this.storage
       .knex("nft20_pair")
       .insert(o)
