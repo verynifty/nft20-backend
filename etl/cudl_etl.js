@@ -29,6 +29,6 @@ const sleep = (waitTimeInMs) =>
     } catch (error) {
       console.log("An error occured", error)
     }
-    await sleep(70000);
+    await sleep(5000);
   }
 })();
