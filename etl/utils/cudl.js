@@ -10,20 +10,20 @@ function Cudl(ethereum, storage) {
   this.storage = storage;
   this.ERC20ABI = require("../../contracts/ERC20.abi");
   this.PETABI = require("../../contracts/Cudl.abi");
-  this.BAZAARABI = require("../../contracts/CudlBazaar.abi") //TODO set ABI
+  // this.BAZAARABI = require("../../contracts/CudlBazaar.abi") //TODO set ABI
   this.game = new ethereum.w3.eth.Contract(
     this.PETABI,
     "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539"
   );
-  this.bazaar = new ethereum.w3.eth.Contract(
-    this.BAZAARABI,
-    "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539" //TODO set Address
-  );
+  // this.bazaar = new ethereum.w3.eth.Contract(
+  //   this.BAZAARABI,
+  //   "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539" //TODO set Address
+  // );
   this.runs = 0;
 }
 
 Cudl.prototype.run = async function () {
-  let petToUpdate = {}
+  let petToUpdate = {};
   let maxBlock = (await this.ethereum.getLatestBlock()) - 2;
   let deployed_block = 1946298;
   let minBlock = Math.max(
@@ -33,14 +33,13 @@ Cudl.prototype.run = async function () {
   );
   console.log("Start ingesting on ", minBlock, maxBlock, maxBlock - minBlock);
 
-/*
+  /*
   // Fix ingestion when missing activity
   if (maxBlock - minBlock > 100000) {
     console.log("Limiting ingestion to delta blocks");
     maxBlock = minBlock + 100000
   }
   */
-
 
   minBlock -= 2;
 
@@ -50,7 +49,7 @@ Cudl.prototype.run = async function () {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
-  console.log("Making Mined events :", events.length)
+  console.log("Making Mined events :", events.length);
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
@@ -73,7 +72,7 @@ Cudl.prototype.run = async function () {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
-  console.log("Making BuyAccessory events :", events.length)
+  console.log("Making BuyAccessory events :", events.length);
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
@@ -99,7 +98,7 @@ Cudl.prototype.run = async function () {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
-  console.log("Making Fatalize events :", events.length)
+  console.log("Making Fatalize events :", events.length);
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
@@ -124,7 +123,7 @@ Cudl.prototype.run = async function () {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
-  console.log("Making Bonk events :", events.length)
+  console.log("Making Bonk events :", events.length);
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
@@ -146,12 +145,11 @@ Cudl.prototype.run = async function () {
     petToUpdate[event.returnValues.victim] = true;
   }
 
-
   events = await this.game.getPastEvents("NewPlayer", {
     fromBlock: minBlock,
     toBlock: maxBlock,
   });
-  console.log("Making NewPlayer events :", events.length)
+  console.log("Making NewPlayer events :", events.length);
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
@@ -171,13 +169,13 @@ Cudl.prototype.run = async function () {
     });
     petToUpdate[event.returnValues.playerId] = true;
   }
-  petToUpdate = Object.keys(petToUpdate)
-  console.log("updating pets :", petToUpdate.length)
+  petToUpdate = Object.keys(petToUpdate);
+  console.log("updating pets :", petToUpdate.length);
   if (this.runs % 10 == 0) {
-    let maxId = await this.storage.getMax("cudl_pet", "pet_id")
+    let maxId = await this.storage.getMax("cudl_pet", "pet_id");
     let i = 0;
     while (i < maxId) {
-      await this.updatePet(i++)
+      await this.updatePet(i++);
     }
   } else {
     for (const pet of petToUpdate) {
@@ -215,7 +213,6 @@ Cudl.prototype.run = async function () {
   
     */
   this.runs++;
-
 };
 
 Cudl.prototype.updatePet = async function (playerId) {
@@ -227,7 +224,7 @@ Cudl.prototype.updatePet = async function (playerId) {
     let careTaker = await this.game.methods
       .getCareTaker(playerId, infos._owner)
       .call();
-    let name = null /* await this.bazaar.methods
+    let name = null; /* await this.bazaar.methods
       .petName(playerId)
       .call();
       */
@@ -242,9 +239,11 @@ Cudl.prototype.updatePet = async function (playerId) {
       nft_contract: this.ethereum.normalizeHash(infos._token),
       nft_id: infos._tokenId,
       caretaker: this.ethereum.normalizeHash(careTaker),
-      last_time_mined: new Date(parseInt(infos._lastTimeMined) * 1000).toUTCString(),
+      last_time_mined: new Date(
+        parseInt(infos._lastTimeMined) * 1000
+      ).toUTCString(),
       tod: new Date(parseInt(infos._timeUntilStarving) * 1000).toUTCString(),
-      name: name
+      name: name,
     };
     await this.storage
       .knex("cudl_pet")
