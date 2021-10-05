@@ -33,12 +33,13 @@ Cudl.prototype.run = async function () {
   );
   console.log("Start ingesting on ", minBlock, maxBlock, maxBlock - minBlock);
 
-
+/*
   // Fix ingestion when missing activity
   if (maxBlock - minBlock > 100000) {
     console.log("Limiting ingestion to delta blocks");
     maxBlock = minBlock + 100000
   }
+  */
 
 
   minBlock -= 2;
