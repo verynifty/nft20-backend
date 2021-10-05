@@ -104,7 +104,7 @@ CREATE TABLE cudl_bonk
     CONSTRAINT unique_cudl_bonk UNIQUE (transactionhash, logindex)
 );
 
-CREATE TABLE cudl_changename
+CREATE TABLE cudl_bazaar
 (
     blocknumber numeric NULL,
     transactionhash varchar NULL,
@@ -115,22 +115,11 @@ CREATE TABLE cudl_changename
     "to" varchar NULL,
     gasprice numeric NULL,
     pet_id numeric NULL,
-    CONSTRAINT unique_cudl_changename UNIQUE (transactionhash, logindex)
+    item NUMERIC NULL,
+    CONSTRAINT unique_cudl_bazaar_item UNIQUE (transactionhash, logindex)
 );
 
-CREATE TABLE cudl_hibernation
-(
-    blocknumber numeric NULL,
-    transactionhash varchar NULL,
-    "from" varchar NULL,
-    logindex numeric NULL,
-    "timestamp" timestamp NULL,
-    addonid numeric NULL,
-    "to" varchar NULL,
-    gasprice numeric NULL,
-    pet_id numeric NULL,
-    CONSTRAINT unique_cudl_hibernation UNIQUE (transactionhash, logindex)
-);
+
 
 CREATE TABLE cudl_attack
 (
