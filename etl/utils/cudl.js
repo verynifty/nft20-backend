@@ -13,11 +13,11 @@ function Cudl(ethereum, storage) {
   this.BAZAARABI = require("../../contracts/Cudl.abi") //TODO set ABI
   this.game = new ethereum.w3.eth.Contract(
     this.PETABI,
-    "0x048117bbdd9148fbb6a97385533982184da5067d"
+    "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539"
   );
   this.bazaar = new ethereum.w3.eth.Contract(
     this.BAZAARABI,
-    "0x065886F25c2c6273A0365d0cBE43A17E75b6C9C9" //TODO set Address
+    "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539" //TODO set Address
   );
   this.runs = 0;
 }
