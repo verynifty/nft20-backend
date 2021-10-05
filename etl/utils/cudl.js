@@ -288,6 +288,7 @@ Cudl.prototype.updatePet = async function (playerId) {
   }
 };
 
+/*
 Cudl.prototype.fixTransfers = async function () {
   let chunkJump = 1000;
   let latest = 1946298
@@ -318,6 +319,6 @@ Cudl.prototype.fixTransfers = async function () {
     }
     latest += chunkJump
   }
+*/
 
-
-  module.exports = Cudl;
+module.exports = Cudl;
