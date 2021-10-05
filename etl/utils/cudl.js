@@ -9,7 +9,7 @@ function Cudl(ethereum, storage) {
   this.ethereum = ethereum;
   this.storage = storage;
   this.ERC20ABI = require("../../contracts/ERC20.abi");
-  this.PETABI = require("../../contracts/Cudl.abi"); 
+  this.PETABI = require("../../contracts/Cudl.abi");
   this.BAZAARABI = require("../../contracts/Cudl.abi") //TODO set ABI
   this.game = new ethereum.w3.eth.Contract(
     this.PETABI,
@@ -25,7 +25,7 @@ function Cudl(ethereum, storage) {
 Cudl.prototype.run = async function () {
   let petToUpdate = {}
   let maxBlock = (await this.ethereum.getLatestBlock()) - 2;
-  let deployed_block = 1860926;
+  let deployed_block = 1946298;
   let minBlock = Math.max(
     deployed_block,
     await this.storage.getMax("cudl_mined", "blocknumber"),
@@ -33,13 +33,13 @@ Cudl.prototype.run = async function () {
   );
   console.log("Start ingesting on ", minBlock, maxBlock, maxBlock - minBlock);
 
-  /*
-  //This will be for later
-  if (maxBlock - minBlock > 20000) {
-    console.log("Limiting ingestion to 3 days");
-    maxBlock = minBlock + 20000 
+
+  // Fix ingestion when missing activity
+  if (maxBlock - minBlock > 100000) {
+    console.log("Limiting ingestion to delta blocks");
+    maxBlock = minBlock + 100000
   }
-  */
+
 
   minBlock -= 2;
 
@@ -183,61 +183,61 @@ Cudl.prototype.run = async function () {
       await this.updatePet(pet);
     }
   }
-/*
-  try {
-    events = await this.bazaar.getPastEvents("Hibernation", {
-      fromBlock: minBlock,
-      toBlock: maxBlock,
-    });
-    console.log("Making Hibernation events :", events.length)
-  
-    for (const event of events) {
-      let tx = await this.ethereum.getTransaction(event.transactionHash);
-      let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-      await this.storage.insert("cudl_hibernation", {
-        blocknumber: event.blockNumber,
-        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
-        from: this.ethereum.normalizeHash(tx.from),
-        to: this.ethereum.normalizeHash(tx.to),
-        logindex: event.logIndex,
-        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
-        gasprice: tx.gasPrice,
-        pet_id: event.returnValues.nftId
+  /*
+    try {
+      events = await this.bazaar.getPastEvents("Hibernation", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
       });
-      petToUpdate[event.returnValues.nftId] = true;
-    }
-
-  } catch (error) {
-    console.log("Hibernation", error)
-  }
-
-  try {
-    events = await this.bazaar.getPastEvents("ChangeName", {
-      fromBlock: minBlock,
-      toBlock: maxBlock,
-    });
-    console.log("Making ChangeName events :", events.length)
+      console.log("Making Hibernation events :", events.length)
+    
+      for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("cudl_hibernation", {
+          blocknumber: event.blockNumber,
+          transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+          from: this.ethereum.normalizeHash(tx.from),
+          to: this.ethereum.normalizeHash(tx.to),
+          logindex: event.logIndex,
+          timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+          gasprice: tx.gasPrice,
+          pet_id: event.returnValues.nftId
+        });
+        petToUpdate[event.returnValues.nftId] = true;
+      }
   
-    for (const event of events) {
-      let tx = await this.ethereum.getTransaction(event.transactionHash);
-      let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
-      await this.storage.insert("cudl_changename", {
-        blocknumber: event.blockNumber,
-        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
-        from: this.ethereum.normalizeHash(tx.from),
-        to: this.ethereum.normalizeHash(tx.to),
-        logindex: event.logIndex,
-        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
-        gasprice: tx.gasPrice,
-        pet_id: event.returnValues.nftId
-      });
-      petToUpdate[event.returnValues.nftId] = true;
+    } catch (error) {
+      console.log("Hibernation", error)
     }
-
-  } catch (error) {
-    console.log("ChangeName", error)
-  }
-  */
+  
+    try {
+      events = await this.bazaar.getPastEvents("ChangeName", {
+        fromBlock: minBlock,
+        toBlock: maxBlock,
+      });
+      console.log("Making ChangeName events :", events.length)
+    
+      for (const event of events) {
+        let tx = await this.ethereum.getTransaction(event.transactionHash);
+        let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+        await this.storage.insert("cudl_changename", {
+          blocknumber: event.blockNumber,
+          transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+          from: this.ethereum.normalizeHash(tx.from),
+          to: this.ethereum.normalizeHash(tx.to),
+          logindex: event.logIndex,
+          timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+          gasprice: tx.gasPrice,
+          pet_id: event.returnValues.nftId
+        });
+        petToUpdate[event.returnValues.nftId] = true;
+      }
+  
+    } catch (error) {
+      console.log("ChangeName", error)
+    }
+    */
   this.runs++;
 
 };
@@ -251,7 +251,7 @@ Cudl.prototype.updatePet = async function (playerId) {
     let careTaker = await this.game.methods
       .getCareTaker(playerId, infos._owner)
       .call();
-    let name =  null /* await this.bazaar.methods
+    let name = null /* await this.bazaar.methods
       .petName(playerId)
       .call();
       */
@@ -288,4 +288,36 @@ Cudl.prototype.updatePet = async function (playerId) {
   }
 };
 
-module.exports = Cudl;
+Cudl.prototype.fixTransfers = async function () {
+  let chunkJump = 1000;
+  let latest = 1946298
+  while (true) {
+    console.log("FROM ", latest, latest + chunkJump)
+    const txs = await this.game.getPastEvents("Transfer", {
+      fromBlock: latest - 10,
+      toBlock: latest + chunkJump,
+    });
+    console.log("FOUND ", txs.length)
+    for (const t of txs) {
+      let tx = await this.ethereum.getTransaction(t.transactionHash);
+      let timestamp = await this.ethereum.getBlockTimestamp(t.blockNumber);
+      console.log(t.blockNumber)
+      let event = {
+        amount: t.returnValues.value,
+        blocknumber: t.blockNumber,
+        transactionhash: this.ethereum.normalizeHash(t.transactionHash),
+        from: this.ethereum.normalizeHash(tx.from),
+        to: this.ethereum.normalizeHash(tx.to),
+        logindex: t.logIndex,
+        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+        sender: this.ethereum.normalizeHash(t.returnValues.from),
+        receiver: this.ethereum.normalizeHash(t.returnValues.to),
+      };
+      //  console.log(feed_event)
+      await this.storage.insert("cudl_transfers", event);
+    }
+    latest += chunkJump
+  }
+
+
+  module.exports = Cudl;
