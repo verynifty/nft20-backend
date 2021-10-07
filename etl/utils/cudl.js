@@ -152,6 +152,7 @@ Cudl.prototype.run = async function () {
   console.log("Making NewPlayer events :", events.length);
 
   for (const event of events) {
+    console.log(event, tx)
     let tx = await this.ethereum.getTransaction(event.transactionHash);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
     await this.storage.insert("cudl_register", {
