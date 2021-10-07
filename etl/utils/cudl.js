@@ -17,7 +17,7 @@ function Cudl(ethereum, storage) {
   );
    this.bazaar = new ethereum.w3.eth.Contract(
      this.BAZAARABI,
-     "0xB33250508e22d8C0a0EBadFe01d245a8FdAfc0D4" //TODO set Address
+     "0xf8f861E3F09b5E3C8f2648D45C4265fAeA922a88" //TODO set Address
    );
   this.runs = 0;
 }
@@ -40,7 +40,7 @@ Cudl.prototype.run = async function () {
     maxBlock = minBlock + 100000
   }
   */
-
+  minBlock = 	2003769
   minBlock -= 300;
 
   let events = [];
