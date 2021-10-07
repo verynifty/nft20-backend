@@ -15,10 +15,10 @@ function Cudl(ethereum, storage) {
     this.PETABI,
     "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539"
   );
-  // this.bazaar = new ethereum.w3.eth.Contract(
-  //   this.BAZAARABI,
-  //   "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539" //TODO set Address
-  // );
+   this.bazaar = new ethereum.w3.eth.Contract(
+     this.BAZAARABI,
+     "0xB33250508e22d8C0a0EBadFe01d245a8FdAfc0D4" //TODO set Address
+   );
   this.runs = 0;
 }
 
@@ -182,7 +182,7 @@ Cudl.prototype.run = async function () {
       await this.updatePet(pet);
     }
   }
-  /*
+  
     try {
       events = await this.bazaar.getPastEvents("BazaarItem", {
         fromBlock: minBlock,
@@ -211,7 +211,7 @@ Cudl.prototype.run = async function () {
       console.log("Hibernation", error)
     }
   
-    */
+    
   this.runs++;
 };
 
@@ -224,10 +224,10 @@ Cudl.prototype.updatePet = async function (playerId) {
     let careTaker = await this.game.methods
       .getCareTaker(playerId, infos._owner)
       .call();
-    let name = null; /* await this.bazaar.methods
-      .petName(playerId)
+    let name =  await this.bazaar.methods
+      .name(playerId)
       .call();
-      */
+    
     let player = {
       pet_id: infos._pet,
       is_alive: infos._isAlive,

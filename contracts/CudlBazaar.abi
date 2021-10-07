@@ -1,12 +1,6 @@
 module.exports = [
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_milkStkaer",
-          "type": "address"
-        }
-      ],
+      "inputs": [],
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
@@ -105,7 +99,7 @@ module.exports = [
       "name": "milk",
       "outputs": [
         {
-          "internalType": "contract ICudlStaker",
+          "internalType": "contract IToken",
           "name": "",
           "type": "address"
         }
