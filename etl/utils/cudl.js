@@ -10,7 +10,7 @@ function Cudl(ethereum, storage) {
   this.storage = storage;
   this.ERC20ABI = require("../../contracts/ERC20.abi");
   this.PETABI = require("../../contracts/Cudl.abi");
-  // this.BAZAARABI = require("../../contracts/CudlBazaar.abi") //TODO set ABI
+  this.BAZAARABI = require("../../contracts/CudlBazaar.abi") //TODO set ABI
   this.game = new ethereum.w3.eth.Contract(
     this.PETABI,
     "0x58b1422b21d58Ae6073ba7B28feE62F704Fc2539"
