@@ -41,7 +41,7 @@ Cudl.prototype.run = async function () {
   }
   */
 
-  minBlock -= 100;
+  minBlock -= 300;
 
   let events = [];
 
