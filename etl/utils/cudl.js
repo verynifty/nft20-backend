@@ -40,7 +40,7 @@ Cudl.prototype.run = async function () {
     maxBlock = minBlock + 100000
   }
   */
-  minBlock -= 300;
+  minBlock -= 100;
 
   let events = [];
 
