@@ -51,6 +51,7 @@ Cudl.prototype.run = async function () {
   console.log("Making Mined events :", events.length);
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
+    await sleep(500);
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
     await this.storage.insert("cudl_mined", {
       blocknumber: event.blockNumber,
@@ -75,6 +76,8 @@ Cudl.prototype.run = async function () {
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
+    await sleep(500);
+
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
     await this.storage.insert("cudl_feed", {
       blocknumber: event.blockNumber,
@@ -101,6 +104,8 @@ Cudl.prototype.run = async function () {
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
+    await sleep(500);
+
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
     await this.storage.insert("cudl_fatalize", {
       blocknumber: event.blockNumber,
@@ -126,6 +131,8 @@ Cudl.prototype.run = async function () {
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
+    await sleep(500);
+
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
     await this.storage.insert("cudl_bonk", {
       blocknumber: event.blockNumber,
@@ -152,7 +159,7 @@ Cudl.prototype.run = async function () {
 
   for (const event of events) {
     let tx = await this.ethereum.getTransaction(event.transactionHash);
-    console.log(event, tx)
+    await sleep(500);
 
     let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
     await this.storage.insert("cudl_register", {
@@ -193,6 +200,8 @@ Cudl.prototype.run = async function () {
     
       for (const event of events) {
         let tx = await this.ethereum.getTransaction(event.transactionHash);
+        await sleep(500);
+
         let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
         await this.storage.insert("cudl_bazaar", {
           blocknumber: event.blockNumber,
@@ -225,6 +234,8 @@ Cudl.prototype.updatePet = async function (playerId) {
     let careTaker = await this.game.methods
       .getCareTaker(playerId, infos._owner)
       .call();
+      await sleep(500);
+
     let name =  await this.bazaar.methods
       .name(playerId)
       .call();
