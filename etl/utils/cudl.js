@@ -2,7 +2,7 @@ const axios = require("axios");
 const BigNumber = require("bignumber.js");
 const e = require("express");
 
-const SLEEP_TIME_INTERVAL = 200;
+const SLEEP_TIME_INTERVAL = 500;
 
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
