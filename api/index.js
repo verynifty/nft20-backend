@@ -69,6 +69,7 @@ app.get("/activity", async function (req, res) {
 
 app.get("/pools", async function (req, res) {
   if (req.query.nft != null) {
+    res.setHeader('Cache-Control', 's-maxage=864000');
     res.status(200).json({
       "hey": "You're calling the api in a terrible way. contact us on discord or we'll block you"
     });
