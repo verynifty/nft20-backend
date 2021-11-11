@@ -63,7 +63,7 @@ app.get("/activity", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=240, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=240, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -93,7 +93,7 @@ app.get("/pools", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=1000, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=1000, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -105,7 +105,7 @@ app.get("/nft/:contract/:id", async function (req, res) {
   let collection = await storage.getMulti("nft20_collection", {
     contract_address: req.params.contract,
   });
-  res.setHeader("Cache-Control", "s-max-age=300, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate");
   // TODO Do something if none exist
   res.status(200).json({
     nft: nft,
@@ -138,7 +138,7 @@ app.get("/nfts", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=240, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=240, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -156,7 +156,7 @@ app.get("/gallery", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=600, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=600, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -201,7 +201,7 @@ app.get("/nfttopool/:nft", async function (req, res) {
     isLengthAware: true,
   });
 
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -223,7 +223,7 @@ app.get("/auctions", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -240,7 +240,7 @@ app.get("/leaderboard", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=240, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=240, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -290,7 +290,7 @@ app.get("/list/listing/:id", async function (req, res) {
   let listing = await storage.getMulti("listing_view", {
     id: req.params.id,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(listing);
 });
 
@@ -313,13 +313,13 @@ app.get("/list/collections", async function (req, res) {
   nc.external_url,
   nc.contract_address 
   ORDER by number_of_items DESC`); // @TODO Move this to a view?
-  res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=500, stale-while-revalidate");
   res.status(200).json({ collections: result });
 });
 
 app.get("/nft20/webhooks", async function (req, res) {
   let result = await storage.executeAsync(`SELECT * FROM nft20_webhooks`);
-  res.setHeader("Cache-Control", "s-max-age=500, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=500, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -345,7 +345,7 @@ app.get("/list/list", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -434,7 +434,7 @@ app.get("/game/leaderboard", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
 
@@ -451,7 +451,7 @@ app.get("/game/deathvalley", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
 
@@ -460,7 +460,7 @@ app.get("/game/player/:id", async function (req, res) {
   let result = await this.storage.getMulti("game_players_view", {
     player_id: req.params.id,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -476,7 +476,7 @@ app.get("/game/user/:owner", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
 
@@ -492,7 +492,7 @@ app.get("/game/dead", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(result.data);
 });
 
@@ -575,7 +575,7 @@ app.get("/nft/list/", async function (req, res) {
     req.query.chain,
     req.query.collection
   );
-  res.setHeader("Cache-Control", "s-max-age=200, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=200, stale-while-revalidate");
   res.status(200).json(result);
 });
 
@@ -586,7 +586,7 @@ app.get("/nft/matic/user/:user/", async function (req, res) {
       (NFT) => NFT.contract_address == req.query.contract_address.toLowerCase()
     );
   }
-  res.setHeader("Cache-Control", "s-max-age=60, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate");
   res.status(200).json(NFTs);
 });
 
@@ -632,7 +632,7 @@ app.get("/user/leaderboard", async function (req, res) {
   group by "from"
   ORDER BY 4 DESC
   `); // @TODO Move this to a view?
-  res.setHeader("Cache-Control", "s-max-age=5000, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-maxage=5000, stale-while-revalidate");
   res.status(200).json(result);
 });
 
