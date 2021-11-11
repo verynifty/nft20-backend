@@ -69,7 +69,8 @@ app.get("/activity", async function (req, res) {
 
 app.get("/pools", async function (req, res) {
   if (req.query.nft != null) {
-    res.setHeader('Cache-Control', 's-maxage=864000');
+    res.setHeader('Cache-Control', 's-max-age=864000, stale-while-revalidate');
+
     res.status(200).json({
       "hey": "You're calling the api in a terrible way. contact us on discord or we'll block you"
     });
@@ -92,7 +93,7 @@ app.get("/pools", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-max-age=120, stale-while-revalidate");
+  res.setHeader("Cache-Control", "s-max-age=1000, stale-while-revalidate");
   res.status(200).json(result);
 });
 
