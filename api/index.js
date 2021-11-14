@@ -63,22 +63,13 @@ app.get("/activity", async function (req, res) {
     currentPage: currentPage ? currentPage : 0,
     isLengthAware: true,
   });
-  res.setHeader("Cache-Control", "s-maxage=240");
+  res.setHeader("Cache-Control", "s-maxage=340");
   res.status(200).json(result);
 });
 
 app.get("/pools", async function (req, res) {
-  if (req.query.nft != null) {
-    res.setHeader('Cache-Control', 's-maxage=864000');
-
-    res.status(200).json({
-      "hey": "You're calling the api in a terrible way. contact us on discord or we'll block you"
-    });
-    return;
-  }
   let currentPage = req.query.page != null ? parseInt(req.query.page) : 0;
   let network = req.query.network != null ? parseInt(req.query.network) : 0;
-
   let query = storage.knex.select("*").from("nft20_pool_view");
   req.query.nft ? query.where("nft", req.query.nft.toLocaleLowerCase()) : "";
   req.query.withLp ? query.where("lp_usd_balance", ">", 2000) : "";
