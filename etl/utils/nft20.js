@@ -347,7 +347,7 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
     latestBlock = latestBlock - 2; // Protect from reorg
   }
   if (forceFromZero) {
-    maxBlock = 0;
+    maxBlock = 13068603;
   }
   let chunk_size = 9999
   if (latestBlock - maxBlock > chunk_size) {
