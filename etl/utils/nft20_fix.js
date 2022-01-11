@@ -75,7 +75,7 @@ function NFT20(ethereum, storage) {
 
 NFT20.prototype.getPairs = async function (withUpdate = false) {
   console.log("EXEC")
-  let original = "0x7ea3cca10668b8346aec0bf1844a49e995527c8b"
+  let original = "0x7EA3Cca10668B8346aeC0bf1844A49e995527c8B"
   let pairDetail = await this.factory.methods
       .nftToToken(original)
       .call();
@@ -203,6 +203,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
     nft_id: asset_id,
   });
   if (!existing) {
+    console.log("INSERT NFT ", asset_id)
     if (this.NETWORK == 0) {
       await sleep(1200);
       let opensea_asset = null
@@ -341,11 +342,12 @@ NFT20.prototype.getData = async function (
       pair.address
     );
     let maxERC20Transfer = blocknumber;
-
+    console.log("tx")
     let ts = await TwentyContract.getPastEvents("Transfer", {
       fromBlock: maxERC20Transfer,
       toBlock: lastBlockNumber,
     });
+    console.log(ts)
     for (const event of ts) {
       let tx = await this.ethereum.getTransaction(event.transactionHash);
       let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
