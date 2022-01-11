@@ -74,7 +74,7 @@ function NFT20(ethereum, storage) {
 }
 
 NFT20.prototype.getPairs = async function (withUpdate = false) {
-  this.counter++  
+  this.counter++
   if (this.counter % 2 == 0) {
     await this.storage.executeAsync('REFRESH MATERIALIZED VIEW concurrently nft20_price_summary_view')
   }
@@ -178,7 +178,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             try {
 
               // We calculate the price of one NFT with the slippage
-              
+
               let result = await this.uniRouter.methods
                 .getAmountsIn(amount + "", [
                   "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", //WETH
@@ -216,7 +216,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
                 amount + "",
                 0
               ).call()
-              console.log("RESSSULT = ", result/ 1e18)
+              console.log("RESSSULT = ", result / 1e18)
               sellPrice = new BigNumber(result).shiftedBy(-18).toNumber();
             } catch (error) {
               console.log("Slippage does not work v3", error)
@@ -230,7 +230,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
                 amount + "",
                 0
               ).call()
-              console.log("RESSSULT = ", result/1e18)
+              console.log("RESSSULT = ", result / 1e18)
               buyPrice = new BigNumber(result).shiftedBy(-18).toNumber();
             } catch (error) {
               console.log("Slippage does not work v3", error)
@@ -238,21 +238,21 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
             if (buyPrice == 0 && sellPrice == 0) {
               ethPrice = 0;
             } else {
-             
+
             }
           }
         }
         if (buyPrice != 0 && sellPrice != 0 && this.counter % 4 == 0) {
           await this.storage
-          .knex("nft20_price_feed")
-          .insert({
-            nft_address: this.ethereum.normalizeHash(pairDetail._originalNft),
-            eth_buy_price: buyPrice,
-            eth_sell_price: sellPrice,
-            usd_buy_price: buyPrice * price_of_eth,
-            usd_sell_price: sellPrice * price_of_eth,
-            time: this.storage.knex.fn.now()
-          })
+            .knex("nft20_price_feed")
+            .insert({
+              nft_address: this.ethereum.normalizeHash(pairDetail._originalNft),
+              eth_buy_price: buyPrice,
+              eth_sell_price: sellPrice,
+              usd_buy_price: buyPrice * price_of_eth,
+              usd_sell_price: sellPrice * price_of_eth,
+              time: this.storage.knex.fn.now()
+            })
         }
       }
 
@@ -361,27 +361,32 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
     }
   } else {
     if (this.NETWORK == 0) {
-      const museTransfers = await this.museContract.getPastEvents("Transfer", {
-        fromBlock: maxBlock,
-        toBlock: latestBlock,
-      });
-      for (const t of museTransfers) {
-        let tx = await this.ethereum.getTransaction(t.transactionHash);
-        let timestamp = await this.ethereum.getBlockTimestamp(t.blockNumber);
-        let event = {
-          amount: t.returnValues.value,
-          blocknumber: t.blockNumber,
-          transactionhash: this.ethereum.normalizeHash(t.transactionHash),
-          from: this.ethereum.normalizeHash(tx.from),
-          to: this.ethereum.normalizeHash(tx.to),
-          logindex: t.logIndex,
-          timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
-          sender: this.ethereum.normalizeHash(t.returnValues.from),
-          receiver: this.ethereum.normalizeHash(t.returnValues.to),
-        };
-        //  console.log(feed_event)
-        await this.storage.insert("muse_transfers", event);
+      try {
+        const museTransfers = await this.museContract.getPastEvents("Transfer", {
+          fromBlock: maxBlock,
+          toBlock: latestBlock,
+        });
+        for (const t of museTransfers) {
+          let tx = await this.ethereum.getTransaction(t.transactionHash);
+          let timestamp = await this.ethereum.getBlockTimestamp(t.blockNumber);
+          let event = {
+            amount: t.returnValues.value,
+            blocknumber: t.blockNumber,
+            transactionhash: this.ethereum.normalizeHash(t.transactionHash),
+            from: this.ethereum.normalizeHash(tx.from),
+            to: this.ethereum.normalizeHash(tx.to),
+            logindex: t.logIndex,
+            timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+            sender: this.ethereum.normalizeHash(t.returnValues.from),
+            receiver: this.ethereum.normalizeHash(t.returnValues.to),
+          };
+          //  console.log(feed_event)
+          await this.storage.insert("muse_transfers", event);
+        }
+      } catch (error) {
+
       }
+
     }
     console.log("Starting getting data for block:", maxBlock, latestBlock);
     await this.getData(maxBlock, latestBlock);
