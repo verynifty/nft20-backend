@@ -33,6 +33,6 @@ const sleep = (waitTimeInMs) =>
 
 (async () => {
   
-    await nft20.getNFT("0x1a92f7381b9f03921564a437210bb9396471050c", "1197")
+    await nft20.getNFT("0x7c40c393dc0f283f318791d746d894ddd3693572", "722")
 
 })();
