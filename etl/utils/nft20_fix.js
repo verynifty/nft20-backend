@@ -75,13 +75,14 @@ function NFT20(ethereum, storage) {
 
 NFT20.prototype.getPairs = async function (withUpdate = false) {
   console.log("EXEC")
+  let original = "0x7ea3cca10668b8346aec0bf1844a49e995527c8b"
   let pairDetail = await this.factory.methods
-      .getPairByNftAddress("0x6d2c56f78bfa1340d2117a4dbf0a9a7930e5bf4bae69f7b7d9b8a0a7a59e0062")
+      .nftToToken(original)
       .call();
       let o = {
-        address: this.ethereum.normalizeHash(pairDetail._nft20pair),
-        nft: this.ethereum.normalizeHash(pairDetail._originalNft)}
-        console.log("AFTER")
+        address: this.ethereum.normalizeHash(original),
+        nft: this.ethereum.normalizeHash(pairDetail)}
+        console.log("AFTER", o)
 
   return [o];
 };
@@ -137,7 +138,7 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
     latestBlock = latestBlock - 2; // Protect from reorg
   }
   if (forceFromZero) {
-    maxBlock = 13068603;
+    maxBlock = 13880727;
   }
   let chunk_size = 10000000000
   if (latestBlock - maxBlock > chunk_size) {
@@ -211,6 +212,11 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         );
       } catch (error) {
         console.log('ERROR GETTING NFT');
+        let NFT = {
+          nft_contract: contract,
+          nft_id: asset_id,
+        };
+        await this.storage.insert("nft20_nft", NFT);
         return;
       }
 

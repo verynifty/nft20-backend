@@ -441,6 +441,11 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         );
       } catch (error) {
         console.log('ERROR GETTING NFT');
+        let NFT = {
+          nft_contract: contract,
+          nft_id: asset_id,
+        };
+        await this.storage.insert("nft20_nft", NFT);
         return;
       }
 
