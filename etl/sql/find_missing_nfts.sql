@@ -3,18 +3,18 @@ select
   from
     (
     select
-      CONCAT(na.nft, '_', na.id) as id
+      CONCAT(nt.nft, '_', nt.id) as id
     from
-      nft20_action na
+      nft20_action nt
     group by
       nt.nft,
       nt.id) t
   where
     t.id not in (
     select
-      concat(n.address, '_', n.token_id)
+      concat(n.nft_contract , '_', n.nft_id)
     from
-      nft n
+      nft20_nft n
     group by
-      n.address ,
-      n.token_id )
+      n.nft_contract ,
+      n.nft_id )a

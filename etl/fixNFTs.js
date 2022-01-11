@@ -32,55 +32,7 @@ const sleep = (waitTimeInMs) =>
     new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
-    while (true) {
-        let nfts = await storage.listMulti("nft20_nft", {
-            nft_image: null
-        })
-        console.log(nfts.length)
-        let i = 0
-        for (const nft of nfts) {
-            await os.getNFT(nft.nft_contract, nft.nft_id)
-            await sleep(1000)
-            continue;
+  
+    await nft20.getNFT("0x7ea3cca10668b8346aec0bf1844a49e995527c8b", "294")
 
-            console.log(i++)
-            let ctx = new ethereum.w3.eth.Contract(
-                ERC721ABI,
-                nft.nft_contract
-            );
-            // continue;
-            try {
-                let u = await ctx.methods.tokenURI(nft.nft_id).call()
-                if (u != null && u != "") {
-                    if (u.startsWith("ipfs://")) {
-                        u = "https://ipfs.io/ipfs/" + u.slice(7)
-                    }
-                    console.log(u)
-                    let res = await Axios.get(u)
-                    if (res.data.image.startsWith("ipfs://")) {
-                        res.data.image = "https://ipfs.io/ipfs/" + res.data.image.slice(7)
-                    }
-                    let data = {
-                        nft_contract: nft.nft_contract,
-                        nft_id: nft.nft_id,
-                        nft_image: res.data.image,
-                        nft_original_image: res.data.image,
-                        nft_title: res.data.name,
-                        nft_description: res.data.description
-                    };
-                    console.log(data)
-                    await Axios.post("https://api.nft20.io/nft/matic/new", {
-                        nfts: [data],
-                    });
-                }
-            } catch (error) {
-                console.log("error")
-            }
-
-        }
-        return
-
-
-        // console.log(nfts)
-    }
 })();
