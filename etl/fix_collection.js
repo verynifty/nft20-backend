@@ -22,12 +22,13 @@ const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 
 (async () => {
-  while (true) {
     try {
+      console.log("START")
       await nft20.getLastData(true);
+      console.log("END")
+
     } catch (error) {
       console.log("An error occured", error)
     }
-    await sleep(60000);
-  }
+
 })();
