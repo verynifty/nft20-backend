@@ -80,8 +80,8 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
     .nftToToken(original)
     .call();
   let o = {
-    address: this.ethereum.normalizeHash(original),
-    nft: this.ethereum.normalizeHash(pairDetail),
+    address: this.ethereum.normalizeHash("0x5e3b208e01c7da4fdf4edea1591afbd83401304b"),
+    nft: this.ethereum.normalizeHash("0x7ea3cca10668b8346aec0bf1844a49e995527c8b"),
     nft_type: 721
   }
   console.log("AFTER", o)
@@ -130,7 +130,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
 
 NFT20.prototype.getLastData = async function (forceFromZero = false) {
   let latestBlock = await this.ethereum.getLatestBlock();
-  let maxBlock = 13979140
+  let maxBlock = 13179140
   let chunk_size = 10000000000
   if (latestBlock - maxBlock > chunk_size) {
     console.log("We are really late and will run cunk by chunk (Usually happens on Matic)")
@@ -326,6 +326,7 @@ NFT20.prototype.getData = async function (
   let pairs = await this.getPairs(true);
   let i = 0;
   for (const pair of pairs) {
+    console.log(pair)
 
     console.log("Get events for pair", pair.name, blocknumber + " -> " + lastBlockNumber, i++, "/" + pairs.length, "@", pair.address);
     const TwentyContract = new this.ethereum.w3.eth.Contract(
@@ -361,6 +362,7 @@ NFT20.prototype.getData = async function (
     if (blocknumber <= 0) {
       blocknumber = lastBlockNumber - 50000;
     }
+    console.log(parseInt(pair.nft_type))
     if (parseInt(pair.nft_type) == 1155) {
       const nft = new this.ethereum.w3.eth.Contract(this.ERC1155ABI, pair.nft);
       console.log({
@@ -415,13 +417,9 @@ NFT20.prototype.getData = async function (
         }
       }
     } else if (parseInt(pair.nft_type) == 721) {
+      console.log("IT SI 721")
       let nft = new this.ethereum.w3.eth.Contract(this.ERC721ABI, pair.nft);
-      if (pair.name == "NFT20 CryptoCrystal") {
-        nft = new this.ethereum.w3.eth.Contract(
-          this.ERC721ABICRYSTAL,
-          pair.nft
-        );
-      }
+      
       let ts = await nft.getPastEvents("Transfer", {
         fromBlock: blocknumber,
         toBlock: lastBlockNumber,
