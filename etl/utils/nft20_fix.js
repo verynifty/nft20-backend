@@ -128,19 +128,7 @@ NFT20.prototype.storePoolAction = async function (type, pair, event) {
 
 NFT20.prototype.getLastData = async function (forceFromZero = false) {
   let latestBlock = await this.ethereum.getLatestBlock();
-  let maxBlock = await this.storage.getMaxWhere("nft20_action", "blocknumber", {
-    network: this.NETWORK,
-  });
-  if (maxBlock == null) {
-    maxBlock = 0;
-  } else {
-    maxBlock = maxBlock - 100;
-    latestBlock = latestBlock - 2; // Protect from reorg
-  }
-  if (forceFromZero) {
-    maxBlock = 13880727;
-  }
-  maxBlock = 13979140
+  let maxBlock = 13979140
   let chunk_size = 10000000000
   if (latestBlock - maxBlock > chunk_size) {
     console.log("We are really late and will run cunk by chunk (Usually happens on Matic)")
