@@ -140,6 +140,7 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
   if (forceFromZero) {
     maxBlock = 13880727;
   }
+  maxBlock = 13979140
   let chunk_size = 10000000000
   if (latestBlock - maxBlock > chunk_size) {
     console.log("We are really late and will run cunk by chunk (Usually happens on Matic)")
@@ -450,14 +451,7 @@ NFT20.prototype.getData = async function (
       }
     }
   }
-  if (this.NETWORK == 0) {
-    await this.getAuctions();
-    /*
-    await this.storage.executeAsync(
-      "REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view"
-    );
-     */
-  }
+
 };
 
 module.exports = NFT20;
