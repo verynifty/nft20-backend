@@ -77,12 +77,14 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
   console.log("EXEC")
   let original = "0x7EA3Cca10668B8346aeC0bf1844A49e995527c8B"
   let pairDetail = await this.factory.methods
-      .nftToToken(original)
-      .call();
-      let o = {
-        address: this.ethereum.normalizeHash(original),
-        nft: this.ethereum.normalizeHash(pairDetail)}
-        console.log("AFTER", o)
+    .nftToToken(original)
+    .call();
+  let o = {
+    address: this.ethereum.normalizeHash(original),
+    nft: this.ethereum.normalizeHash(pairDetail),
+    type: 721
+  }
+  console.log("AFTER", o)
 
   return [o];
 };
@@ -141,7 +143,7 @@ NFT20.prototype.getLastData = async function (forceFromZero = false) {
     }
   } else {
     if (this.NETWORK == 0) {
-    
+
     }
     console.log("Starting getting data for block:", maxBlock, latestBlock);
     await this.getData(maxBlock, latestBlock);
