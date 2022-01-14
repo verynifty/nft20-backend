@@ -334,6 +334,7 @@ NFT20.prototype.getData = async function (
     );
     let maxERC20Transfer = blocknumber;
     console.log("tx")
+    /*
     let ts = await TwentyContract.getPastEvents("Transfer", {
       fromBlock: maxERC20Transfer,
       toBlock: lastBlockNumber,
@@ -356,6 +357,7 @@ NFT20.prototype.getData = async function (
         transfer_amount: event.returnValues.value,
       });
     }
+    */
     if (blocknumber <= 0) {
       blocknumber = lastBlockNumber - 50000;
     }
