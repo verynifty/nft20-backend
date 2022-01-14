@@ -82,7 +82,7 @@ NFT20.prototype.getPairs = async function (withUpdate = false) {
   let o = {
     address: this.ethereum.normalizeHash(original),
     nft: this.ethereum.normalizeHash(pairDetail),
-    type: 721
+    nft_type: 721
   }
   console.log("AFTER", o)
 
