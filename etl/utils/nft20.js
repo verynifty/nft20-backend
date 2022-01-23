@@ -432,20 +432,23 @@ NFT20.prototype.fixMuseTransfers = async function () {
 }
 
 NFT20.prototype.getNFT = async function (contract, asset_id) {
+  console.log("ok")
   let existing = await this.storage.getMulti("nft20_nft", {
     nft_contract: contract,
     nft_id: asset_id,
   });
-  if (!existing) {
+  if (!existing || (existing.nft_image == null && existing.nft_title == null)) {
     if (this.NETWORK == 0) {
       await sleep(1200);
       let opensea_asset = null
       try {
         opensea_asset = await axios.get(
-          "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/"
+          "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/",
+          { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36' }  }
         );
       } catch (error) {
         console.log('ERROR GETTING NFT');
+        console.log(error)
         let NFT = {
           nft_contract: contract,
           nft_id: asset_id,
@@ -464,7 +467,9 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         nft_original_image: opensea_asset.data.image_original_url,
         nft_trait: JSON.stringify(opensea_asset.data.traits),
       };
-      await this.storage.insert("nft20_nft", NFT);
+      console.log("insert")
+      await this.storage.knex("nft20_nft").insert(NFT).onConflict(["nft_contract", "nft_id"]).merge();
+      console.log("inserted")
 
       let collection = {
         contract_address: contract,

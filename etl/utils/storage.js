@@ -22,7 +22,7 @@ Storage.prototype.client = async function () {
 Storage.prototype.insert = async function (type, obj) {
   //  console.log('insert', type, obj);
   var query = this.knex(type).insert(obj).toString()
-  // console.log(query)
+   console.log(query)
   await this.executeAsync(query)
  
 }

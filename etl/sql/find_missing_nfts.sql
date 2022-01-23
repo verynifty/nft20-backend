@@ -17,4 +17,4 @@ select
       nft20_nft n
     group by
       n.nft_contract ,
-      n.nft_id )a
+      n.nft_id )
