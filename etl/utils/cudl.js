@@ -44,6 +44,9 @@ Cudl.prototype.run = async function () {
   */
   minBlock -= 50;
 
+
+  minBlock = 7211867 - 20
+
   let events = [];
 
   events = await this.game.getPastEvents("Mined", {
