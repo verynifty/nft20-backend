@@ -182,7 +182,7 @@ Cudl.prototype.run = async function () {
   }
   petToUpdate = Object.keys(petToUpdate);
   console.log("updating pets :", petToUpdate.length);
-  if ((this.runs + 1) % 10 == 0) {
+  if ((this.runs + 1) % 101 == 0) {
     let maxId = await this.storage.getMax("cudl_pet", "pet_id");
     let i = 0;
     while (i < maxId) {
