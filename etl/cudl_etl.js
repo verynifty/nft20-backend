@@ -24,7 +24,7 @@ const sleep = (waitTimeInMs) =>
 
 (async () => {
   while (true) {
-    await sleep(60000);
+    await sleep(8000);
     try {
       await cudl.run();
     } catch (error) {
