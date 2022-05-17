@@ -27,12 +27,17 @@ const sleep = (waitTimeInMs) =>
         let nfts = await storage.executeAsync(`
         SELECT nft, id from nft20_action na left join nft20_nft nft on nft.nft_contract = na.nft and nft.nft_id = na.id where network = 0 and nft_image is null group by nft, id limit 1000
         `)
+        console.log("GOT ", nfts.length)
+        await sleep(1000)
+        let i = 0;
         for (const nft of nfts) {
             console.log("DOing NFT", nft)
             await nft20.getNFT(
                 nft.nft,
                 nft.id
             )
+            console.log("DONE", i++)
+            await sleep(500)
         }
 
     } catch (error) {
