@@ -75,13 +75,13 @@ function NFT20(ethereum, storage) {
 
 NFT20.prototype.getPairs = async function (withUpdate = false) {
   console.log("EXEC")
-  let original = "0x7EA3Cca10668B8346aeC0bf1844A49e995527c8B"
+  let original = "0x134460d32fc66a6d84487c20dcd9fdcf92316017"
   let pairDetail = await this.factory.methods
     .nftToToken(original)
     .call();
   let o = {
-    address: this.ethereum.normalizeHash("0x5e3b208e01c7da4fdf4edea1591afbd83401304b"),
-    nft: this.ethereum.normalizeHash("0x7ea3cca10668b8346aec0bf1844a49e995527c8b"),
+    address: this.ethereum.normalizeHash("0x548aACf79C4ffC8eE263cAE103239b1b06Fe9025"),
+    nft: this.ethereum.normalizeHash("0x134460d32fc66a6d84487c20dcd9fdcf92316017"),
     nft_type: 721
   }
   console.log("AFTER", o)
