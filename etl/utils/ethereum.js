@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const CoinGecko = require('coingecko-api');
-const { default: Axios } = require("axios");
+const axios = require("axios");
 
 function Ethereum(provider_url) {
     this.w3 = new Web3(new Web3.providers.HttpProvider(provider_url));
@@ -52,7 +52,7 @@ Ethereum.prototype.getPrice = async function () {
 */
 
 Ethereum.prototype.getPrice = async function () {
-    let rates = await this.$axios.get(`https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`);
+    let rates = await axios.get(`https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD`);
     return (rates.data.USD);
 }
 
