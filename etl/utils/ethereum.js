@@ -31,12 +31,18 @@ Ethereum.prototype.getBlockTimestamp = async function (blocknumber) {
 }
 
 Ethereum.prototype.getTransaction = async function (hash, full) {
-    let transaction = await this.w3.eth.getTransaction(hash)
-    if (full) {
-        let receipt = await this.w3.eth.getTransactionReceipt(hash)
-        transaction = Object.assign(transaction, receipt)
+    try {
+        let transaction = await this.w3.eth.getTransaction(hash)
+        if (full) {
+            let receipt = await this.w3.eth.getTransactionReceipt(hash)
+            transaction = Object.assign(transaction, receipt)
+        }
+        return (transaction)
+    } catch (error) {
+        console.log(error)
+        throw new Error('Parameter is not a number!');
     }
-    return (transaction)
+  
 }
 
 /*
