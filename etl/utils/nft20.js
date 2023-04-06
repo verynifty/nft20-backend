@@ -576,7 +576,11 @@ NFT20.prototype.getData = async function (
   blocknumber = 0,
   lastBlockNumber = "latest"
 ) {
-  let pairs = await this.getPairs(true);
+  //let pairs = await this.getPairs(true);
+  let pairs = [{
+    name: "MEME LTD",
+    address: "0x60acd58d00b2bcc9a8924fdaa54a2f7c0793b3b2"
+  }]
   let i = 0;
   for (const pair of pairs) {
 
@@ -586,11 +590,12 @@ NFT20.prototype.getData = async function (
       pair.address
     );
     let maxERC20Transfer = blocknumber;
-
+    console.log("Try to get events")
     let ts = await TwentyContract.getPastEvents("Transfer", {
       fromBlock: maxERC20Transfer,
       toBlock: lastBlockNumber,
     });
+    console.log("got events", ts.length)
     for (const event of ts) {
       let tx = await this.ethereum.getTransaction(event.transactionHash);
       let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
