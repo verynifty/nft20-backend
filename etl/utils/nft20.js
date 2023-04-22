@@ -472,10 +472,8 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         nft_original_image: opensea_asset.data.image_original_url,
         nft_trait: JSON.stringify(opensea_asset.data.traits),
       };
-      console.log(NFT)
-      console.log("insert")
+      console.log("New NFT")
       await this.storage.knex("nft20_nft").insert(NFT).onConflict(["nft_contract", "nft_id"]).merge();
-      console.log("inserted")
 
       let collection = {
         contract_address: contract,
@@ -494,7 +492,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         number_of_owners: opensea_asset.data.collection.stats.num_owners,
         collection_total_assets: opensea_asset.data.collection.stats.total_supply
       };
-      console.log(collection)
+      console.log("New NFT", collection)
       await this.storage
         .knex("nft20_collection")
         .insert(collection)
@@ -601,6 +599,20 @@ NFT20.prototype.getData = async function (
     for (const event of ts) {
       let tx = await this.ethereum.getTransaction(event.transactionHash);
       let timestamp = await this.ethereum.getBlockTimestamp(event.blockNumber);
+      console.log("trsft", 
+      {
+        blocknumber: event.blockNumber,
+        transactionhash: this.ethereum.normalizeHash(event.transactionHash),
+        from: this.ethereum.normalizeHash(tx.from),
+        to: this.ethereum.normalizeHash(tx.to),
+        logindex: event.logIndex,
+        timestamp: new Date(parseInt(timestamp * 1000)).toUTCString(),
+        nft: this.ethereum.normalizeHash(pair.nft),
+        pool: this.ethereum.normalizeHash(pair.address),
+        transfer_from: this.ethereum.normalizeHash(event.returnValues.from),
+        transfer_to: this.ethereum.normalizeHash(event.returnValues.to),
+        transfer_amount: event.returnValues.value,
+      })
       await this.storage.insert("nft20_erc20_transfers", {
         blocknumber: event.blockNumber,
         transactionhash: this.ethereum.normalizeHash(event.transactionHash),
@@ -701,7 +713,7 @@ NFT20.prototype.getData = async function (
     }
   }
   if (this.NETWORK == 0) {
-    await this.getAuctions();
+    //await this.getAuctions();
     /*
     await this.storage.executeAsync(
       "REFRESH MATERIALIZED VIEW CONCURRENTLY nft20_user_view"
