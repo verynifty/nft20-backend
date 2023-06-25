@@ -447,7 +447,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
           {
             headers: {
               'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36',
-              'X-Api-Key': '2065401f46a84c019b3945684dbfa278'
+              'X-Api-Key': 'e4e7b08f1807492e91301de85728ce2e'
             }
           }
         );
