@@ -467,18 +467,18 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
       let NFT = {
         nft_contract: contract,
         nft_id: asset_id,
-        nft_title: opensea_asset.data.name,
-        nft_description: opensea_asset.data.description,
-        nft_image: opensea_asset.data.image_url,
-        nft_original_image: opensea_asset.data.image_original_url,
-        nft_trait: JSON.stringify(opensea_asset.data.traits),
+        nft_title: opensea_asset.data.nft.name,
+        nft_description: opensea_asset.data.nft.description,
+        nft_image: opensea_asset.data.nft.display_image_url,
+        nft_original_image: opensea_asset.data.nft.display_image_url,
+        nft_trait: JSON.stringify(opensea_asset.data.nft.traits),
       };
       console.log("New NFT")
       await this.storage.knex("nft20_nft").insert(NFT).onConflict(["nft_contract", "nft_id"]).merge();
-
+/*
       let collection = {
         contract_address: contract,
-        image_url: opensea_asset.data.collection.image_url,
+        image_url: opensea_asset.data.nft.image_url,
         collection_name: opensea_asset.data.collection.name,
         collection_description: opensea_asset.data.collection.description,
         external_url: opensea_asset.data.collection.external_url,
@@ -499,6 +499,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
         .insert(collection)
         .onConflict("contract_address")
         .merge();
+        */
     } else {
       let NFT = {
         nft_contract: contract,
