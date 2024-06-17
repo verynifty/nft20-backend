@@ -443,7 +443,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
       let opensea_asset = null
       try {
         opensea_asset = await axios.get(
-          "https://api.opensea.io/api/v1/asset/" + contract + "/" + asset_id + "/",
+          "https://api.opensea.io/api/v2/chain/ethereum/contract/" + contract + "/nfts/" + asset_id + "",
           {
             headers: {
               'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36',
@@ -451,6 +451,7 @@ NFT20.prototype.getNFT = async function (contract, asset_id) {
             }
           }
         );
+        console.log(opensea_asset);
       } catch (error) {
         console.log('ERROR GETTING NFT');
         console.log(error)
